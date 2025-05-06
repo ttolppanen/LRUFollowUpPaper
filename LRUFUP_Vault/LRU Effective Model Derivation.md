@@ -187,6 +187,7 @@ $$
 $$
 So, as long as $U$ is unitary, the operators $\hat{b}_i$ are valid lowering operators, and describe a harmonic oscillator.
 ### New Basis
+work in progress...
 With the new operators comes a new basis. It would be insightful to know the connection between the original basis and the new basis. To derive the new basis, we can calculate the eigenstates of the new operators. With mathematica we get
 $$
 \begin{align}

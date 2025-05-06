@@ -25,12 +25,14 @@
             "id": "d23d0e5e5278b6c2",
             "type": "leaf",
             "state": {
-              "type": "image",
+              "type": "markdown",
               "state": {
-                "file": "alpha_squared.png"
+                "file": "LRU Effective Model Derivation.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-image",
-              "title": "alpha_squared"
+              "icon": "lucide-file",
+              "title": "LRU Effective Model Derivation"
             }
           }
         ],
@@ -183,10 +185,15 @@
   },
   "active": "d23d0e5e5278b6c2",
   "lastOpenFiles": [
-    "Code",
+    "LRU Effective Model Derivation.pdf",
     "LRU Effective Model Derivation.md",
-    "Main_Canvas.canvas",
+    "Data/QubitDiss/_DATA_LOCKED",
+    "Data/QubitDiss/plot.png",
+    "Data/QubitDiss/data.jld2",
+    "Data/QubitDiss/code.jl",
     "alpha_squared.png",
+    "Code",
+    "Main_Canvas.canvas",
     "Todo.md"
   ]
 }
