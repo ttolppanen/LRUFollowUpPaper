@@ -202,7 +202,7 @@ $$
 ### Effective Master Equation
 To derive the effective model, we start from the LRU master equation where instead of measurement we use dissipation
 $$
-\frac{d\hat\rho}{dt} = -i[\hat{H}, \hat{\rho}] + \Gamma \left( \hat{a}_3\rho\hat{a}_3^\dagger - \frac{1}{2}\{{\hat{a}_3^\dagger\hat{a}_3, \hat{\rho}}\} \right).
+\frac{d\hat\rho}{dt} = -i[\hat{H}, \hat{\rho}] + \Gamma \left( \hat{a}_3\hat{\rho}\hat{a}_3^\dagger - \frac{1}{2}\{{\hat{a}_3^\dagger\hat{a}_3, \hat{\rho}}\} \right).
 $$
 Since we know the Hamiltonian in the new basis, we need to only focus on the dissipation part. We assume that in the new basis the initial state is not entangled, and since the Hamiltonian in the basis does not have interaction, the state will stay un-entangled. The initial state is thus
 $$
