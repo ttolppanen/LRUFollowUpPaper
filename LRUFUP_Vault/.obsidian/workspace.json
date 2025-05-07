@@ -93,7 +93,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 253.500732421875
   },
   "right": {
     "id": "3506412ca7d1d758",
@@ -185,15 +185,15 @@
   },
   "active": "d23d0e5e5278b6c2",
   "lastOpenFiles": [
-    "LRU Effective Model Derivation.pdf",
-    "LRU Effective Model Derivation.md",
     "Data/QubitDiss/_DATA_LOCKED",
+    "Main_Canvas.canvas",
+    "LRU Effective Model Derivation.md",
+    "LRU Effective Model Derivation.pdf",
     "Data/QubitDiss/plot.png",
     "Data/QubitDiss/data.jld2",
     "Data/QubitDiss/code.jl",
     "alpha_squared.png",
     "Code",
-    "Main_Canvas.canvas",
     "Todo.md"
   ]
 }

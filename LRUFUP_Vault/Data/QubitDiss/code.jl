@@ -18,7 +18,7 @@ end
 function initial_parameters()
     param = OrderedDict()
     param[:dt] = 0.02
-    param[:t] = 400
+    param[:t] = 250
     param[:d] = 2
     param[:L] = 3
     param[:state] = ValueInfo(bosonstack(1, param[:L], 1; d = 2), "|100...>")
@@ -26,7 +26,7 @@ function initial_parameters()
     param[:H] = "BH, d_w, fixed |2> energy"
     param[:J] = ValueInfo(5, "5MHz")
     param[:w] = ValueInfo(7500 / param[:J].val, "7.5GHz")
-    param[:dw] = ValueInfo(50 / param[:J].val, "100MHz")
+    param[:dw] = ValueInfo(25 / param[:J].val, "100MHz")
     param[:U] = ValueInfo(250 / param[:J].val, "250MHz")
     return param
 end
@@ -55,7 +55,7 @@ function f_original(traj, gammas)
         r_f() = begin
             exactevolve(state, Uop, diss_op, param[:dt], param[:t], obs)
         end
-        @time pa_out = solvetrajectories(r_f, traj; paral = :threads)
+        @time pa_out = solvetrajectories(r_f, traj; paral = :none)
         r = traj_mean(pa_out)
         y = r[1, :]
         push!(lines, LineInfo(0:dt:t, y, traj, "gamma = $gamma"))
@@ -72,7 +72,7 @@ function f_new_op(traj, gammas)
 
     # -----------
 
-    d = param[:d]; L = 1
+    d = param[:d];
     dt = param[:dt]; t = param[:t]
     state = spzeros(d)
     state[2] = 1.0
@@ -98,7 +98,7 @@ function f_new_op(traj, gammas)
         r_f() = begin
             exactevolve(state, Uop, diss_op, param[:dt], param[:t], obs)
         end
-        @time pa_out = solvetrajectories(r_f, traj; paral = :threads)
+        @time pa_out = solvetrajectories(r_f, traj; paral = :none)
         r = traj_mean(pa_out)
         y = r[1, :]
         push!(lines, LineInfo(0:dt:t, y, traj, "new_gamma = $gamma"))
