@@ -71,10 +71,11 @@ function f_initial_state()
     dt = param[:dt]; t = param[:t]
     state = param[:state].val
 
-    op = singlesite_n(d, L, 1)
+    op = singlesite_n(d, L, 2)
     obs = (state) -> expval(state, op)
 
-    w_coupler = 2000 / param[:J12].val
+    w_coupler = 2500 / param[:J12].val
+    param[:wc] = "2500GHz"
     states = [productstate(d, [1, 0, 0]), productstate(d, [2, 0, 0])]
     for state in states
         w2 = (2 * param[:w1].val - param[:U].val + param[:U2].val) / 2
@@ -92,7 +93,7 @@ function f_initial_state()
         push!(lines, LineInfo(0:dt:t, y, 1, legend))
     end
     path = joinpath(@__DIR__)
-    makeplot(path, lines...; xlabel = "t", ylabel = "n1", copy_code = false, param...)
+    makeplot(path, lines...; xlabel = "t", ylabel = "nc", copy_code = false, param...)
     # addtrajectories(path, line)
 end
 
