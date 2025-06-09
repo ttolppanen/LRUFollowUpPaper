@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "LRU Effective Model Derivation.md",
+                "file": "LRU With Tunable Coupler.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "LRU Effective Model Derivation"
+              "title": "LRU With Tunable Coupler"
             }
           }
         ],
@@ -183,8 +183,16 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "fdbd92939096e3bf",
+  "active": "d23d0e5e5278b6c2",
   "lastOpenFiles": [
+    "Data/Coupler/_DATA_LOCKED",
+    "Data/Coupler/3TransmonComparison/_DATA_LOCKED",
+    "Data/Coupler/3TransmonComparison/plot.png",
+    "Data/Coupler/3TransmonComparison/data.jld2",
+    "Data/Coupler/3TransmonComparison/code.jl",
+    "Data/Coupler/3TransmonComparison",
+    "Data/Coupler/plot.png",
+    "LRU Effective Model Derivation.md",
     "LRU With Tunable Coupler.md",
     "Data/Coupler/data.jld2",
     "Data/Coupler/code.jl",
@@ -196,13 +204,9 @@
     "Data/Coupler",
     "Data/QubitDiss/_DATA_LOCKED",
     "Main_Canvas.canvas",
-    "LRU Effective Model Derivation.md",
     "LRU Effective Model Derivation.pdf",
     "Data/QubitDiss/plot.png",
-    "Data/QubitDiss/data.jld2",
-    "Data/QubitDiss/code.jl",
     "alpha_squared.png",
-    "Code",
     "Todo.md"
   ]
 }

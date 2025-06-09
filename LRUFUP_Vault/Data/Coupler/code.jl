@@ -71,11 +71,11 @@ function f_initial_state()
     dt = param[:dt]; t = param[:t]
     state = param[:state].val
 
-    op = singlesite_n(d, L, 2)
+    op = singlesite_n(d, L, 1)
     obs = (state) -> expval(state, op)
 
-    w_coupler = 2500 / param[:J12].val
-    param[:wc] = "2500GHz"
+    w_coupler = 2000 / param[:J12].val
+    param[:wc] = "----GHz"
     states = [productstate(d, [1, 0, 0]), productstate(d, [2, 0, 0])]
     for state in states
         w2 = (2 * param[:w1].val - param[:U].val + param[:U2].val) / 2
