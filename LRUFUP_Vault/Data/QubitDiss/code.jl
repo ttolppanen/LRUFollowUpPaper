@@ -18,7 +18,7 @@ end
 function initial_parameters()
     param = OrderedDict()
     param[:dt] = 0.02
-    param[:t] = 250
+    param[:t] = 500
     param[:d] = 2
     param[:L] = 3
     param[:state] = ValueInfo(bosonstack(1, param[:L], 1; d = 2), "|100...>")
@@ -26,7 +26,7 @@ function initial_parameters()
     param[:H] = "BH, d_w, fixed |2> energy"
     param[:J] = ValueInfo(5, "5MHz")
     param[:w] = ValueInfo(7500 / param[:J].val, "7.5GHz")
-    param[:dw] = ValueInfo(25 / param[:J].val, "100MHz")
+    param[:dw] = ValueInfo(50 / param[:J].val, "100MHz")
     param[:U] = ValueInfo(250 / param[:J].val, "250MHz")
     return param
 end
@@ -58,7 +58,7 @@ function f_original(traj, gammas)
         @time pa_out = solvetrajectories(r_f, traj; paral = :none)
         r = traj_mean(pa_out)
         y = r[1, :]
-        push!(lines, LineInfo(0:dt:t, y, traj, "gamma = $gamma"))
+        push!(lines, LineInfo(0:dt:t, y, traj, "full model, gamma = $gamma"))
     end
     return lines
     # path = joinpath(@__DIR__)
@@ -101,7 +101,7 @@ function f_new_op(traj, gammas)
         @time pa_out = solvetrajectories(r_f, traj; paral = :none)
         r = traj_mean(pa_out)
         y = r[1, :]
-        push!(lines, LineInfo(0:dt:t, y, traj, "new_gamma = $gamma"))
+        push!(lines, LineInfo(0:dt:t, y, traj, "effective model, gamma = $gamma"))
     end
     return lines
     # path = joinpath(@__DIR__)
