@@ -186,6 +186,7 @@
   "active": "d23d0e5e5278b6c2",
   "lastOpenFiles": [
     "Data/Coupler/FLevelResonance/_DATA_LOCKED",
+    "Data/Coupler/FLevelResonance/excitation_frequencies.png",
     "Data/Coupler/FLevelResonance/plot.png",
     "Data/Coupler/FLevelResonance/data.jld2",
     "Data/Coupler/FLevelResonance/code.jl",
@@ -206,7 +207,6 @@
     "Data/Coupler/plot.png",
     "LRU Effective Model Derivation.md",
     "LRU With Tunable Coupler.md",
-    "Data/Coupler/SlightTuningC.png",
     "Main_Canvas.canvas",
     "Todo.md"
   ]
