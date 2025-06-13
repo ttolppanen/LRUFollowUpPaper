@@ -35,7 +35,7 @@ function initial_parameters()
     param[:alg] = "exact sbspc"
     param[:H] = "BH"
     param[:J12] = ValueInfo(5, "5MHz")
-    param[:Jc] = ValueInfo(15.8114 / param[:J12].val, "15.8114MHz")
+    param[:Jc] = ValueInfo(15.8 / param[:J12].val, "15.8Hz")
     param[:w] = ValueInfo(4000 / param[:J12].val, "4GHz")
     param[:U] = ValueInfo(150 / param[:J12].val, "150MHz")
     return param
@@ -57,9 +57,9 @@ function f_initial_state()
 
     states = [productstate(d, [1, 0, 0]), productstate(d, [2, 0, 0])]
 
-    coupler_coefficient = 10
-    dw = [param[:w].val, param[:w].val + coupler_coefficient, param[:w].val - 5]
-    dU = [param[:U].val, param[:U].val + 2 * coupler_coefficient, param[:U].val - 10]
+    coupler_coefficient = 10 - 1
+    dw = [param[:w].val, param[:w].val + coupler_coefficient, param[:w].val]
+    dU = [param[:U].val, param[:U].val + 2 * coupler_coefficient, param[:U].val]
     H = bosehubbard(d, L, [(1, 2, param[:Jc].val), (2, 3, param[:Jc].val), (1, 3, 1)]; w = dw, U = dU)
     Uop = exp(-1im * param[:dt] * Matrix(H))
 
@@ -74,7 +74,7 @@ function f_initial_state()
         push!(lines, LineInfo(0:dt:t, y, 1, legend))
     end
 
-    param[:Uc] = "$(dU[2] * param[:J12].val)MHz"
+    param[:Uc] = "$(round(dU[2] * param[:J12].val, digits = 3))MHz"
     excitation_frequencies_plot(dw, dU)
 
     path = joinpath(@__DIR__)

@@ -52,14 +52,14 @@ function f_initial_state()
     dt = param[:dt]; t = param[:t]
     state = param[:state].val
 
-    op = singlesite_n(d, L, 3)
+    op = singlesite_n(d, L, 1)
     obs = (state) -> expval(state, op)
 
     states = [productstate(d, [1, 0, 0]), productstate(d, [2, 0, 0])]
 
-    coupler_coefficient = 100
-    dw = [param[:w].val, param[:w].val + coupler_coefficient, param[:w].val - 5]
-    dU = [param[:U].val, param[:U].val + 2 * coupler_coefficient, param[:U].val - 10]
+    coupler_coefficient = 100 - 1
+    dw = [param[:w].val, param[:w].val + coupler_coefficient, param[:w].val]
+    dU = [param[:U].val, param[:U].val + 2.1 * coupler_coefficient, param[:U].val]
     H = bosehubbard(d, L, [(1, 2, param[:Jc].val), (2, 3, param[:Jc].val), (1, 3, 1)]; w = dw, U = dU)
     Uop = exp(-1im * param[:dt] * Matrix(H))
 
@@ -78,7 +78,7 @@ function f_initial_state()
     excitation_frequencies_plot(dw, dU)
 
     path = joinpath(@__DIR__)
-    makeplot(path, lines...; xlabel = "t", ylabel = "n2", copy_code = false, param...)
+    makeplot(path, lines...; xlabel = "t", ylabel = "n1", copy_code = false, param...)
     # addtrajectories(path, line)
 
 end
