@@ -5,3 +5,9 @@ When the coupler is in tune, it cancels the interaction between the edge transmo
 With disorder, we can protect the qubit as we saw in our LRU. When the coupler is in tune, we still get no evolution. But since when $w_c > w$ the contribution is positive, we can have an intermediate value of the coupler frequency where the second excitation coupling is boosted, while we still have good decoupling of the qubit due to the disorder.
 
 ![[CouplerInTune.png]]![[NoCoupler.png]]![[SlightTuning.png]]![[SlightTuning2.png]]![[SlightTuningC.png]]
+#### Leakage Level In Resonance
+In the previous plot, the frequency of the second excited level $|2\rangle$ is not matched to be in resonance. In the figures below it is. Surprisingly, we are able to turn off qubit interaction with the tunable coupler, while having leakage mobility. The caveat is that for realistic anharmonicity, we need to have have relatively low tunable coupler coupling $J_c$, due to which the single excitation spends a lot of time in the coupler. If the coupler is in full resonance in the second level, we get rapid oscillation, so it might be beneficial to have slight detuning for the anharmonicity of the coupler. Note that here the edge transmons have same transition frequency (they are in resonance as qubits and for leakage). 
+###### High Coupling $J_c/2\pi = 50$MHz -> $U_c/2\pi = 1200$ MHz   
+![[Data/Coupler/FLevelResonance/high_coupling/combined.png]]![[n2_exact.png]]
+###### Low Coupling $J_c/2\pi = 15.8$MHz -> $U_c/2\pi = 250$ MHz   
+![[Data/Coupler/FLevelResonance/low_coupling/combined.png]]![[Data/Coupler/FLevelResonance/low_coupling/n2_exact.png]]
