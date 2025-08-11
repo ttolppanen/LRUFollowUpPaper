@@ -28,8 +28,8 @@ function initial_parameters()
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
     param[:w1] = ValueInfo(4000 / param[:J12].val, "4GHz")
     #param[:w2] = ValueInfo(4000 / param[:J12].val, "4GHz")
-    param[:U] = ValueInfo(250 / param[:J12].val, "250MHz")
-    param[:U2] = ValueInfo(150 / param[:J12].val, "150MHz")
+    param[:U] = ValueInfo(240 / param[:J12].val, "240MHz")
+    param[:U2] = ValueInfo(200 / param[:J12].val, "200MHz")
     return param
 end
 
@@ -74,8 +74,8 @@ function f_initial_state()
     op = singlesite_n(d, L, 1)
     obs = (state) -> expval(state, op)
 
-    w_coupler = 2000 / param[:J12].val
-    param[:wc] = "----GHz"
+    w_coupler = 00 / param[:J12].val
+    param[:wc] = "0GHz"
     states = [productstate(d, [1, 0, 0]), productstate(d, [2, 0, 0])]
     for state in states
         w2 = (2 * param[:w1].val - param[:U].val + param[:U2].val) / 2
@@ -93,7 +93,7 @@ function f_initial_state()
         push!(lines, LineInfo(0:dt:t, y, 1, legend))
     end
     path = joinpath(@__DIR__)
-    makeplot(path, lines...; xlabel = "t", ylabel = "nc", copy_code = false, param...)
+    makeplot(path, lines...; xlabel = "t", ylabel = "n1", copy_code = false, param...)
     # addtrajectories(path, line)
 end
 

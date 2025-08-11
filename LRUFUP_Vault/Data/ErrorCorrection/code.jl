@@ -18,14 +18,16 @@ end
 function initial_parameters()
     param = OrderedDict()
     param[:dt] = 0.02
-    param[:t] = 10
+    param[:t] = 2
     param[:d] = 3
     param[:L] = 3
     param[:alg] = "exact"
     param[:H] = "BH"
     param[:J] = ValueInfo(5, "5MHz")
-    param[:w] = ValueInfo(4000 / param[:J].val, "4GHz")
-    param[:U] = ValueInfo(250 / param[:J].val, "250MHz")
+    param[:w1] = ValueInfo(4000 / param[:J].val, "4GHz")
+    param[:U1] = ValueInfo(150 / param[:J].val, "150MHz")
+    param[:U2] = ValueInfo(200 / param[:J].val, "200MHz")
+    param[:U3] = ValueInfo(250 / param[:J].val, "250MHz")
     return param
 end
 
@@ -37,7 +39,7 @@ function f_211()
     lines = []
     d = param[:d]; L = param[:L]
     dt = param[:dt]; t = param[:t]
-    state = productstate(d, [2, 1, 1])
+    state = productstate(d, [1, 2, 1])
 
     s211 = productstate(d, [2, 1, 1])'
     s121 = productstate(d, [1, 2, 1])'
@@ -46,7 +48,12 @@ function f_211()
            state -> real(s121 * state),
            state -> real(s112 * state)]
 
-    H = bosehubbard(d, L, ; w = param[:w].val, U = param[:U].val)
+    w2 = (2 * param[:w1].val - param[:U1].val + param[:U2].val) / 2
+    w3 = (2 * param[:w1].val - param[:U1].val + param[:U3].val) / 2
+    w = [param[:w1].val, w2, w3]
+    U = [param[:U1].val, param[:U2].val, param[:U3].val]
+    println(2 .* w .- U )
+    H = bosehubbard(d, L, ; w, U)
     Uop = exp(-1im * param[:dt] * Matrix(H))
         
     @time out = exactevolve(state, Uop, param[:dt], param[:t], obs...)
@@ -90,4 +97,4 @@ function f_200()
 end
 
 @time f_211()
-@time f_200()
+# @time f_200()
