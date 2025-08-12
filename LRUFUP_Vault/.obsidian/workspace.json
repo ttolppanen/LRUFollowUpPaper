@@ -15,9 +15,9 @@
               "state": {
                 "file": "Research Questions.canvas",
                 "viewState": {
-                  "x": 2268.050887100724,
-                  "y": -356.743705904815,
-                  "zoom": -0.9999999999999998
+                  "x": 1996.0783053629477,
+                  "y": 972.0022215777436,
+                  "zoom": -0.8257417898720895
                 }
               },
               "icon": "lucide-layout-dashboard",
@@ -170,43 +170,6 @@
       "templates:Insert template": false,
       "command-palette:Open command palette": false
     }
-  },
-  "floating": {
-    "id": "95bb22c5e7cdbac5",
-    "type": "floating",
-    "children": [
-      {
-        "id": "e59b26ec2fa0240d",
-        "type": "window",
-        "children": [
-          {
-            "id": "79a9b649b31d843d",
-            "type": "tabs",
-            "children": [
-              {
-                "id": "6d6ae97d48e6a8f1",
-                "type": "leaf",
-                "state": {
-                  "type": "image",
-                  "state": {
-                    "file": "Data/Coupler/FLevelResonance/high_coupling/combined.png"
-                  },
-                  "icon": "lucide-image",
-                  "title": "combined"
-                }
-              }
-            ]
-          }
-        ],
-        "direction": "vertical",
-        "x": 512,
-        "y": 160,
-        "width": 1024,
-        "height": 801,
-        "maximize": true,
-        "zoom": 0
-      }
-    ]
   },
   "active": "ba890b0f2b656a12",
   "lastOpenFiles": [
