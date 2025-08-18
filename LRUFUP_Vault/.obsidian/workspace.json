@@ -15,9 +15,9 @@
               "state": {
                 "file": "Research Questions.canvas",
                 "viewState": {
-                  "x": 1996.0783053629477,
-                  "y": 972.0022215777436,
-                  "zoom": -0.8257417898720895
+                  "x": 2720.719195516272,
+                  "y": -903.7099594560816,
+                  "zoom": 1
                 }
               },
               "icon": "lucide-layout-dashboard",
@@ -173,30 +173,31 @@
   },
   "active": "ba890b0f2b656a12",
   "lastOpenFiles": [
+    "Data/Driving/SingleQubitDriveLRU/_DATA_LOCKED",
+    "Data/Driving/SingleQubitDrive/_DATA_LOCKED",
+    "Data/Driving/SingleQubitDriveLRU/plot.png",
+    "Data/Driving/SingleQubitDriveLRU/data.jld2",
+    "Data/Driving/SingleQubitDriveLRU/code.jl",
+    "Data/Driving/SingleQubitDriveLRU",
+    "Data/Driving/SingleQubitDrive/plot.png",
+    "Data/Driving/SingleQubitDrive/data.jld2",
+    "Data/Driving/SingleQubitDrive/code.jl",
+    "Data/Driving/SingleQubitDrive",
+    "Data/Driving",
     "Data/Coupler/FLevelResonance/high_coupling/combined.png",
     "Research Questions.canvas",
+    "Marxer et al_2023_Long-distance transmon coupler with CZ gate fidelity above $99.pdf",
     "Data/Coupler/InitialTest/_DATA_LOCKED",
     "Data/Coupler/InitialTest/plot.png",
-    "Data/ErrorCorrection/_DATA_LOCKED",
     "LRU Effective Model Derivation.md",
-    "Marxer et al_2023_Long-distance transmon coupler with CZ gate fidelity above $99.pdf",
     "Data/Coupler/InitialTest/dis20NoCoupler.png",
     "Data/Coupler/InitialTest/dis20SlightTuning.png",
     "Project Path.canvas",
     "LRU With Tunable Coupler.md",
     "Data/Coupler/QubitMeanVsAnh/plot.png",
     "Data/Coupler/QubitMeanVsAnh/mean_population_vs_delta_U.png",
-    "Data/Coupler/QubitMeanVsAnh/_DATA_LOCKED",
     "Data/Coupler/QubitMeanVsAnh/QubitPopulationMean.png",
-    "Data/Coupler/QubitMeanVsAnh/data.jld2",
-    "Data/Coupler/QubitMeanVsAnh/code.jl",
-    "Data/Coupler/QubitMeanVsAnh",
-    "Data/Coupler/FLevelResonance/_DATA_LOCKED",
     "Data/Coupler/FLevelResonance/plot.png",
-    "Data/Coupler/FLevelResonance/low_coupling/combined.png",
-    "Data/Coupler/FLevelResonance/low_coupling/n2_exact.png",
-    "Data/Coupler/FLevelResonance/low_coupling/_DATA_LOCKED",
-    "Data/Coupler/FLevelResonance/low_coupling/data.jld2",
     "Todo.md"
   ]
 }

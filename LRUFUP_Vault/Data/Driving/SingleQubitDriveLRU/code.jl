@@ -21,10 +21,11 @@ function drive_hamiltonian(H, w, dt, drive_strength, op, cut_off_time)
     println(w)
 
     function Ht(state)
+        total_time[1] += dt
         t = total_time[1]
+        H .= H0
         if t < cut_off_time
-            t += dt
-            H .= H0 - drive_strength / 2 * cos(w * t) * op 
+            H .+= -drive_strength * cos(w * t) * op
         end
         return state
     end
@@ -33,8 +34,8 @@ end
 
 function initial_parameters()
     param = OrderedDict()
-    param[:dt] = 0.005
-    param[:t] = 100
+    param[:dt] = 0.0005
+    param[:t] = 50
     param[:d] = 3
     param[:L] = 3
     param[:state] = ValueInfo(productstate(param[:d], [0, 0, 0]), "|000>")
@@ -57,18 +58,18 @@ function f()
     dt = param[:dt]; t = param[:t]; k = param[:k]
     state = param[:state].val
 
-    op = singlesite_n(d, L, 1)
+    op = anhall(d, L)
     obs = (state) -> expval(state, op)
 
-    U = (0.2 * (2 * rand(3) .-1) .+ 1) * param[:U].val
+    U = (0.4 * (2 * rand(3) .-1) .+ 1) * param[:U].val
     w2 = (2 * param[:w1].val - U[1] + U[2]) / 2
     w3 = (2 * param[:w1].val - U[1] + U[3]) / 2
     w = [param[:w1].val, w2, w3]
 
-    H = bosehubbard(d, L; w, U, J = 1)
+    H = bosehubbard(d, L; w, U, J = 0)
 
     x_op = singlesite_a(d, L, 1) + singlesite_adag(d, L, 1)
-    effect! = drive_hamiltonian(H, param[:w1].val, dt, 1, x_op, 1)
+    effect! = drive_hamiltonian(H, 1 * param[:w1].val, dt, 2, x_op, 10^9)
     @time out = krylovevolve(state, H, dt, t, k, obs; effect!)
     y = out[1, :]
     push!(lines, LineInfo(0:dt:t, y, 1, "with drive"))

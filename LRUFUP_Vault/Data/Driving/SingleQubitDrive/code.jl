@@ -23,7 +23,7 @@ function drive_hamiltonian(H, dt, drive_strength, op, cut_off_time)
         t = total_time[1]
         if t < cut_off_time
             t += dt
-            H .= H0 - drive_strength * cos(t) * op 
+            H .= H0 - drive_strength * cos(t) * op
         end
         return state
     end
@@ -33,7 +33,7 @@ end
 function initial_parameters()
     param = OrderedDict()
     param[:dt] = 0.02
-    param[:t] = 50
+    param[:t] = 2
     param[:d] = 3
     param[:L] = 1
     s0 = complex(spzeros(param[:d]))
