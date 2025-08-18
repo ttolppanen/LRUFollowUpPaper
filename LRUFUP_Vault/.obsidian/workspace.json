@@ -13,15 +13,15 @@
             "state": {
               "type": "canvas",
               "state": {
-                "file": "Research Questions.canvas",
+                "file": "Project Path.canvas",
                 "viewState": {
-                  "x": 2720.719195516272,
-                  "y": -903.7099594560816,
-                  "zoom": 1
+                  "x": 3183.9862131717596,
+                  "y": 446.61541851869464,
+                  "zoom": -0.3731148557746186
                 }
               },
               "icon": "lucide-layout-dashboard",
-              "title": "Research Questions"
+              "title": "Project Path"
             }
           }
         ]
@@ -173,6 +173,7 @@
   },
   "active": "ba890b0f2b656a12",
   "lastOpenFiles": [
+    "Research Questions.canvas",
     "Data/Driving/SingleQubitDriveLRU/_DATA_LOCKED",
     "Data/Driving/SingleQubitDrive/_DATA_LOCKED",
     "Data/Driving/SingleQubitDriveLRU/plot.png",
@@ -185,9 +186,7 @@
     "Data/Driving/SingleQubitDrive",
     "Data/Driving",
     "Data/Coupler/FLevelResonance/high_coupling/combined.png",
-    "Research Questions.canvas",
     "Marxer et al_2023_Long-distance transmon coupler with CZ gate fidelity above $99.pdf",
-    "Data/Coupler/InitialTest/_DATA_LOCKED",
     "Data/Coupler/InitialTest/plot.png",
     "LRU Effective Model Derivation.md",
     "Data/Coupler/InitialTest/dis20NoCoupler.png",
