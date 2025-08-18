@@ -13,18 +13,31 @@
             "state": {
               "type": "canvas",
               "state": {
-                "file": "Project Path.canvas",
+                "file": "Research Questions.canvas",
                 "viewState": {
-                  "x": 3183.9862131717596,
-                  "y": 446.61541851869464,
-                  "zoom": -0.3731148557746186
+                  "x": 2817.8366320204054,
+                  "y": 1767.2932206931093,
+                  "zoom": 1
                 }
               },
               "icon": "lucide-layout-dashboard",
-              "title": "Project Path"
+              "title": "Research Questions"
+            }
+          },
+          {
+            "id": "8516fb01cdc414c0",
+            "type": "leaf",
+            "state": {
+              "type": "pdf",
+              "state": {
+                "file": "Marxer et al_2023_Long-distance transmon coupler with CZ gate fidelity above $99.pdf"
+              },
+              "icon": "lucide-file-text",
+              "title": "Marxer et al_2023_Long-distance transmon coupler with CZ gate fidelity above $99"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -171,13 +184,16 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "ba890b0f2b656a12",
+  "active": "8516fb01cdc414c0",
   "lastOpenFiles": [
-    "Research Questions.canvas",
-    "Data/Driving/SingleQubitDriveLRU/_DATA_LOCKED",
-    "Data/Driving/SingleQubitDrive/_DATA_LOCKED",
-    "Data/Driving/SingleQubitDriveLRU/plot.png",
     "Data/Driving/SingleQubitDriveLRU/data.jld2",
+    "Data/Driving/SingleQubitDriveLRU/_DATA_LOCKED",
+    "Data/Driving/SingleQubitDriveLRU/anh3.png",
+    "Data/Driving/SingleQubitDriveLRU/plot copy.png",
+    "Data/Driving/SingleQubitDrive/_DATA_LOCKED",
+    "Research Questions.canvas",
+    "Project Path.canvas",
+    "Data/Driving/SingleQubitDriveLRU/plot.png",
     "Data/Driving/SingleQubitDriveLRU/code.jl",
     "Data/Driving/SingleQubitDriveLRU",
     "Data/Driving/SingleQubitDrive/plot.png",
@@ -191,12 +207,9 @@
     "LRU Effective Model Derivation.md",
     "Data/Coupler/InitialTest/dis20NoCoupler.png",
     "Data/Coupler/InitialTest/dis20SlightTuning.png",
-    "Project Path.canvas",
     "LRU With Tunable Coupler.md",
     "Data/Coupler/QubitMeanVsAnh/plot.png",
     "Data/Coupler/QubitMeanVsAnh/mean_population_vs_delta_U.png",
-    "Data/Coupler/QubitMeanVsAnh/QubitPopulationMean.png",
-    "Data/Coupler/FLevelResonance/plot.png",
     "Todo.md"
   ]
 }

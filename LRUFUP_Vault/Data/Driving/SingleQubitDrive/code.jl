@@ -20,10 +20,11 @@ function drive_hamiltonian(H, dt, drive_strength, op, cut_off_time)
     H0 = deepcopy(H)
 
     function Ht(state)
+        total_time[1] += dt
         t = total_time[1]
+        H .= H0
         if t < cut_off_time
-            t += dt
-            H .= H0 - drive_strength * cos(t) * op
+            H .+= -drive_strength * cos(t) * op
         end
         return state
     end
@@ -33,7 +34,7 @@ end
 function initial_parameters()
     param = OrderedDict()
     param[:dt] = 0.02
-    param[:t] = 2
+    param[:t] = 10
     param[:d] = 3
     param[:L] = 1
     s0 = complex(spzeros(param[:d]))
@@ -65,7 +66,7 @@ function f()
     H = bosehubbard(d, L; w = param[:w].val, U = param[:U].val)
 
     x_op = aop(d) + adagop(d)
-    effect! = drive_hamiltonian(H, dt, 1, x_op, 1)
+    effect! = drive_hamiltonian(H, dt, 1, x_op, 99)
     @time out = krylovevolve(state, H, dt, t, k, obs; effect!)
     y = out[1, :]
     push!(lines, LineInfo(0:dt:t, y, 1, "with drive"))
