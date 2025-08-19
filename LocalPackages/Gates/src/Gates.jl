@@ -1,0 +1,53 @@
+module Gates
+
+using Integrals
+
+export gaussian_pulse
+export drive_hamiltonian
+
+
+function gaussian_pulse(gate_time, area)
+    f(t, p) = exp(-(t - gate_time / 2)^2 / (2 * gate_time^2)) - exp(-(gate_time / 2)^2 / (2 * gate_time^2))
+    prob = IntegralProblem(f, (0.0, gate_time))
+    sol = solve(prob, QuadGKJL())
+    pulse_area = area / sol.u
+
+    function pulse(t)
+        if t < 0 || t > gate_time
+            return 0.0
+        else
+            return pulse_area * f(t, 0)
+        end
+    end
+    return pulse
+end
+
+function drive_hamiltonian(w_d, gate_time, area, drive_op, H, dt; repeat_time = -1, use_rwa = false)
+    total_time = [0.0]
+    H0 = deepcopy(H)
+
+    pulse = gaussian_pulse(gate_time, area)
+    
+    function Ht(state)
+        total_time[1] += dt
+        if repeat_time >= 0.0
+            t = total_time[1] % (gate_time + repeat_time) 
+        else
+            t = total_time[1]
+        end
+
+        H .= H0
+        pulse_strength = pulse(t)
+        if pulse_strength > 0.0
+            if use_rwa
+                H .+= -pulse_strength / 2 * drive_op
+            else
+                H .+= -pulse_strength * cos(w_d * t) * drive_op
+            end
+        end
+        return state
+    end
+    return Ht
+end
+
+end # module Gates

@@ -6,6 +6,7 @@ using PlotAndSave
 using QuantumTimeEvolution
 using OrderedCollections
 using SparseArrays
+using Gates
 
 function traj_mean(result)
     out = zeros(size(result[1]))
@@ -15,26 +16,9 @@ function traj_mean(result)
     return out ./ length(result)
 end
 
-function drive_hamiltonian(H, w, dt, drive_strength, op, cut_off_time)
-    total_time = [0.0]
-    H0 = deepcopy(H)
-    
-    function Ht(state)
-        total_time[1] += dt
-        t = total_time[1]
-        H .= H0
-        if t < cut_off_time
-            H .+= -drive_strength * cos(w * t) * op
-        end
-        return state
-    end
-    return Ht
-end
-
 function initial_parameters()
     param = OrderedDict()
-    param[:dt] = 0.000025
-    param[:t] = 400 * 1.25
+    param[:dt] = 0.00025
     param[:d] = 3
     param[:L] = 3
     param[:state] = ValueInfo(productstate(param[:d], [0, 0, 0]), "|000>")
@@ -43,7 +27,12 @@ function initial_parameters()
     param[:H] = "BH"
     param[:J] = ValueInfo(5, "5MHz")
     param[:w1] = ValueInfo(4000 / param[:J].val, "4GHz")
-    param[:U] = ValueInfo(200 / param[:J].val, "Mean 200MHz")
+    param[:U] = ValueInfo(150 / param[:J].val, "Mean 150MHz")
+    t = 10
+    param[:t] = ValueInfo(t * 2 * π * param[:J].val, "$(t)μs")
+    param[:gate_time] = ValueInfo(10 * 10^(-3) * 2 * π * param[:J].val, "10ns")
+    param[:gate_area] = ValueInfo(π, "π")
+    param[:gate_repeat_time] = ValueInfo(0.5 * 2 * π * param[:J].val, "0.5μs")
     param[:diss_rate] = 0.04
     return param
 end
@@ -55,11 +44,17 @@ function f()
 
     lines = []
     d = param[:d]; L = param[:L]
-    dt = param[:dt]; t = param[:t]; k = param[:k]
+    dt = param[:dt]; t = param[:t].val; k = param[:k]
     state = param[:state].val
 
-    op = anhall(d, L)
-    obs = (state) -> expval(state, op)
+    anh_op = anhall(d, L)
+    anh_1_op = anhall(d, L; sites = [1])
+    anh_3_op = anhall(d, L; sites = [3])
+    n1_op = singlesite_n(d, L, 1)
+    obs = [(state) -> expval(state, anh_op),
+           (state) -> expval(state, anh_1_op),
+           (state) -> expval(state, anh_3_op),
+           (state) -> expval(state, n1_op)]
 
     U = (0.4 * (2 * rand(3) .-1) .+ 1) * param[:U].val
     U = [param[:U].val, U[2], U[3]]
@@ -73,13 +68,19 @@ function f()
     H = bosehubbard(d, L; w, U, J = 1) .+ H_dd
 
     x_op = singlesite_a(d, L, 1) + singlesite_adag(d, L, 1)
-    effect! = drive_hamiltonian(H, 1.00 * param[:w1].val, dt, 20, x_op, 1.8) # 1.65
-    @time out = krylovevolve(state, H, diss_op, dt, t, k, obs; effect!)
-    y = out[1, :]
-    push!(lines, LineInfo(0:dt:t, y, 1, "with drive"))
+    wd = param[:w1].val
+    gt = param[:gate_time].val
+    ga = param[:gate_area].val
+    effect! = drive_hamiltonian(wd, gt, ga, x_op, H, dt; repeat_time = param[:gate_repeat_time].val)
+    
+    @time out = krylovevolve(state, H, diss_op, dt, t, k, obs...; effect!)
+    push!(lines, LineInfo(0:dt:t, out[1, :], 1, "anh"))
+    push!(lines, LineInfo(0:dt:t, out[2, :], 1, "anh_1"))
+    push!(lines, LineInfo(0:dt:t, out[3, :], 1, "anh_3"))
+    # push!(lines, LineInfo(0:dt:t, out[4, :], 1, "n1"))
 
     path = joinpath(@__DIR__)
-    makeplot(path, lines...; xlabel = "t", ylabel = "n1", copy_code = false, param...)
+    makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
     # addtrajectories(path, line)
 end
 

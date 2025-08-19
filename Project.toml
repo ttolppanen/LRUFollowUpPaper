@@ -1,4 +1,5 @@
 [deps]
+Gates = "148e8d74-d979-4425-a986-6ada8bd19acf"
 ITensors = "9136182c-28ba-11e9-034c-db9fb085ebd5"
 OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
 PlotAndSave = "17f9de49-761f-4084-9189-3237cc0765fb"
