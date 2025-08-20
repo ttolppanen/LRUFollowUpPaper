@@ -45,7 +45,7 @@ function f()
     lines = []
     d = param[:d]; L = param[:L]
     dt = param[:dt]; t = param[:t].val; k = param[:k]
-    wd = param[:w1].val # drive frequency
+    wd = 1.002 * param[:w1].val # drive frequency
     state = param[:state].val
 
     anh_op = anhall(d, L)
