@@ -30,8 +30,9 @@
 		{"id":"93e3489cec43a642","type":"file","file":"Data/Driving/DriveCouplerLRU/f_state_no_diss.png","x":3520,"y":64,"width":400,"height":267},
 		{"id":"92df31c20770439a","type":"text","text":"Gates work better with the tunable coupler, and we get good stack oscillation.","x":3950,"y":-220,"width":250,"height":121},
 		{"id":"5f6c9ba1c836702a","type":"file","file":"Data/Driving/DriveCouplerLRU/f_state_with_diss.png","x":3520,"y":351,"width":400,"height":267},
-		{"id":"c99b729c7cdc1512","x":5377,"y":114,"width":250,"height":119,"color":"4","type":"text","text":"Tuanble coupler LRU seems to perform very well!"},
-		{"id":"8461ec77f81cc9bb","x":4280,"y":461,"width":270,"height":157,"type":"text","text":"Note that here the better drive frequency was used in all of the plots (in previous segment only for single trajectories)"}
+		{"id":"c99b729c7cdc1512","type":"text","text":"Tuanble coupler LRU seems to perform very well!","x":5377,"y":114,"width":250,"height":119,"color":"4"},
+		{"id":"8461ec77f81cc9bb","type":"text","text":"Note that here the better drive frequency was used in all of the plots (in previous segment only for single trajectories)","x":4280,"y":461,"width":270,"height":157},
+		{"id":"20856a2d26caa53f","x":4640,"y":461,"width":312,"height":134,"type":"text","text":"Some times we can induce the leakage to split in to a stack, which then causes a lot of problems on the qubit."}
 	],
 	"edges":[
 		{"id":"960a96098bc785f8","fromNode":"5c86774d7df7ac41","fromSide":"right","toNode":"ebad29d1dce194f6","toSide":"left"},

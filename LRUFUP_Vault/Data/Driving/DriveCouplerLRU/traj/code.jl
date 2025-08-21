@@ -54,8 +54,8 @@ function initial_parameters()
     param[:t] = ValueInfo(t * 2 * π * param[:J12].val, "$(t)μs")
     param[:gate_time] = ValueInfo(10 * 10^(-3) * 2 * π * param[:J12].val, "10ns")
     param[:gate_area] = ValueInfo(π, "π")
-    param[:gate_repeat_time] = ValueInfo(1 * 2 * π * param[:J12].val, "1μs")
-    param[:diss_rate] = 0.0 #4
+    param[:gate_repeat_time] = ValueInfo(0 * 10^(-3) * 2 * π * param[:J12].val, "0ns")
+    param[:diss_rate] = 0.4
 
     param[:J12] = ValueInfo(1, "5MHz")
     param[:traj] = 1000
@@ -85,11 +85,11 @@ function f()
     gt = param[:gate_time].val
     ga = param[:gate_area].val
     function time_evolution()
-        H = coupler_H(param)
-        # H = coupler_H(param) .+ H_dd
+        # H = coupler_H(param)
+        H = coupler_H(param) .+ H_dd
 
         effect! = drive_hamiltonian(wd, gt, ga, x_op, H, dt; repeat_time = param[:gate_repeat_time].val, use_rwa = true)
-        krylovevolve(state, H, dt, t, k, obs...; effect!) 
+        krylovevolve(state, H, diss_op, dt, t, k, obs...; effect!) 
     end
     
     @time out = solvetrajectories(time_evolution, param[:traj]; paral = :threads)
