@@ -28,7 +28,7 @@ function coupler_H(w, U, g_c, g_direct, w_c, U_c)
     # dU = [U, U + 2.05 * coupler_coefficient, U]
     dw = [w, w_c, w]
     dU = [U, -U_c, U]
-    return bosehubbard(3, 3, [(1, 2, -g_c), (2, 3, g_c), (1, 3, 1)]; w = dw, U = dU)
+    return bosehubbard(3, 3, [(1, 2, -g_c), (2, 3, g_c), (1, 3, g_direct)]; w = dw, U = dU)
 end
 function coupler_H(w, w_drive, U, g_c, g_direct, w_c, U_c)
     coupler_coefficient = g_c^2 / g_direct - 1 # I dont know why there is -1
@@ -37,7 +37,7 @@ function coupler_H(w, w_drive, U, g_c, g_direct, w_c, U_c)
     dw = [w, w_c, w]
     dU = [U, -U_c, U]
     dw .-= w_drive
-    return bosehubbard(3, 3, [(1, 2, -g_c), (2, 3, g_c), (1, 3, 1)]; w = dw, U = dU)
+    return bosehubbard(3, 3, [(1, 2, -g_c), (2, 3, g_c), (1, 3, g_direct)]; w = dw, U = dU)
 end
 
 function initial_parameters()
@@ -52,15 +52,15 @@ function initial_parameters()
     param[:J12] = ValueInfo(5, "5MHz")
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
     param[:w] = ValueInfo(4000 / param[:J12].val, "4GHz")
-    param[:wd] = ValueInfo(4014.2 / param[:J12].val, "4.02GHz")
+    param[:wd] = ValueInfo(4020 / param[:J12].val, "4.02GHz")
     param[:wc] = ValueInfo(3505 / param[:J12].val, "3.505GHz")
     param[:U] = ValueInfo(250 / param[:J12].val, "250MHz")
     param[:Uc] = ValueInfo(732 / param[:J12].val, "740MHz")
-    t = 0.05
+    t = 10
     param[:t] = ValueInfo(t * 2 * π * param[:J12].val, "$(t)μs")
-    param[:gate_time] = ValueInfo(20 * 10^(-3) * 2 * π * param[:J12].val, "20ns")
+    param[:gate_time] = ValueInfo(10 * 10^(-3) * 2 * π * param[:J12].val, "20ns")
     param[:gate_area] = ValueInfo(π, "π")
-    param[:gate_repeat_time] = ValueInfo(0.1 * 2 * π * param[:J12].val, "1μs")
+    param[:gate_repeat_time] = ValueInfo(0.00 * 2 * π * param[:J12].val, "1μs")
     param[:diss_rate] = 0.4
 
     param[:J12] = ValueInfo(1, "5MHz")
@@ -103,7 +103,7 @@ function f()
     push!(lines, LineInfo(0:dt:t, out[1, :], 1, "anh"))
     push!(lines, LineInfo(0:dt:t, out[2, :], 1, "anh_1"))
     push!(lines, LineInfo(0:dt:t, out[3, :], 1, "anh_3"))
-    # push!(lines, LineInfo(0:dt:t, out[4, :], 1, "n1"))
+    push!(lines, LineInfo(0:dt:t, out[4, :], 1, "n1"))
 
     path = joinpath(@__DIR__)
     makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
