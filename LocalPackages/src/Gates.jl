@@ -2,6 +2,7 @@ using Integrals
 
 export gaussian_pulse
 export drive_hamiltonian
+export rand_drive_hamiltonian
 
 
 function gaussian_pulse(gate_time, area)
@@ -33,6 +34,38 @@ function drive_hamiltonian(w_d, gate_time, area, drive_op, H, dt; repeat_time = 
         else
             t = total_time[1]
         end
+
+        H .= H0
+        pulse_strength = pulse(t)
+        if pulse_strength > 0.0
+            if use_rwa
+                H .+= -pulse_strength / 2 * drive_op
+            else
+                H .+= -pulse_strength * cos(w_d * t) * drive_op
+            end
+        end
+        return state
+    end
+    return Ht
+end
+
+function rand_drive_hamiltonian(w_d, gate_time, area, I_op, Q_op, H, dt; repeat_time = -1, use_rwa = false)
+    total_time = [0.0]
+    H0 = deepcopy(H)
+    drive_op = deepcopy(I_op) # just reserving memory
+
+    pulse = gaussian_pulse(gate_time, area)
+    
+    function Ht(state)
+        total_time[1] += dt
+        if repeat_time >= 0.0
+            if total_time[1] >= gate_time + repeat_time
+                rand_phase = 2 * π * rand()
+                drive_op .= cos(rand_phase) * I_op + sin(rand_phase) * Q_op
+                total_time[1] -= gate_time + repeat_time
+            end
+        end
+        t = total_time[1]
 
         H .= H0
         pulse_strength = pulse(t)
