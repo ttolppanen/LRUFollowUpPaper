@@ -1,5 +1,5 @@
-name = "Gates"
-uuid = "148e8d74-d979-4425-a986-6ada8bd19acf"
+name = "LocalPackages"
+uuid = "fe12fbbb-7192-426e-93dd-edb6a27ce985"
 authors = ["ttolppanen <taneli.tolppanen@gmail.com>"]
 version = "0.1.0"
 

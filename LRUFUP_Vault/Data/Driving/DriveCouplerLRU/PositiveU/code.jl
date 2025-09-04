@@ -6,7 +6,7 @@ using PlotAndSave
 using QuantumTimeEvolution
 using OrderedCollections
 using SparseArrays
-using Gates
+using LocalPackages
 
 function traj_mean(result)
     out = zeros(size(result[1]))

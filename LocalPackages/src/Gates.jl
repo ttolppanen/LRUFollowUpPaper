@@ -1,5 +1,3 @@
-module Gates
-
 using Integrals
 
 export gaussian_pulse
@@ -49,5 +47,3 @@ function drive_hamiltonian(w_d, gate_time, area, drive_op, H, dt; repeat_time = 
     end
     return Ht
 end
-
-end # module Gates

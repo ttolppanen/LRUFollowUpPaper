@@ -2,7 +2,7 @@
 
 julia_version = "1.10.5"
 manifest_format = "2.0"
-project_hash = "19de4eb0309dae46a05e43b7be9385c64d566a87"
+project_hash = "6bb0cb97bc4d37fe5598a1e03651ac15414a34d9"
 
 [[deps.ADTypes]]
 git-tree-sha1 = "60665b326b75db6517939d0e1875850bc4a54368"
@@ -561,12 +561,6 @@ git-tree-sha1 = "98fc192b4e4b938775ecd276ce88f539bcec358e"
 uuid = "d2c73de3-f751-5644-a686-071e5b155ba9"
 version = "0.73.14+0"
 
-[[deps.Gates]]
-deps = ["Integrals"]
-path = "LocalPackages/Gates"
-uuid = "148e8d74-d979-4425-a986-6ada8bd19acf"
-version = "0.1.0"
-
 [[deps.GenericSchur]]
 deps = ["LinearAlgebra", "Printf"]
 git-tree-sha1 = "f88e0ba1f6b42121a7c1dfe93a9687d8e164c91b"
@@ -914,6 +908,12 @@ weakdeps = ["ChainRulesCore", "SparseArrays", "Statistics"]
     LinearMapsChainRulesCoreExt = "ChainRulesCore"
     LinearMapsSparseArraysExt = "SparseArrays"
     LinearMapsStatisticsExt = "Statistics"
+
+[[deps.LocalPackages]]
+deps = ["Integrals"]
+path = "LocalPackages"
+uuid = "fe12fbbb-7192-426e-93dd-edb6a27ce985"
+version = "0.1.0"
 
 [[deps.LogExpFunctions]]
 deps = ["DocStringExtensions", "IrrationalConstants", "LinearAlgebra"]
