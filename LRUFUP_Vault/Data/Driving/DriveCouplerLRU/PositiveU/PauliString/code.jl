@@ -57,7 +57,6 @@ function initial_parameters()
     param[:U] = ValueInfo(250 / param[:J12].val, "250MHz")
     param[:Uc] = ValueInfo(732 / param[:J12].val, "732MHz")
     param[:gate_time] = ValueInfo(20 * 10^(-3) * 2 * π * param[:J12].val, "20ns")
-    param[:traj] = 2
 
     param[:J12] = ValueInfo(1, "5MHz")
     return param
@@ -65,6 +64,7 @@ end
 
 function f()
     param = initial_parameters()
+    length(ARGS) > 0 ? traj = parse(Int, ARGS[1]) : traj = 1
     # -----------
     # -----------
 
@@ -105,10 +105,10 @@ function f()
                 krylovevolve(initial_state, H, diss_op, dt, t, k, obs...; effect!, save_only_last = true)
             end
             
-            r_out = solvetrajectories(time_evolution, param[:traj]; paral = :threads)
+            r_out = solvetrajectories(time_evolution, traj; paral = :threads)
             push!(res, traj_mean(r_out)[1])
         end
-        push!(lines, LineInfo(1:max_n, res, param[:traj], "diss/J = $diss_rate"))
+        push!(lines, LineInfo(1:max_n, res, traj, "diss/J = $diss_rate"))
     end
 
     path = joinpath(@__DIR__)
