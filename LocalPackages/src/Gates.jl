@@ -3,6 +3,15 @@ using Integrals
 export gaussian_pulse
 export drive_hamiltonian
 export rand_drive_hamiltonian
+export pauli_string_drive
+
+
+mutable struct PauliPulseInfo
+    time::Float64
+    phase::Float64
+    pauli_string::Vector{Symbol}
+    i::Int # index of the pauli string
+end
 
 
 function gaussian_pulse(gate_time, area)
@@ -79,4 +88,57 @@ function rand_drive_hamiltonian(w_d, gate_time, area, I_op, Q_op, H, dt; repeat_
         return state
     end
     return Ht
+end
+
+# area is assumed to be π, and also the inverse of the string is added to the end
+function pauli_string_drive(p_string, w_d, gate_time, I_op, Q_op, H, dt; use_rwa = false)
+    H0 = deepcopy(H)
+    drive_op = deepcopy(I_op) # just reserving memory
+    pulse_info = PauliPulseInfo(0.0, 0.0, p_string, 1)
+    drive_op_from_pauli_gate!(drive_op, I_op, Q_op, pulse_info)
+    pulse_envelope = gaussian_pulse(gate_time, π)
+
+    function Ht(state)
+        pulse_info.time += dt
+        if pulse_info.time >= gate_time
+            drive_op_from_pauli_gate!(drive_op, I_op, Q_op, pulse_info)
+            pulse_info.time -= gate_time
+        end
+        t = pulse_info.time
+        H .= H0
+        
+        if pulse_info.pauli_string[pulse_info.i - 1] == :I
+            return state
+        end
+
+        pulse_strength = pulse_envelope(t)
+        if pulse_strength > 0.0
+            if use_rwa
+                H .+= -pulse_strength / 2 * drive_op
+            else
+                H .+= -pulse_strength * cos(w_d * t) * drive_op
+            end
+        end
+        return state
+    end
+    return Ht
+end
+
+function drive_op_from_pauli_gate!(drive_op, I_op, Q_op, pulse_info)
+    if pulse_info.i > length(pulse_info.pauli_string)
+        return
+    end
+    gate = pulse_info.pauli_string[pulse_info.i]
+    pulse_info.i += 1
+    if gate == :I
+    elseif gate == :X
+        drive_op .= cos(0.0 + pulse_info.phase) * I_op + sin(0.0 + pulse_info.phase) * Q_op
+    elseif gate == :Y
+        drive_op .= cos(π/2 + pulse_info.phase) * I_op + sin(π/2 + pulse_info.phase) * Q_op
+    elseif gate == :Z
+        pulse_info.phase = mod(pulse_info.phase + π, 2π)
+        drive_op_from_pauli_gate!(drive_op, I_op, Q_op, pulse_info)
+    else
+        error("Invalid Pauli gate: $gate")
+    end
 end

@@ -910,7 +910,7 @@ weakdeps = ["ChainRulesCore", "SparseArrays", "Statistics"]
     LinearMapsStatisticsExt = "Statistics"
 
 [[deps.LocalPackages]]
-deps = ["Integrals"]
+deps = ["Integrals", "Random"]
 path = "LocalPackages"
 uuid = "fe12fbbb-7192-426e-93dd-edb6a27ce985"
 version = "0.1.0"
