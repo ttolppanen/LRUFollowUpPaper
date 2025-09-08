@@ -91,7 +91,7 @@ function f()
         H_dd = -1.0im / 2 * diss_op[1]' * diss_op[1]
         H0 = coupler_H(param) .+ H_dd
         res = []
-        max_n = 100
+        max_n = 200
         for n in 1:max_n
             function time_evolution()
                 H = deepcopy(H0)
@@ -112,8 +112,8 @@ function f()
     end
 
     path = joinpath(@__DIR__)
-    makeplot(path, lines...; xlabel = "gates", ylabel = "|<psi_0||psi>|^2", copy_code = false, param...)
-    # addtrajectories(path, line)
+    # makeplot(path, lines...; xlabel = "gates", ylabel = "|<psi_0||psi>|^2", copy_code = false, param...)
+    addtrajectories(path, lines...)
 end
 
 
