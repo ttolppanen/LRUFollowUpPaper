@@ -1363,7 +1363,7 @@ version = "3.40.0"
     blis_jll = "6136c539-28a5-5bf0-87cc-b183200dce32"
 
 [[deps.LocalPackages]]
-deps = ["Integrals", "Random"]
+deps = ["Integrals", "QuantumOperators", "QuantumToolbox", "Random"]
 path = "LocalPackages"
 uuid = "fe12fbbb-7192-426e-93dd-edb6a27ce985"
 version = "0.1.0"

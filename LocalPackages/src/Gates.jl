@@ -1,9 +1,12 @@
-using Integrals
+# using Integrals
 
 export gaussian_pulse
 export drive_hamiltonian
 export rand_drive_hamiltonian
 export pauli_string_drive
+export qt_x_gate_to_QobjEvo
+export qt_y_gate_to_QobjEvo
+export qt_drive_op
 
 
 mutable struct PauliPulseInfo
@@ -141,4 +144,25 @@ function drive_op_from_pauli_gate!(drive_op, I_op, Q_op, pulse_info)
     else
         error("Invalid Pauli gate: $gate")
     end
+end
+
+#     elseif gate == :Z
+#         accumulated_phase = mod(pulse_info.phase + π / 2, 2π)
+# test for dynamic dispatch stuff
+function qt_x_gate_to_QobjEvo(accumulated_phase, I_op::QuantumObject, Q_op::QuantumObject, pi_pulse)
+    return QobjEvo(cos(0.0 + accumulated_phase) * I_op + sin(0.0 + accumulated_phase) * Q_op, (p, t) -> pi_pulse(t))
+end
+
+function qt_y_gate_to_QobjEvo(accumulated_phase, I_op::QuantumObject, Q_op::QuantumObject, pi_pulse)
+    return QobjEvo(cos(π/2 + accumulated_phase) * I_op + sin(π/2 + accumulated_phase) * Q_op, (p, t) -> pi_pulse(t))
+end
+
+function qt_drive_op(d, L; rwa = false)
+    I_op = qt_single_site_op(d, L, destroy(d), 1) + qt_single_site_op(d, L, create(d), 1)
+    Q_op = im * (-qt_single_site_op(d, L, destroy(d), 1) + qt_single_site_op(d, L, create(d), 1))
+    if rwa
+        I_op = I_op / 2
+        Q_op = Q_op / 2
+    end
+    return I_op, Q_op
 end

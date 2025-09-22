@@ -9,8 +9,8 @@ function f()
         basis(2, 0) * basis(2, 1)'
     ]
     tlist = LinRange(0, 10, 100)
-    sol = sesolve(H, ψ0, tlist; e_ops = e_ops, progress_bar = Val(false))
-    print(sol)
+    sol = sesolve(H, ψ0, tlist; saveat=[tlist[end]], progress_bar = Val(false))
+    print(sol.states[1])
 end
 
 f()

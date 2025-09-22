@@ -1,4 +1,4 @@
-using Random
+# using Random
 
 const PAULI_OPS = [:I, :X, :Y, :Z]
 
@@ -7,6 +7,7 @@ export pauli_string_inverse
 export multiply_pauli_gate
 export simulation_time
 export rb_pauli_string
+export pauli_string_length_not_z
 
 
 function pauli_string(n)
@@ -56,6 +57,16 @@ function simulation_time(pauli_string, gate_time)
         end
     end
     return t
+end
+
+function pauli_string_length_not_z(pauli_string)
+    count = 0
+    for gate in pauli_string
+        if gate != :Z
+            count += 1
+        end
+    end
+    return count
 end
 
 function rb_pauli_string(n)
