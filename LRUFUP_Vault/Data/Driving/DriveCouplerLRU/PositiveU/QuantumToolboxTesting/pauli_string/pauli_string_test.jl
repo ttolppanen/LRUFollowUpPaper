@@ -44,6 +44,7 @@ end
 
 function f()
     param = initial_parameters()
+    traj = 200
     # -----------
     # -----------
 
@@ -66,32 +67,34 @@ function f()
     N_MAX = 100
     out = []
     for n in 1:N_MAX
-        pauli_string = rb_pauli_string(n)
-        accumulated_phase = 0.0
-        state = param[:state].val
-        for p_op in pauli_string
-            if p_op == :I
-                Ht = H
-            elseif p_op == :X
-                Ht = H + qt_x_gate_to_QobjEvo(accumulated_phase, I_op, Q_op, pulse)
-            elseif p_op == :Y
-                Ht = H + qt_y_gate_to_QobjEvo(accumulated_phase, I_op, Q_op, pulse)
-            elseif p_op == :Z
-                accumulated_phase += π / 2
-                continue
-            else
-                error("Unknown pauli string")    
-            end
+        function time_evolution()
+            pauli_string = rb_pauli_string(n)
+            accumulated_phase = 0.0
+            state = deepcopy(param[:state].val)
+            for p_op in pauli_string
+                if p_op == :I
+                    Ht = H
+                elseif p_op == :X
+                    Ht = H + qt_x_gate_to_QobjEvo(accumulated_phase, I_op, Q_op, pulse)
+                elseif p_op == :Y
+                    Ht = H + qt_y_gate_to_QobjEvo(accumulated_phase, I_op, Q_op, pulse)
+                elseif p_op == :Z
+                    accumulated_phase += π / 2
+                    continue
+                end
 
-            t = param[:gate_time].val + param[:gate_repeat_time].val
-            t_list = LinRange(0, t, param[:t_points])
-            res = mesolve(Ht, state, t_list, c_ops; saveat=[t_list[end]], progress_bar = Val(false))
-            state = res.states[1]
+                t = param[:gate_time].val + param[:gate_repeat_time].val
+                t_list = LinRange(0, t, param[:t_points])
+                res = mesolve(Ht, state, t_list, c_ops; saveat=[t_list[end]], progress_bar = Val(false))
+                state = res.states[1]
+            end
+            return real(expect(proj_1, state))
         end
-        push!(out, real(expect(proj_1, state)))
+        r_out = solvetrajectories(time_evolution, traj; paral = :threads)
+        push!(out, traj_mean(r_out))
     end
 
-    push!(lines, LineInfo(1:length(out), out, 1, "proj_1 -> |0>"))
+    push!(lines, LineInfo(1:length(out), out, traj, "proj -> |0>"))
 
     path = joinpath(@__DIR__)
     makeplot(path, lines...; xlabel = "i", ylabel = "", copy_code = false, param...)
