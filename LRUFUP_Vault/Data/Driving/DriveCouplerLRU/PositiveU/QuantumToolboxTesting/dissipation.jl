@@ -32,11 +32,11 @@ function initial_parameters()
     param[:w] = ValueInfo(4000 / param[:J12].val, "4GHz")
     param[:wd] = ValueInfo(4009.1 / param[:J12].val, "4.0091GHz")
     param[:wc] = ValueInfo(3505 / param[:J12].val, "3.505GHz")
-    param[:U] = ValueInfo(250 / param[:J12].val, "250MHz")
-    param[:Uc] = ValueInfo(720 / param[:J12].val, "720MHz")
+    param[:U] = ValueInfo(300 / param[:J12].val, "300MHz")
+    param[:Uc] = ValueInfo(690 / param[:J12].val, "690MHz")
     t = 0.2
     param[:t] = ValueInfo(t * 2 * π * param[:J12].val, "$(t)μs")
-    param[:gate_time] = ValueInfo(20 * 10^(-3) * 2 * π * param[:J12].val, "20ns")
+    param[:gate_time] = ValueInfo(14 * 10^(-3) * 2 * π * param[:J12].val, "14ns")
     param[:gate_area] = ValueInfo(π, "π")
     param[:gate_repeat_time] = ValueInfo(0.01 * 2 * π * param[:J12].val, "1μs")
     param[:diss_rate] = 3.5
@@ -66,7 +66,7 @@ function f()
     drive_op = qt_single_site_op(d, L, destroy(d), 1) + qt_single_site_op(d, L, create(d), 1)
     drive_op = drive_op / 2
     pulse = gaussian_pulse(param[:gate_time].val, π)
-    Ht = H + QobjEvo(drive_op, (p, t) -> pulse(t))
+    Ht = H + + QobjEvo(drive_op, (p, t) -> pulse(t))
 
     t_list = LinRange(0, param[:t].val, param[:t_points])
     out = mesolve(Ht, state, t_list, c_ops, e_ops = e_ops)

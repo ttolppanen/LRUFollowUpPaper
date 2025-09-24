@@ -1,11 +1,13 @@
 # using Integrals
 
 export gaussian_pulse
+export drag_pulses
 export drive_hamiltonian
 export rand_drive_hamiltonian
 export pauli_string_drive
 export qt_x_gate_to_QobjEvo
 export qt_y_gate_to_QobjEvo
+export qt_drag_gate_to_QobjEvo
 export qt_drive_op
 
 
@@ -31,6 +33,12 @@ function gaussian_pulse(gate_time, area)
         end
     end
     return pulse
+end
+
+function drag_pulses(gate_time, area, lambda, delta)
+    g_pulse = gaussian_pulse(gate_time, area)
+    dg_pulse(t) = -(lambda / delta) * (t - gate_time / 2) / (gate_time^2) * g_pulse(t)
+    return g_pulse, dg_pulse
 end
 
 function drive_hamiltonian(w_d, gate_time, area, drive_op, H, dt; repeat_time = -1, use_rwa = false)
@@ -155,6 +163,12 @@ end
 
 function qt_y_gate_to_QobjEvo(accumulated_phase, I_op::QuantumObject, Q_op::QuantumObject, pi_pulse)
     return QobjEvo(cos(π/2 + accumulated_phase) * I_op + sin(π/2 + accumulated_phase) * Q_op, (p, t) -> pi_pulse(t))
+end
+
+function qt_drag_gate_to_QobjEvo(phase, I_op::QuantumObject, Q_op::QuantumObject, pi_pulse, pi_dg_pulse)
+    gaussian_drive = QobjEvo(cos(phase) * I_op + sin(phase) * Q_op, (p, t) -> pi_pulse(t))
+    drag_drive = QobjEvo(-sin(phase) * I_op + cos(phase) * Q_op, (p, t) -> pi_dg_pulse(t)) # minus here might not be right?
+    return gaussian_drive, drag_drive
 end
 
 function qt_drive_op(d, L; rwa = false)
