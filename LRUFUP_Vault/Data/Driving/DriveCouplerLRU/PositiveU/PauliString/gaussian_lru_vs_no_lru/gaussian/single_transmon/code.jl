@@ -48,7 +48,7 @@ function f()
     lines = []
     d = param[:d]; L = param[:L]
 
-    proj_1 = qeye(d) - qt_anh_op(d) / 2
+    proj_1 = proj(basis(d, 0))
 
     w = param[:w].val - param[:wd].val
     H = qt_bosehubbard(d, L; w, U = param[:U].val, J = 0.0)
@@ -86,7 +86,7 @@ function f()
         push!(out, traj_mean(r_out))
     end
 
-    push!(lines, LineInfo(1:length(out), out, traj, "|2> population"))
+    push!(lines, LineInfo(1:length(out), out, traj, "proj -> 0"))
 
     path = joinpath(@__DIR__)
     makeplot(path, lines...; xlabel = "i", ylabel = "", copy_code = false, param...)

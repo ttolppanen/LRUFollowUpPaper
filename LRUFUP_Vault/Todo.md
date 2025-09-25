@@ -1,4 +1,0 @@
-- [ ] Find LRU code with dissipation
-- [ ] Setup Hamiltonian, and run simulation with normal operators
-- [ ] Calculate new basis Hamiltonian, and run the same simulation
-- [ ] Compare results

@@ -30,7 +30,7 @@ function initial_parameters()
     param[:J12] = ValueInfo(5, "5MHz")
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
     param[:w] = ValueInfo(4000 / param[:J12].val, "4GHz")
-    param[:wd] = ValueInfo(4009.1 / param[:J12].val, "4.0091GHz")
+    # param[:wd] = ValueInfo(4009.1 / param[:J12].val, "4.0091GHz")
     param[:wc] = ValueInfo(3505 / param[:J12].val, "3.505GHz")
     param[:U] = ValueInfo(300 / param[:J12].val, "300MHz")
     param[:Uc] = ValueInfo(690 / param[:J12].val, "690MHz")
@@ -44,7 +44,8 @@ end
 
 function f()
     param = initial_parameters()
-    traj = 100
+    drive_frequency_range = LinRange(8.5, 9.5, 50) ./ 5 .+ param[:w].val
+    traj = 500
     # -----------
     # -----------
 
@@ -55,19 +56,18 @@ function f()
 
     c_ops = [sqrt(param[:diss_rate]) * qt_single_site_op(d, L, destroy(d), L)]
 
-    w = [param[:w].val, param[:wc].val, param[:w].val] .- param[:wd].val
-    U = [param[:U].val, -param[:Uc].val, param[:U].val]
-    g = [param[:Jc].val, param[:Jc].val, param[:J12].val]
-    H = qt_tunable_coupler(w, U, g)
-
     I_op, Q_op = qt_drive_op(d, L; rwa = true)
     pulse = gaussian_pulse(param[:gate_time].val, π)
     
-    N_MAX = 500
+    N_MAX = 100
     out = []
-    for n in 1:N_MAX
+    for wd in drive_frequency_range
+        w = [param[:w].val, param[:wc].val, param[:w].val] .- wd
+        U = [param[:U].val, -param[:Uc].val, param[:U].val]
+        g = [param[:Jc].val, param[:Jc].val, param[:J12].val]
+        H = qt_tunable_coupler(w, U, g)
         function time_evolution()
-            pauli_string = rb_pauli_string(n)
+            pauli_string = rb_pauli_string(N_MAX)
             accumulated_phase = 0.0
             state = deepcopy(param[:state].val)
             for p_op in pauli_string
@@ -93,7 +93,7 @@ function f()
         push!(out, traj_mean(r_out))
     end
 
-    push!(lines, LineInfo(1:length(out), out, traj, "proj -> 0"))
+    push!(lines, LineInfo(drive_frequency_range .* 5, out, traj, "proj -> 0"))
 
     path = joinpath(@__DIR__)
     makeplot(path, lines...; xlabel = "i", ylabel = "", copy_code = false, param...)
