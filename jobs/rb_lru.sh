@@ -9,7 +9,7 @@
 #SBATCH --time=20:00:00                         # Time limit hrs:min:sec
 #SBATCH --output=jobs/logs/%x_%j_log.txt     # Standard output and error log
 
-file_to_run="LRUFUP_Vault\Data\Driving\DriveCouplerLRU\PositiveU\PauliString\lru_vs_no_lru\drag\coupler_LRU\code.jl"
+file_to_run="LRUFUP_Vault/Data/Driving/DriveCouplerLRU/PositiveU/PauliString/lru_vs_no_lru/drag/coupler_LRU/code.jl"
 traj="100"
 
 echo "$file_to_run"; echo "trajectories = $traj"; hostname; date; echo
