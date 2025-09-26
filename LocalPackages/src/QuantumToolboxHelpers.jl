@@ -10,6 +10,8 @@ export qt_bosehubbard
 export tunable_coupler
 export qt_tunable_coupler
 export qt_two_transmon_snail
+export qt_two_transmon_snail_test
+export qt_single_transmon_snail
 
 
 function qt_single_site_op(d::Integer, L::Integer, op::QuantumObject, i::Integer)
@@ -78,12 +80,69 @@ function qt_two_transmon_snail(d, phi_c, E_c, E_j, N_junc)
     d_op = [qt_single_site_op(d, 2, destroy(d), 1), qt_single_site_op(d, 2, destroy(d), 2)]
     n2_1 = -1im * n_zpf(1) * (d_op[1] - c_op[1]) 
     n2_2 = -1im * n_zpf(2) * (d_op[2] - c_op[2])
-    ec_part = 4 * E_c[1] * n2_1 + 4 * E_c[2] * n2_2
+    ec_part = 4 * E_c[1] * n2_1' * n2_1 + 4 * E_c[2] * n2_2' * n2_2
     phi_1 = phi_zpf(1) * (d_op[1] + c_op[1])
     phi_2 = phi_zpf(2) * (d_op[2] + c_op[2])
     phi_m = phi_1 - phi_2
     ej_part = -1 * (E_j[1] * cos(phi_1 - phi_c) + E_j[2] * cos(phi_2 + phi_c))
     phi_ext = phi_c + N_junc * ((-1)^k * asin(alpha * sin(phi_c)) + k * π)
-    coupling = -1 * (E_j[3] * (alpha * cos(phi_m) - N_junc * cos((phi_ext * tensor(qeye(d), qeye(d)) - phi_m) / N_junc)) )
-    return ec_part + ej_part + coupling # returns as not hermitian?
+    coupling = -1 * (E_j[3] * (alpha * cos(phi_m) - N_junc * cos((phi_ext - phi_m) / N_junc)))
+    H = ec_part + ej_part
+    λ, psi, U = eigenstates(H)
+    U = QuantumObject(U, dims = (d, d))
+    return U' * (H + coupling) * U # returns as not hermitian?
+end
+
+function qt_single_transmon_snail(d, phi_c, E_c, E_j, N_junc)
+    beta = E_j[3] ./ E_j[1:2]
+    k = (phi_c <= π/2 && phi_c >= -π/2) ? 0.0 : 1.0
+    alpha = 1 / sqrt(sin(phi_c)^2 + N_junc^6 * cos(phi_c)^2)
+    K2 = alpha * (cos(phi_c) + (-1)^k * N_junc^2 * abs(cos(phi_c)))
+    phi_zpf(i) = ((2 * E_c[i]) / (E_j[i] * (1 + beta[i] * K2)))^(1/4)
+    n_zpf(i) = ((E_j[i] * (1 + beta[i] * K2)) / (32 * E_c[i]))^(1/4)
+    c_op = [qt_single_site_op(d, 1, create(d), 1), qt_single_site_op(d, 1, create(d), 2)]
+    d_op = [qt_single_site_op(d, 1, destroy(d), 1), qt_single_site_op(d, 1, destroy(d), 2)]
+    n2_1 = -1im * n_zpf(1) * (d_op[1] - c_op[1]) 
+    n2_2 = -1im * n_zpf(2) * (d_op[2] - c_op[2])
+    ec_part = 4 * E_c[1] * n2_1 * n2_1
+    phi_1 = phi_zpf(1) * (d_op[1] + c_op[1])
+    phi_2 = phi_zpf(2) * (d_op[2] + c_op[2])
+    phi_m = phi_1 - phi_2
+    ej_part = -1 * E_j[1] * cos(phi_1 - phi_c)
+    H = ec_part + ej_part
+    display(H - H')
+    λ, psi, U = eigenstates(H)
+    U = QuantumObject(U, dims = d)
+    return U' * H * U
+end
+
+function qt_two_transmon_snail_test(d, phi_c, E_c, E_j, N_junc)
+    beta = E_j[3] ./ E_j[1:2]
+    k = (phi_c <= π/2 && phi_c >= -π/2) ? 0.0 : 1.0
+    alpha = 1 / sqrt(sin(phi_c)^2 + N_junc^6 * cos(phi_c)^2)
+    K2 = alpha * (cos(phi_c) + (-1)^k * N_junc^2 * abs(cos(phi_c)))
+    phi_zpf(i) = ((2 * E_c[i]) / (E_j[i] * (1 + beta[i] * K2)))^(1/4)
+    n_zpf(i) = ((E_j[i] * (1 + beta[i] * K2)) / (32 * E_c[i]))^(1/4)
+    c_op = [qt_single_site_op(d, 2, create(d), 1), qt_single_site_op(d, 2, create(d), 2)]
+    d_op = [qt_single_site_op(d, 2, destroy(d), 1), qt_single_site_op(d, 2, destroy(d), 2)]
+    n2_1 = -1im * n_zpf(1) * (d_op[1] - c_op[1]) 
+    n2_2 = -1im * n_zpf(2) * (d_op[2] - c_op[2])
+    phi_1 = phi_zpf(1) * (d_op[1] + c_op[1])
+    phi_2 = phi_zpf(2) * (d_op[2] + c_op[2])
+    H1 = 4 * E_c[1] * n2_1' * n2_1 - E_j[1] * cos(phi_1 - phi_c)
+    H2 = 4 * E_c[2] * n2_2' * n2_2 - E_j[2] * cos(phi_2 + phi_c)
+    H1, U1 = in_diag_basis(H1)
+    H2, U2 = in_diag_basis(H2)
+    U = U1 * U2
+    H = H1 * H2
+    phi_m = phi_1 - phi_2
+    phi_ext = phi_c + N_junc * ((-1)^k * asin(alpha * sin(phi_c)) + k * π)
+    coupling = -1 * (E_j[3] * (alpha * cos(phi_m) - N_junc * cos((phi_ext - phi_m) / N_junc)))
+    return H + U' * (coupling) * U # returns as not hermitian?
+end
+
+function in_diag_basis(H::QuantumObject)
+    λ, psi, U = eigenstates(H)
+    U = QuantumObject(U, dims = H.dims)
+    return U' * H * U, U
 end
