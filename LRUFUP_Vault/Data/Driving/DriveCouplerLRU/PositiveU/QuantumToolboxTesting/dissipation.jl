@@ -22,7 +22,7 @@ function initial_parameters()
     param[:t_points] = 1000
     param[:d] = 3
     param[:L] = 3
-    N = 0
+    N = 2
     state = QuantumObject(tensor(basis(param[:d], N), basis(param[:d], 0), basis(param[:d], 0)))
     param[:state] = ValueInfo(state, "|$(N)00>")
     param[:alg] = "toolbox"
@@ -66,13 +66,14 @@ function f()
     drive_op = qt_single_site_op(d, L, destroy(d), 1) + qt_single_site_op(d, L, create(d), 1)
     drive_op = drive_op / 2
     pulse = gaussian_pulse(param[:gate_time].val, π)
-    Ht = H + + QobjEvo(drive_op, (p, t) -> pulse(t))
+    # Ht = H + QobjEvo(drive_op, (p, t) -> pulse(t))
+    Ht = H
 
     t_list = LinRange(0, param[:t].val, param[:t_points])
     out = mesolve(Ht, state, t_list, c_ops, e_ops = e_ops)
-    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "n1"))
+    # push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "n1"))
     push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "anh_all"))
-    push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "n_all"))
+    # push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "n_all"))
 
     path = joinpath(@__DIR__)
     makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
