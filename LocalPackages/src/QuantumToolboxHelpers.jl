@@ -9,6 +9,7 @@ export qt_n_all
 export qt_bosehubbard
 export tunable_coupler
 export qt_tunable_coupler
+export qt_two_transmon_snail
 
 
 function qt_single_site_op(d::Integer, L::Integer, op::QuantumObject, i::Integer)
@@ -61,4 +62,28 @@ function tunable_coupler(w, U, g)
 end
 function qt_tunable_coupler(w, U, g)
     return QuantumObject(tunable_coupler(w, U, g), dims = (3, 3, 3))
+end
+
+# phi_c can be for example -2π/3 or -π/2 (for -π/2 the K_2 term vanishes)
+# E_c should contain E_c for both transmons
+# E_j should contain for all three elements
+function qt_two_transmon_snail(d, phi_c, E_c, E_j, N_junc)
+    beta = E_j[3] ./ E_j[1:2]
+    k = (phi_c <= π/2 && phi_c >= -π/2) ? 0.0 : 1.0
+    alpha = 1 / sqrt(sin(phi_c)^2 + N_junc^6 * cos(phi_c)^2)
+    K2 = alpha * (cos(phi_c) + (-1)^k * N_junc^2 * abs(cos(phi_c)))
+    phi_zpf(i) = ((2 * E_c[i]) / (E_j[i] * (1 + beta[i] * K2)))^(1/4)
+    n_zpf(i) = ((E_j[i] * (1 + beta[i] * K2)) / (32 * E_c[i]))^(1/4)
+    c_op = [qt_single_site_op(d, 2, create(d), 1), qt_single_site_op(d, 2, create(d), 2)]
+    d_op = [qt_single_site_op(d, 2, destroy(d), 1), qt_single_site_op(d, 2, destroy(d), 2)]
+    n2_1 = -1im * n_zpf(1) * (d_op[1] - c_op[1]) 
+    n2_2 = -1im * n_zpf(2) * (d_op[2] - c_op[2])
+    ec_part = 4 * E_c[1] * n2_1 + 4 * E_c[2] * n2_2
+    phi_1 = phi_zpf(1) * (d_op[1] + c_op[1])
+    phi_2 = phi_zpf(2) * (d_op[2] + c_op[2])
+    phi_m = phi_1 - phi_2
+    ej_part = -1 * (E_j[1] * cos(phi_1 - phi_c) + E_j[2] * cos(phi_2 + phi_c))
+    phi_ext = phi_c + N_junc * ((-1)^k * asin(alpha * sin(phi_c)) + k * π)
+    coupling = -1 * (E_j[3] * (alpha * cos(phi_m) - N_junc * cos((phi_ext * tensor(qeye(d), qeye(d)) - phi_m) / N_junc)) )
+    return ec_part + ej_part + coupling # returns as not hermitian?
 end
