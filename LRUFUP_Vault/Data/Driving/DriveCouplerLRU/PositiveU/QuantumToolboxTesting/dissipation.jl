@@ -22,7 +22,7 @@ function initial_parameters()
     param[:t_points] = 1000
     param[:d] = 3
     param[:L] = 3
-    N = 2
+    N = 1
     state = QuantumObject(tensor(basis(param[:d], N), basis(param[:d], 0), basis(param[:d], 0)))
     param[:state] = ValueInfo(state, "|$(N)00>")
     param[:alg] = "toolbox"
@@ -71,7 +71,7 @@ function f()
 
     t_list = LinRange(0, param[:t].val, param[:t_points])
     out = mesolve(Ht, state, t_list, c_ops, e_ops = e_ops)
-    # push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "n1"))
+    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "n1"))
     push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "anh_all"))
     # push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "n_all"))
 
