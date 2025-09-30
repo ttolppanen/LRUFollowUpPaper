@@ -8,6 +8,7 @@ using OrderedCollections
 using SparseArrays
 using LocalPackages
 using QuantumToolbox
+using QuantumTimes
 
 function traj_mean(result)
     out = zeros(size(result[1]))
@@ -22,7 +23,7 @@ function initial_parameters()
     param[:t_points] = 1000
     param[:d] = 3
     param[:L] = 3
-    N = 1
+    N = 2
     state = QuantumObject(tensor(basis(param[:d], N), basis(param[:d], 0), basis(param[:d], 0)))
     param[:state] = ValueInfo(state, "|$(N)00>")
     param[:alg] = "toolbox"
@@ -72,13 +73,23 @@ function f()
     t_list = LinRange(0, param[:t].val, param[:t_points])
     out = mesolve(Ht, state, t_list, c_ops, e_ops = e_ops)
     push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "n1"))
-    push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "anh_all"))
+    # push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "anh_all"))
     # push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "n_all"))
+
 
     path = joinpath(@__DIR__)
     makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
     # addtrajectories(path, line)
 end
 
+function t_time_from_n(times, population)
+    x = out.times
+    y = real(out.expect[1, :])
+    pl = plot(x, y)
+    n = length(out.times) # adjust here to make fit better
+    c, slope, f_fit = exp_fit(x[1:n], y[1:n], 2)
+    println(-1 / slope / (2 * π * 5 * 1e6 * 1e-9), "ns")
+    plot!(x, f_fit)
+end
 
 @time f()

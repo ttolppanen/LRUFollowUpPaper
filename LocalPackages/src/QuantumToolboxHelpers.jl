@@ -59,11 +59,11 @@ end
 # w = [w1, w_c, w2]
 # U = [U1, U_c, U2]
 # g = [g_c1, g_c2, g_direct]
-function tunable_coupler(w, U, g)
-    return bosehubbard(3, 3, [(1, 2, -g[1]), (2, 3, g[2]), (1, 3, g[3])]; w, U)
+function tunable_coupler(w, U, g; J_sign = -1)
+    return bosehubbard(3, 3, [(1, 2, J_sign * g[1]), (2, 3, g[2]), (1, 3, g[3])]; w, U)
 end
-function qt_tunable_coupler(w, U, g)
-    return QuantumObject(tunable_coupler(w, U, g), dims = (3, 3, 3))
+function qt_tunable_coupler(w, U, g; kwargs...)
+    return QuantumObject(tunable_coupler(w, U, g; kwargs...), dims = (3, 3, 3))
 end
 
 # phi_c can be for example -2π/3 or -π/2 (for -π/2 the K_2 term vanishes)

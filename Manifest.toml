@@ -2,7 +2,7 @@
 
 julia_version = "1.11.6"
 manifest_format = "2.0"
-project_hash = "aef520c79be734f6e165584b1c4e3db17e8c2d5a"
+project_hash = "55e94ba2b7395bc07f2eedea610a888cd354fdd2"
 
 [[deps.ADTypes]]
 git-tree-sha1 = "27cecae79e5cc9935255f90c53bb831cc3c870d7"
@@ -827,6 +827,12 @@ deps = ["Artifacts", "JLLWrappers", "Libdl", "Libglvnd_jll", "Xorg_libXcursor_jl
 git-tree-sha1 = "fcb0584ff34e25155876418979d4c8971243bb89"
 uuid = "0656b61e-2033-5cc2-a64a-77c0f6c09b89"
 version = "3.4.0+2"
+
+[[deps.GLM]]
+deps = ["Distributions", "LinearAlgebra", "Printf", "Reexport", "SparseArrays", "SpecialFunctions", "Statistics", "StatsAPI", "StatsBase", "StatsFuns", "StatsModels"]
+git-tree-sha1 = "273bd1cd30768a2fddfa3fd63bbc746ed7249e5f"
+uuid = "38e38edf-8417-5370-95a0-9cbb8c7f171a"
+version = "1.9.0"
 
 [[deps.GPUArraysCore]]
 deps = ["Adapt"]
@@ -1923,6 +1929,12 @@ git-tree-sha1 = "fadb2b739082c72026a23390206008712a0b3603"
 uuid = "7373133c-a6f7-4e95-971a-e453f442ca60"
 version = "0.7.7"
 
+[[deps.QuantumTimes]]
+deps = ["GLM"]
+git-tree-sha1 = "db7f3db5569573d8a261075b32c66a19d650533d"
+uuid = "8747772e-c7e0-4110-92c5-e6bdb4ce5b89"
+version = "0.1.1"
+
 [[deps.QuantumToolbox]]
 deps = ["ArrayInterface", "DiffEqBase", "DiffEqCallbacks", "DiffEqNoiseProcess", "Distributed", "FFTW", "Graphs", "IncompleteLU", "LaTeXStrings", "LinearAlgebra", "LinearSolve", "OrdinaryDiffEqCore", "OrdinaryDiffEqTsit5", "Pkg", "Random", "SciMLBase", "SciMLOperators", "SparseArrays", "SpecialFunctions", "StaticArraysCore", "Statistics", "StochasticDiffEq"]
 git-tree-sha1 = "238a3dba38c2eac6db72b88de3d36d273d79fcff"
@@ -2173,6 +2185,11 @@ deps = ["Distributed", "Mmap", "Random", "Serialization"]
 uuid = "1a1011a3-84de-559e-8e89-a11a2f7dc383"
 version = "1.11.0"
 
+[[deps.ShiftedArrays]]
+git-tree-sha1 = "503688b59397b3307443af35cd953a13e8005c16"
+uuid = "1277b4bf-5013-50f5-be3d-901d8477a67a"
+version = "2.0.0"
+
 [[deps.Showoff]]
 deps = ["Dates", "Grisu"]
 git-tree-sha1 = "91eddf657aca81df9ae6ceb20b959ae5653ad1de"
@@ -2344,6 +2361,12 @@ weakdeps = ["ChainRulesCore", "InverseFunctions"]
     [deps.StatsFuns.extensions]
     StatsFunsChainRulesCoreExt = "ChainRulesCore"
     StatsFunsInverseFunctionsExt = "InverseFunctions"
+
+[[deps.StatsModels]]
+deps = ["DataAPI", "DataStructures", "LinearAlgebra", "Printf", "REPL", "ShiftedArrays", "SparseArrays", "StatsAPI", "StatsBase", "StatsFuns", "Tables"]
+git-tree-sha1 = "b117c1fe033a04126780c898e75c7980bf676df3"
+uuid = "3eaba693-59b7-5ba5-a881-562e759f1c8d"
+version = "0.7.7"
 
 [[deps.StochasticDiffEq]]
 deps = ["ADTypes", "Adapt", "ArrayInterface", "DataStructures", "DiffEqBase", "DiffEqNoiseProcess", "DocStringExtensions", "FastPower", "FiniteDiff", "ForwardDiff", "JumpProcesses", "LevyArea", "LinearAlgebra", "Logging", "MuladdMacro", "NLsolve", "OrdinaryDiffEqCore", "OrdinaryDiffEqDifferentiation", "OrdinaryDiffEqNonlinearSolve", "Random", "RandomNumbers", "RecursiveArrayTools", "Reexport", "SciMLBase", "SciMLOperators", "SparseArrays", "StaticArrays", "UnPack"]
