@@ -80,17 +80,18 @@ function qt_two_transmon_snail(d, phi_c, E_c, E_j, N_junc)
     d_op = [qt_single_site_op(d, 2, destroy(d), 1), qt_single_site_op(d, 2, destroy(d), 2)]
     n2_1 = -1im * n_zpf(1) * (d_op[1] - c_op[1]) 
     n2_2 = -1im * n_zpf(2) * (d_op[2] - c_op[2])
-    ec_part = 4 * E_c[1] * n2_1' * n2_1 + 4 * E_c[2] * n2_2' * n2_2
+    ec_part = 4 * E_c[1] * n2_1 * n2_1 + 4 * E_c[2] * n2_2 * n2_2
     phi_1 = phi_zpf(1) * (d_op[1] + c_op[1])
     phi_2 = phi_zpf(2) * (d_op[2] + c_op[2])
     phi_m = phi_1 - phi_2
     ej_part = -1 * (E_j[1] * cos(phi_1 - phi_c) + E_j[2] * cos(phi_2 + phi_c))
     phi_ext = phi_c + N_junc * ((-1)^k * asin(alpha * sin(phi_c)) + k * π)
     coupling = -1 * (E_j[3] * (alpha * cos(phi_m) - N_junc * cos((phi_ext - phi_m) / N_junc)))
-    H = ec_part + ej_part
-    λ, psi, U = eigenstates(H)
-    U = QuantumObject(U, dims = (d, d))
-    return U' * (H + coupling) * U # returns as not hermitian?
+    return ec_part + ej_part + coupling
+    # H = ec_part + ej_part
+    # λ, psi, U = eigenstates(H)
+    # U = QuantumObject(U, dims = (d, d))
+    # return U' * (H + coupling) * U # returns as not hermitian?
 end
 
 function qt_single_transmon_snail(d, phi_c, E_c, E_j, N_junc)

@@ -17,6 +17,13 @@ function traj_mean(result)
     return out ./ length(result)
 end
 
+# this is calculated so that |2> -> |1> is in resonance
+function Ec2(Ej1, Ej2, Ec1)
+    c = 2 * (sqrt(8 * Ej1 * Ec1) - Ec1) - Ec1
+    Ec2 = (sqrt(32 * Ej2 + 4 * c) - 2 * sqrt(8 * Ej2)) / 2
+    return Ec2
+end
+
 function initial_parameters()
     param = OrderedDict()
     param[:t_points] = 1000
@@ -27,16 +34,19 @@ function initial_parameters()
     param[:state] = ValueInfo(state, "|$(N)0>")
     param[:alg] = "toolbox"
     param[:H] = "snail"
-    param[:phi_c] = ValueInfo(-π / 2, "-π/2")
-    param[:Ej] = ValueInfo(20, "20GHz")
-    param[:Ec] = ValueInfo(0.3 / param[:Ej].val, "0.3GHz")
-    param[:Ej_snail] = ValueInfo(000 / param[:Ej].val, "200GHz")
-    param[:N_junc] = 3
+    param[:phi_c] = ValueInfo(-π * 3 / 2, "-3π/2")
+    Ej1 = 20
+    param[:Ej1] = ValueInfo(Ej1, "$(Ej1)GHz")
+    param[:Ej2] = ValueInfo(15 / 2, "15/2*EJ1")
+    param[:Ec1] = ValueInfo(0.3 / param[:Ej1].val, "0.3GHz")
+    param[:Ec2] = ValueInfo(Ec2(1, param[:Ej2].val, param[:Ec1].val), "|2>->|1> in resonance")
+    param[:Ej_snail] = ValueInfo(3 / 2 , "3/2*EJ1")
+    param[:N_junc] = 2
     t = 100
-    param[:t] = ValueInfo(t * 2 * π * 10^-3 * param[:Ej].val, "$(t)ns")
+    param[:t] = ValueInfo(t * 2 * π * 10^-3 * param[:Ej1].val, "$(t)ns")
     param[:diss_rate] = 0
 
-    param[:Ej] = ValueInfo(1, param[:Ej].str_val)
+    param[:Ej1] = ValueInfo(1, param[:Ej1].str_val)
     return param
 end
 
@@ -55,9 +65,9 @@ function f()
     
     c_ops = [sqrt(param[:diss_rate]) * qt_single_site_op(d, L, destroy(d), L)]
 
-    E_c = [param[:Ec].val, param[:Ec].val]
-    E_j = [param[:Ej].val, param[:Ej].val, param[:Ej_snail].val]
-    H = qt_two_transmon_snail_test(d, param[:phi_c].val, E_c, E_j, param[:N_junc])
+    E_c = [param[:Ec1].val, param[:Ec2].val]
+    E_j = [param[:Ej1].val, param[:Ej2].val, param[:Ej_snail].val]
+    H = qt_two_transmon_snail(d, param[:phi_c].val, E_c, E_j, param[:N_junc])
 
     # drive_op = qt_single_site_op(d, L, destroy(d), 1) + qt_single_site_op(d, L, create(d), 1)
     # drive_op = drive_op / 2
