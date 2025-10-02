@@ -38,7 +38,7 @@ function initial_parameters()
     Ej1 = 20
     param[:Ej1] = ValueInfo(Ej1, "$(Ej1)GHz")
     param[:Ej2] = ValueInfo(15 / 2, "15/2*EJ1")
-    param[:Ec1] = ValueInfo(0.3 / param[:Ej1].val, "0.3GHz")
+    param[:Ec1] = ValueInfo(0.3 / param[:Ej1].val, "300MHz")
     param[:Ec2] = ValueInfo(Ec2(1, param[:Ej2].val, param[:Ec1].val), "|2>->|1> in resonance")
     param[:Ej_snail] = ValueInfo(3 / 2 , "3/2*EJ1")
     param[:N_junc] = 2
