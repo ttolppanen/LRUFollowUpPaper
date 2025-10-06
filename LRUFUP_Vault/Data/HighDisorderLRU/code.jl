@@ -23,7 +23,7 @@ function initial_parameters()
     param[:t_points] = 1000
     param[:d] = 3
     param[:L] = 2
-    N = 2
+    N = 1
     state = QuantumObject(tensor(basis(param[:d], N), basis(param[:d], 0)))
     param[:state] = ValueInfo(state, "|$(N)00>")
     param[:alg] = "TB.jl"
@@ -34,7 +34,7 @@ function initial_parameters()
     param[:wd] = ValueInfo(4002 / param[:J].val, "4.002GHz")
     param[:U1] = ValueInfo(300 / param[:J].val, "300MHz")
     param[:U2] = ValueInfo(2700 / param[:J].val, "2.7GHz")
-    t = 0.2
+    t = 10
     param[:t] = ValueInfo(t * 2 * π * param[:J].val, "$(t)μs")
     param[:gate_time] = ValueInfo(14 * 10^(-3) * 2 * π * param[:J].val, "14ns")
     param[:gate_area] = ValueInfo(π, "π")
