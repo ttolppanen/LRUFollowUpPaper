@@ -1,25 +1,15 @@
 from qiskit import QuantumCircuit, transpile
-from iqm.qiskit_iqm import IQMFakeAphrodite
+from iqm.qiskit_iqm.fake_backends.fake_garnet import IQMFakeGarnet
 import matplotlib.pyplot as plt
 
 num_qb = 11
-qc = QuantumCircuit(num_qb)
+qc = QuantumCircuit(num_qb, num_qb)
 
-qc.h(0)
-qc.cx(0, 1)
-qc.cx(0, 2)
-qc.cx(0, 3)
-qc.cx(0, 4)
-qc.cx(1, 5)
-qc.cx(1, 6)
-qc.cx(1, 7)
-qc.cx(2, 8)
-qc.cx(2, 9)
-qc.cx(2, 10)
+qc.x(1)
 qc.barrier()
-qc.measure_all()
+qc.measure(range(2), range(2))
 
-backend = IQMFakeAphrodite()
+backend = IQMFakeGarnet()
 
 qc_transpiled = transpile(qc, backend)
 job = backend.run(qc_transpiled, shots=1000)
