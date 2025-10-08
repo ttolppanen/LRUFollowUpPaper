@@ -1,0 +1,40 @@
+# this is the code as a .txt file, if opening the notebook is somehow annoying.
+
+import os
+from dotenv import load_dotenv
+load_dotenv()
+from iqm.pulla.pulla import Pulla
+from iqm.qiskit_iqm import IQMProvider
+
+quantum_computer_url = "https://cocos.resonance.meetiqm.com/garnet:mock"
+api_token = os.environ.get("RESONANCE_API_TOKEN")
+
+p = Pulla(quantum_computer_url, get_token_callback=lambda: f"Bearer {api_token}")
+provider = IQMProvider(quantum_computer_url, token=api_token)
+backend = provider.get_backend(use_metrics=False)
+compiler = p.get_standard_compiler()
+
+qubits = compiler.builder.chip_topology.qubits_sorted
+q1 = qubits[0]
+print(f"Using qubit {q1}")
+
+from iqm.cpc.interface.compiler import Circuit 
+from iqm.pulla.interface import CircuitOperation as Op
+import numpy as np
+
+instructions = []
+instructions.append(Op("prx", (q1, ), args={"angle": np.pi, "phase": 0.0}))
+instructions.append(Op("prx_12", (q1, ), args={"angle": np.pi, "phase": 0.0}))
+instructions.append(Op("measure", (q1, ), args = {"key": "M"}))
+
+circuit = Circuit("2 preparation", instructions)
+
+playlist, context = compiler.compile([circuit])
+settings, context = compiler.build_settings(context, shots=100)
+
+from iqm.pulse.playlist.visualisation.base import inspect_playlist
+from IPython.core.display import HTML
+
+HTML(inspect_playlist(playlist, [0])) # Show first 5 circuits
+
+job = p.execute(playlist, context, settings, verbose=True) # Here I get the error.
