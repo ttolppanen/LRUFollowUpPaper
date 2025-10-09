@@ -35,12 +35,12 @@ function initial_parameters()
     param[:wc] = ValueInfo(3505 / param[:J12].val, "3.505GHz")
     param[:U] = ValueInfo(300 / param[:J12].val, "300MHz")
     param[:Uc] = ValueInfo(-300 / param[:J12].val, "690MHz")
-    t = 2
+    t = 4
     param[:t] = ValueInfo(t * 2 * π * param[:J12].val, "$(t)μs")
     param[:gate_time] = ValueInfo(14 * 10^(-3) * 2 * π * param[:J12].val, "14ns")
     param[:gate_area] = ValueInfo(π, "π")
     param[:gate_repeat_time] = ValueInfo(0.01 * 2 * π * param[:J12].val, "1μs")
-    param[:diss_rate] = 0.08
+    param[:diss_rate] = 0.00
 
     param[:J12] = ValueInfo(1, "5MHz")
     return param

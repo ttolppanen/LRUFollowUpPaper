@@ -54,6 +54,7 @@ function f()
     anh = tensor(qeye(d), qeye(d), qeye(d)) - qt_anh_all(d, L) / 2
     proj_1 = tensor(proj(basis(d, 0)), qeye(d), qeye(d))
 
+    c_ops = [sqrt(param[:diss_rate]) * qt_single_site_op(d, L, destroy(d), L)]
 
     w = [param[:w].val, param[:wc].val, param[:w].val] .- param[:wd].val
     U = [param[:U].val, param[:Uc].val, param[:U].val]
@@ -85,7 +86,7 @@ function f()
 
                 t = param[:gate_time].val + param[:gate_repeat_time].val
                 t_list = LinRange(0, t, param[:t_points])
-                res = mesolve(Ht, state, t_list; saveat=[t_list[end]], progress_bar = Val(false))
+                res = mesolve(Ht, state, t_list, c_ops; saveat=[t_list[end]], progress_bar = Val(false))
                 state = res.states[1]
             end
             return [real(expect(proj_1, state)), real(expect(anh, state))]
