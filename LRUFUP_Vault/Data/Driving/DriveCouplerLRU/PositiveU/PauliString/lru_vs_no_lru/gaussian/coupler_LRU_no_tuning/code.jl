@@ -64,7 +64,7 @@ function f()
     I_op, Q_op = qt_drive_op(d, L; rwa = true)
     pulse = gaussian_pulse(param[:gate_time].val, π)
     
-    Ns = vcat(1, 10:10:500)
+    Ns = vcat(1, 100:100:2000)
     out = []
     anh_out = []
     for n in Ns
