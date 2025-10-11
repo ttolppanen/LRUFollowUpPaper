@@ -1,0 +1,27 @@
+{
+	"nodes":[
+		{"id":"ac142c7b24a2d095","x":-148,"y":-155,"width":508,"height":155,"color":"6","type":"text","text":"# Passive leakage removal with idle qubits in tunable coupler based quantum processors."},
+		{"id":"8a67da199a864d45","x":-860,"y":60,"width":380,"height":300,"color":"3","type":"text","text":"On IQM machines prepare a qubit in the |2> state and then after a delay measure neighboring qubits and calculate boson number. This should match what I got with simluation.\n- State |2> can be prepared with prx and prx_12\n- State |2> population should be possible.\n- Delay is possible, as in the T1 example.\n- Does not require tuning couplers."},
+		{"id":"0dd84b2579ccd89d","x":-860,"y":420,"width":380,"height":360,"color":"3","type":"text","text":"After observing the population on neighboring qubits, we can reset the neighboring qubits with different delays and measure all 3 qubits and calculate state |2> population. We should see that with specific reset delay the anharmonicity is reduced.\n- Prepare state |2>.\n- With delay from the first figure reset the neighboring qubits couple times. There is a reset \"gate\" with Pulla.\n- Measure all qubits and calculate anharmonicity after some different delay."},
+		{"id":"408421efd06043ef","x":-380,"y":525,"width":268,"height":151,"color":"1","type":"text","text":"How do we show that the reduction from anharmonicity is due to the resets and not from just T1, or just from leakage mobility?"},
+		{"id":"f8561d90406d188a","x":-1560,"y":210,"width":292,"height":210,"color":"4","type":"text","text":"In the off-position, tunable couplers have leakage mobility. With specific removal rate, leakage can be removed via neighboring idle qubits. Result is non-trivial because of the specific removal rate."},
+		{"id":"4a2bc97407465c04","x":40,"y":465,"width":336,"height":211,"type":"text","text":"We could do the same experiment but without the reset, and observe that the anharmonicity is reducing faster in the three qubits with the reset, and argue that this is significant because otherwise this leakage could leak to other qubits."},
+		{"id":"96abdabe4b3cd0b4","x":-927,"y":977,"width":347,"height":296,"color":"3","type":"text","text":"If we can tune the couplers to match the |2> level, then we can show how fast leakage mobility would be.\n- We would need to be able to tune the couplers, which should be doable.\n- We would probably need to know the specific frequencies, anharmonicities and couplings of the qubits, so we can choose the coupler frequency correct."},
+		{"id":"28f3d984b73d9aee","x":-395,"y":1027,"width":250,"height":60,"color":"1","type":"text","text":"How tunable are the couplers?"},
+		{"id":"21c3fb3766712014","x":-395,"y":1140,"width":250,"height":133,"color":"1","type":"text","text":"Are the frequencies, anharmonicities and coupling strengths available?"},
+		{"id":"e4236888ff65fc2b","x":-1560,"y":1117,"width":292,"height":180,"color":"4","type":"text","text":"With tunable anharmonicity, leakage mobility can be vastly increased while not compromising qubit decoupling, which enables \"total\" leakage removal."},
+		{"id":"098107e34b4e4e19","x":-395,"y":1420,"width":292,"height":150,"color":"3","type":"text","text":"If we can show this, then we can show in a simulation that the leakage mobility is not sensitive to the frequency of the coupler as long as |2> is matched."},
+		{"id":"76b95f230daaa9ce","x":-927,"y":1420,"width":347,"height":120,"color":"3","type":"text","text":"I think even if we can't show it as an experiment, it is still interesting as a theoretical idea, and it would be interesting to just show the simulations."}
+	],
+	"edges":[
+		{"id":"24875fe1ece629ab","fromNode":"0dd84b2579ccd89d","fromSide":"right","toNode":"408421efd06043ef","toSide":"left"},
+		{"id":"6d9e4bb6607a302e","fromNode":"f8561d90406d188a","fromSide":"right","toNode":"8a67da199a864d45","toSide":"left"},
+		{"id":"662e1ddbc2f249e6","fromNode":"f8561d90406d188a","fromSide":"right","toNode":"0dd84b2579ccd89d","toSide":"left"},
+		{"id":"7cd3669a110bcbbb","fromNode":"408421efd06043ef","fromSide":"right","toNode":"4a2bc97407465c04","toSide":"left"},
+		{"id":"be5a6c0383d4061a","fromNode":"e4236888ff65fc2b","fromSide":"right","toNode":"96abdabe4b3cd0b4","toSide":"left"},
+		{"id":"29c3dec9e995488c","fromNode":"96abdabe4b3cd0b4","fromSide":"right","toNode":"28f3d984b73d9aee","toSide":"left"},
+		{"id":"344708fd928bd7c4","fromNode":"96abdabe4b3cd0b4","fromSide":"right","toNode":"21c3fb3766712014","toSide":"left"},
+		{"id":"413c674a446757d4","fromNode":"96abdabe4b3cd0b4","fromSide":"right","toNode":"098107e34b4e4e19","toSide":"left"},
+		{"id":"d2a02189350c1fa8","fromNode":"e4236888ff65fc2b","fromSide":"right","toNode":"76b95f230daaa9ce","toSide":"left"}
+	]
+}
