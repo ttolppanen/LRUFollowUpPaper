@@ -30,16 +30,16 @@ function initial_parameters()
     param[:H] = "Tunable Coupler"
     param[:J12] = ValueInfo(5, "5MHz")
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
-    param[:w1] = ValueInfo(4100 / param[:J12].val, "4.1GHz")
+    param[:w1] = ValueInfo(3900 / param[:J12].val, "4.1GHz")
     param[:w2] = ValueInfo(3900 / param[:J12].val, "3.9GHz")
-    param[:wc] = ValueInfo(3195 / param[:J12].val, "3.195GHz")
+    param[:wc] = ValueInfo(3405 / param[:J12].val, "3.195GHz")
     param[:U1] = ValueInfo(300 / param[:J12].val, "300MHz")
     U2 = 300
     param[:U2] = ValueInfo(U2 / param[:J12].val, "$(U2)MHz")
     param[:Uc] = ValueInfo(300 / param[:J12].val, "300MHz")
-    t = 0.1
+    t = 10
     param[:t] = ValueInfo(t * 2 * π * param[:J12].val, "$(t)μs")
-    param[:diss_rate] = 0.00
+    param[:diss_rate] = 0.1
 
     param[:J12] = ValueInfo(1, param[:J12].str_val)
     return param
@@ -67,8 +67,8 @@ function f()
     t_list = LinRange(0, param[:t].val, param[:t_points])
     out = mesolve(H, state, t_list, c_ops, e_ops = e_ops)
     push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "n1"))
-    # push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "anh_all"))
-    # push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "n_all"))
+    push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "anh_all"))
+    push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "n_all"))
 
 
     path = joinpath(@__DIR__)
