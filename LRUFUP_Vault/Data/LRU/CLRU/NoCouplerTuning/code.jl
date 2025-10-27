@@ -76,7 +76,7 @@ function f()
     # addtrajectories(path, line)
 end
 
-function t_time_from_n(times, population)
+function t_time_from_n(out)
     x = out.times
     y = real(out.expect[1, :])
     pl = plot(x, y)

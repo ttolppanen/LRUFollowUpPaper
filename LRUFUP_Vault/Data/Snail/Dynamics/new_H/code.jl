@@ -26,7 +26,7 @@ end
 
 function two_transmon_snail(d, phi_c, E_c, E_j, N_junc)
     beta = E_j[3] ./ E_j[1:2]
-    k = (phi_c <= π/2 && phi_c >= -π/2) ? 0.0 : 1.0
+    k = (phi_c <= π/2 && phi_c >= -π/2) ? 1.0 : 0.0
     alpha = 1 / sqrt(sin(phi_c)^2 + N_junc^6 * cos(phi_c)^2)
     K2 = alpha * (cos(phi_c) + (-1)^k * N_junc^2 * abs(cos(phi_c)))
     K3 = -alpha * sin(phi_c) * (1 - 1 / N_junc^2)
@@ -65,7 +65,7 @@ function initial_parameters()
     param[:t_points] = 1000
     param[:d] = 3
     param[:L] = 2
-    N = 2
+    N = 0
     state = QuantumObject(tensor(basis(param[:d], N), basis(param[:d], 0)))
     param[:state] = ValueInfo(state, "|$(N)0>")
     param[:alg] = "toolbox"
@@ -75,7 +75,7 @@ function initial_parameters()
     param[:Ej1] = ValueInfo(Ej1, "$(Ej1)GHz")
     param[:Ej2] = ValueInfo(15 / 2, "15/2*EJ1")
     param[:Ec1] = ValueInfo(0.3 / param[:Ej1].val, "300MHz")
-    param[:Ec2] = ValueInfo(Ec2(1, param[:Ej2].val, param[:Ec1].val), "|2>->|1> in resonance")
+    param[:Ec2] = ValueInfo(0.3 / param[:Ej1].val, "300MHz")
     param[:Ej_snail] = ValueInfo(3 / 2 , "3/2*EJ1")
     param[:N_junc] = 2
     t = 1000
