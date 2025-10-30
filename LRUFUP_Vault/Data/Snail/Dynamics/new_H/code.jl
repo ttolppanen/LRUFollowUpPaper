@@ -30,6 +30,8 @@ function two_transmon_snail(d, phi_c, E_c, E_j, N_junc)
     alpha = 1 / sqrt(sin(phi_c)^2 + N_junc^6 * cos(phi_c)^2)
     K2 = alpha * (cos(phi_c) + (-1)^k * N_junc^2 * abs(cos(phi_c)))
     K3 = -alpha * sin(phi_c) * (1 - 1 / N_junc^2)
+    println("alpha = $alpha \n K2 = $K2 \n K3 = $K3")
+
     phi_zpf(i) = ((2 * E_c[i]) / (E_j[i] * (1 + beta[i] * K2)))^(1/4)
     n_zpf(i) = ((E_j[i] * (1 + beta[i] * K2)) / (32 * E_c[i]))^(1/4)
     c_op = create(d)
@@ -70,7 +72,7 @@ function initial_parameters()
     param[:state] = ValueInfo(state, "|$(N)0>")
     param[:alg] = "toolbox"
     param[:H] = "snail"
-    param[:phi_c] = ValueInfo(-π * 3 / 2, "-3π/2")
+    param[:phi_c] = ValueInfo(-π * 2 / 3, "-2π/3")
     Ej1 = 20
     param[:Ej1] = ValueInfo(Ej1, "$(Ej1)GHz")
     param[:Ej2] = ValueInfo(15 / 2, "15/2*EJ1")
