@@ -39,23 +39,16 @@ function two_transmon_snail(d, phi_c, E_c, E_j, N_junc)
 
     n_1 = -1im * n_zpf(1) * (d_op - c_op)
     phi_1 = phi_zpf(1) * (d_op + c_op)
-    H1 = 4 * E_c[1] * n_1^2
-        - E_j[1] * (cos(phi_1) 
-                    - beta[1] * K2 / 2 * phi_1^2
-                    - beta[1] * K3 / 6 * phi_1^3)
+
+    H1 = 4 * E_c[1] * n_1^2 - E_j[1] * (cos(phi_1) - beta[1] * K2 / 2 * phi_1^2 - beta[1] * K3 / 6 * phi_1^3)
     λ, psi, U1 = eigenstates(H1)
     U1 = QuantumObject(U1, dims = d)
-    println(λ)
     
     n_2 = -1im * n_zpf(2) * (d_op - c_op)
     phi_2 = phi_zpf(2) * (d_op + c_op)
-    H2 = 4 * E_c[2] * n_2^2
-        - E_j[2] * (cos(phi_2) 
-                    - beta[2] * K2 / 2 * phi_2^2
-                    + beta[2] * K3 / 6 * phi_2^3)
+    H2 = 4 * E_c[2] * n_2^2 - E_j[2] * (cos(phi_2) - beta[2] * K2 / 2 * phi_2^2 + beta[2] * K3 / 6 * phi_2^3)
     λ, psi, U2 = eigenstates(H2)
     U2 = QuantumObject(U2, dims = d)
-    println(λ)
 
     U = tensor(U1, U2)
     coupling = -E_j[3] * (K2 * tensor(phi_1, phi_2) - K3 / 2 * (tensor(phi_1, phi_2^2) - tensor(phi_1^2, phi_2)))
@@ -65,9 +58,9 @@ end
 function initial_parameters()
     param = OrderedDict()
     param[:t_points] = 1000
-    param[:d] = 3
+    param[:d] = 11
     param[:L] = 2
-    N = 0
+    N = 2
     state = QuantumObject(tensor(basis(param[:d], N), basis(param[:d], 0)))
     param[:state] = ValueInfo(state, "|$(N)0>")
     param[:alg] = "toolbox"
@@ -80,7 +73,7 @@ function initial_parameters()
     param[:Ec2] = ValueInfo(0.3 / param[:Ej1].val, "300MHz")
     param[:Ej_snail] = ValueInfo(3 / 2 , "3/2*EJ1")
     param[:N_junc] = 2
-    t = 1000
+    t = 10000
     param[:t] = ValueInfo(t * 2 * π * 10^-3 * param[:Ej1].val, "$(t)ns")
     param[:diss_rate] = 0
 
@@ -111,17 +104,17 @@ function f()
     # pulse = gaussian_pulse(param[:gate_time].val, π)
     # Ht = H + QobjEvo(drive_op, (p, t) -> pulse(t))
 
-    t_list = LinRange(0, param[:t].val, param[:t_points])
-    out = mesolve(H, state, t_list, c_ops, e_ops = e_ops)
-    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "n1"))
+    # t_list = LinRange(0, param[:t].val, param[:t_points])
+    # out = mesolve(H, state, t_list, c_ops, e_ops = e_ops)
+    # push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "n1"))
     # push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "anh_all"))
     # push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "n_all"))
-    push!(lines, LineInfo(t_list, real(out.expect[4, :]), 1, "n_all"))
+    # push!(lines, LineInfo(t_list, real(out.expect[4, :]), 1, "n_all"))
 
-    path = joinpath(@__DIR__)
-    makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
+    # path = joinpath(@__DIR__)
+    # makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
     # addtrajectories(path, line)
 end
 
 
-@time f()
+@time f();
