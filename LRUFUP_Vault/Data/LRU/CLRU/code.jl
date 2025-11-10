@@ -24,7 +24,7 @@ function initial_parameters()
     param[:d] = 3
     param[:L] = 3
     N = 2
-    state = QuantumObject(tensor(basis(param[:d], N), basis(param[:d], 0), basis(param[:d], 0)))
+    state = QuantumObject(tensor(basis(param[:d], 2), basis(param[:d], 0), basis(param[:d], 1)))
     param[:state] = ValueInfo(state, "|$(N)00>")
     param[:alg] = "toolbox"
     param[:H] = "Tunable Coupler"
@@ -35,7 +35,7 @@ function initial_parameters()
     param[:wc] = ValueInfo(3505 / param[:J12].val, "3.505GHz")
     param[:U] = ValueInfo(300 / param[:J12].val, "300MHz")
     param[:Uc] = ValueInfo(-300 / param[:J12].val, "300MHz")
-    t = 4
+    t = 1
     param[:t] = ValueInfo(t * 2 * π * param[:J12].val, "$(t)μs")
     param[:gate_time] = ValueInfo(14 * 10^(-3) * 2 * π * param[:J12].val, "14ns")
     param[:gate_area] = ValueInfo(π, "π")
