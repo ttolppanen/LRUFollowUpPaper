@@ -12,6 +12,8 @@ export qt_tunable_coupler
 export qt_two_transmon_snail
 export qt_two_transmon_snail_test
 export qt_single_transmon_snail
+export print_labeled_eigenvalues
+export labeled_eigenvalue_dict
 
 
 function qt_single_site_op(d::Integer, L::Integer, op::QuantumObject, i::Integer)
@@ -146,4 +148,29 @@ function in_diag_basis(H::QuantumObject)
     λ, psi, U = eigenstates(H)
     U = QuantumObject(U, dims = H.dims)
     return U' * H * U, U
+end
+
+function print_labeled_eigenvalues(λ, d; n = length(λ))
+    println("Eigenvalues with computational-basis labels:")
+    for idx in 0:(n-1)
+        # recover computational-basis indices (i,j)
+        i = div(idx, d)
+        j = mod(idx, d)
+        label = "|$(i)$(j)⟩"
+        println(rpad(label, 6), "  ->  ", λ[idx+1])
+    end
+end
+
+function labeled_eigenvalue_dict(λ, d)
+    dict = Dict{String, ComplexF64}()
+    N = length(λ)
+
+    for idx in 0:(N-1)
+        i = div(idx, d)
+        j = mod(idx, d)
+        label = "$(i)$(j)"          # or "[$i,$j]" if you prefer
+        dict[label] = λ[idx+1]
+    end
+
+    return dict
 end
