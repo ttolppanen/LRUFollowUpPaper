@@ -1,4 +1,7 @@
 [deps]
+Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
+GraphPlot = "a2cc645c-3eea-5389-862e-a155d0052231"
+Graphs = "86223c79-3864-5bf0-83f7-82e725a168b6"
 LocalPackages = "fe12fbbb-7192-426e-93dd-edb6a27ce985"
 OrderedCollections = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
 PlotAndSave = "17f9de49-761f-4084-9189-3237cc0765fb"
