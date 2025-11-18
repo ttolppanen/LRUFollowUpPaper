@@ -1,16 +1,16 @@
 {
 	"nodes":[
-		{"id":"60bd5f11aad7a9d6","x":860,"y":60,"width":1314,"height":948,"type":"group","label":"21 -> 12 transition"},
+		{"id":"60bd5f11aad7a9d6","type":"group","x":860,"y":60,"width":1314,"height":948,"label":"21 -> 12 transition"},
 		{"id":"4cfcf615913b67ca","type":"text","text":"How is leakage mobility in 2D - transmon grids with tunable couplers?","x":-83,"y":-46,"width":283,"height":126,"color":"1"},
 		{"id":"7e626a360c431a9c","type":"text","text":"$|20\\rangle \\rightarrow |02\\rangle$ transition","x":360,"y":-124,"width":250,"height":60,"color":"1"},
 		{"id":"338da2ad90bec2ad","type":"text","text":"$|21\\rangle \\rightarrow |12\\rangle$ transition","x":360,"y":80,"width":250,"height":60,"color":"1"},
 		{"id":"fd267f4c251b295b","type":"text","text":"This happens even if the coupler is in the off-position, but it is very sensitive to the resonance of the two transmons, such that they can be max 0.5MHz detuned.","x":700,"y":-229,"width":289,"height":165,"color":"4"},
 		{"id":"4d82c76dd5352426","type":"file","file":"Data/LRU/CLRU/NoCouplerTuning/res_state21.png","x":1314,"y":80,"width":400,"height":267,"color":"3"},
-		{"id":"4feb79325dfc3d63","x":885,"y":81,"width":378,"height":133,"color":"3","type":"text","text":"This happens, and is generally fast. From the plot the time for the excitation to hop is roughly 20ns, so it is comparable to the gate time."},
+		{"id":"4feb79325dfc3d63","type":"text","text":"This happens, and is generally fast. From the plot the time for the excitation to hop is roughly 20ns, so it is comparable to the gate time.","x":885,"y":81,"width":378,"height":133,"color":"3"},
 		{"id":"0dc0bb27226551b9","type":"file","file":"Data/LRU/CLRU/NegativeOffPoint/resonance.png","x":1754,"y":81,"width":400,"height":267,"color":"3"},
 		{"id":"f996c4043157d06f","type":"file","file":"Data/LRU/CLRU/NegativeOffPoint/below_100.png","x":1314,"y":401,"width":400,"height":267,"color":"3"},
 		{"id":"c5f350ff127cb6f9","type":"file","file":"Data/LRU/CLRU/NegativeOffPoint/above_100.png","x":1754,"y":721,"width":400,"height":267,"color":"3"},
-		{"id":"017f649bfa260035","x":880,"y":401,"width":389,"height":454,"color":"3","type":"text","text":"Below I tried to find the effective coupling, and the rabi oscillations to model it.\n$$\nP_{1 \\to 2}(t) = \\frac{4J^2}{\\Delta^2 + 4J^2} \\sin^{2}\\!\\left(\\frac{\\Omega t}{2}\\right)\n$$\nI derived the effective J from the tunable coupler formula.\n$$\nJ_{\\mathrm{eff}} = \\frac{J_c^2}{\\Delta} + J\n$$\n\nWhere for the $\\Delta$ I used the second level excitation frequency instead of the first one. **I don't know if this is valid?** To get good results, $J_\\textrm{eff}$ was multiplied by $1.62$.\n\n\n\n"},
+		{"id":"017f649bfa260035","type":"text","text":"Below I tried to find the effective coupling, and the rabi oscillations to model it.\n$$\nP_{1 \\to 2}(t) = \\frac{4J^2}{\\Delta^2 + 4J^2} \\sin^{2}\\!\\left(\\frac{\\Omega t}{2}\\right)\n$$\nI derived the effective J from the tunable coupler formula.\n$$\nJ_{\\mathrm{eff}} = \\frac{J_c^2}{\\Delta} + J\n$$\n\nWhere for the $\\Delta$ I used the second level excitation frequency instead of the first one. **I don't know if this is valid?** To get good results, $J_\\textrm{eff}$ was multiplied by $1.62$.\n\n\n\n","x":880,"y":401,"width":389,"height":454,"color":"3"},
 		{"id":"49fcc624863a676c","type":"file","file":"Data/LRU/CLRU/NegativeOffPoint/below_50.png","x":1314,"y":721,"width":400,"height":267,"color":"3"},
 		{"id":"c18b26b794e0a238","type":"file","file":"Data/LRU/CLRU/NegativeOffPoint/above_50.png","x":1754,"y":401,"width":400,"height":267,"color":"3"}
 	],

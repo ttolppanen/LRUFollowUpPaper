@@ -1,22 +1,35 @@
 using Distributions
 using Statistics
-
+using Plots
 
 function f()
-    width = 7
-    height = 7
-    n_sites = width * height
+    width = 8
+    height = 8
     
-    frequencies = rand(Normal(4.789996, 0.109104), n_sites)
-    anharmonicities = rand(Normal(-0.310393, 0.00548), n_sites)
-    J = 0.005 # 5MHz
-    Jc = 0.05 # 50MHz
+    J = 5 # 5MHz
+    Jc = 50 # 50MHz
 
-    w1 = 4
-    w2 = 4
-    wc = wc_idle(w1, w2, J, Jc)
-    println("Idle coupler frequency: ", round(wc, digits=4), " GHz")
-    J_eff([w1 - 0.3, wc, w2 - 0.3], [Jc, Jc, J])
+    initial_leakage_site = (height ÷ 2 + 1, width ÷ 2 + 1)
+    time_step = 0.014 # 14ns
+    total_time = 1 # 1mus, 1 round of error correction
+
+    n_traj = 10000
+    out = []
+    steps = 1:20
+    for step in steps
+        frequencies = rand(Normal(4789.996, 109.104 / step), height, width)
+        anharmonicities = rand(Normal(-310.393, 5.48 / step), height, width)
+        length_out = []
+        for _ in 1:n_traj
+            visited, circuit = simulate_leakage(width, height, frequencies, anharmonicities, J, Jc, initial_leakage_site, time_step, total_time)
+            push!(length_out, length(visited))
+        end
+        push!(out, mean(length_out))
+    end
+
+    circuit_size = width * height
+    path = joinpath(@__DIR__)
+    makeplot(path, LineInfo(steps, out / circuit_size, n_traj, "width = $(width), height = $(height)"); xlabel = "step", ylabel = "", copy_code = false)
 end
 
 function wc_idle(w1, w2, J, Jc) # Maybe missing + J? (+ 5 MHz)?
@@ -52,4 +65,84 @@ function J_eff(w, g)
     return j_eff
 end
 
-f()
+# 1 is the site we are hopping from, and 2 is the site we are hopping to
+function rabi_probability(w1, w2, wc, J, Jc, t)
+    Δ = (w1 - w2)
+    w = [w1, wc, w2]
+    g = [Jc, Jc, J]
+    J_e = J_eff(w, g) * 1.62 # magic factor
+    JJ = 4 * J_e^2
+    omega = sqrt(Δ^2 + JJ)
+    return JJ / omega^2 * sin(omega / 2 * t)^2
+end
+
+function is_point_inside(point, width, height)
+    y = point[1]
+    x = point[2]
+    return x >= 1 && x <= width && y >= 1 && y <= height
+end
+
+function adjacent_sites(site, width, height)
+    out = []
+    for neighbor in [(-1, 0), (1, 0), (0, -1), (0, 1)]
+        new_site = (site[1] + neighbor[1], site[2] + neighbor[2])
+        if is_point_inside(new_site, width, height)
+            push!(out, new_site)
+        end
+    end
+    return out
+end
+
+function random_x_gates!(circuit)
+    height, width = size(circuit)
+    for y in 1:height
+        for x in 1:width
+            site_val = circuit[y, x]
+            if site_val == 2
+                continue
+            end
+            if rand() < 0.5
+                if site_val == 0
+                    circuit[y, x] = 1
+                else
+                    circuit[y, x] = 0
+                end
+            end
+        end
+    end
+end
+
+function simulate_leakage(width, height, frequencies, anharmonicities, J, Jc, initial_leakage_site, time_step, total_time)
+    site = [initial_leakage_site...]
+    visited = Set{Tuple{Int, Int}}()
+    push!(visited, (site[1], site[2]))
+    circuit = zeros(Int, height, width)
+    circuit[initial_leakage_site...] = 2
+
+    time_since_jump = 0
+    for _ in 1:Int(div(total_time, time_step))
+        random_x_gates!(circuit)
+        time_since_jump += time_step
+        for next_site in adjacent_sites(site, width, height)
+            if circuit[next_site...] == 1
+                w1 = frequencies[site...]
+                w2 = frequencies[next_site...]
+                anh1 = anharmonicities[site...]
+                anh2 = anharmonicities[next_site...]
+                wc = wc_idle(w1, w2, J, Jc)
+                prob = rabi_probability(w1 + anh1, w2 + anh2, wc, J, Jc, time_since_jump * 2 * pi)
+                if prob > rand()
+                    circuit[site...] = 1
+                    circuit[next_site...] = 2
+                    site = [next_site...]
+                    push!(visited, (site[1], site[2]))
+                    time_since_jump = 0
+                    break
+                end
+            end
+        end
+    end
+    return visited, circuit
+end
+
+@time f()

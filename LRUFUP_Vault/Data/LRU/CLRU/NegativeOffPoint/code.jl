@@ -32,7 +32,7 @@ function initial_parameters()
     param[:J12] = ValueInfo(5, "5MHz")
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
     param[:w1] = ValueInfo(4000 / param[:J12].val, "4GHz")
-    param[:w2] = ValueInfo(4100 / param[:J12].val, "4GHz")
+    param[:w2] = ValueInfo(4000 / param[:J12].val, "4GHz")
     param[:wc] = ValueInfo(3505 / param[:J12].val, "3.505GHz")
     param[:U1] = ValueInfo(300 / param[:J12].val, "300MHz")
     U2 = 300
@@ -90,7 +90,7 @@ function f()
     # addtrajectories(path, line)
     w_second_level = [param[:w1].val - param[:U1].val, param[:wc].val - 1, param[:w2].val - param[:U2].val]
     
-    Δ = param[:w1].val - param[:w2].val
+    Δ = w_second_level[1] - w_second_level[3]
     pl = plot(n2_line.x, n2_line.y, label = "Δ = $(Δ * 5)")
     J_e = J_eff_new(w_second_level, g) * 1.62
     println("Effective J in second level: ", round(J_e * 5, digits=6), " MHz")
@@ -123,7 +123,7 @@ function J_eff_new(w, g)
     one_over_delta = 0.5 * (1 / delta_1 + 1 / delta_2)
     j_eff = -g[1] * g[2] * one_over_delta + g[3]
     if abs(j_eff) > (g[1] + g[3])
-        return g[1] + g[3]
+        return (g[1] + g[3])
     end
     return j_eff
 end
