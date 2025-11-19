@@ -1,17 +1,18 @@
 using Distributions
 using Statistics
 using Plots
+using PlotAndSave
 
 function f()
-    width = 8
-    height = 8
+    width = 7
+    height = 7
     
     J = 5 # 5MHz
     Jc = 50 # 50MHz
 
     initial_leakage_site = (height ÷ 2 + 1, width ÷ 2 + 1)
     time_step = 0.014 # 14ns
-    total_time = 1 # 1mus, 1 round of error correction
+    total_time = 10 # 1mus, 1 round of error correction
 
     n_traj = 10000
     out = []
