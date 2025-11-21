@@ -9,10 +9,10 @@
 		{"id":"4feb79325dfc3d63","type":"text","text":"This happens, and is generally fast. From the plot the time for the excitation to hop is roughly 20ns, so it is comparable to the gate time.","x":885,"y":81,"width":378,"height":133,"color":"3"},
 		{"id":"0dc0bb27226551b9","type":"file","file":"Data/LRU/CLRU/NegativeOffPoint/resonance.png","x":1754,"y":81,"width":400,"height":267,"color":"3"},
 		{"id":"f996c4043157d06f","type":"file","file":"Data/LRU/CLRU/NegativeOffPoint/below_100.png","x":1314,"y":401,"width":400,"height":267,"color":"3"},
-		{"id":"c5f350ff127cb6f9","type":"file","file":"Data/LRU/CLRU/NegativeOffPoint/above_100.png","x":1754,"y":721,"width":400,"height":267,"color":"3"},
 		{"id":"017f649bfa260035","type":"text","text":"Below I tried to find the effective coupling, and the rabi oscillations to model it.\n$$\nP_{1 \\to 2}(t) = \\frac{4J^2}{\\Delta^2 + 4J^2} \\sin^{2}\\!\\left(\\frac{\\Omega t}{2}\\right)\n$$\nI derived the effective J from the tunable coupler formula.\n$$\nJ_{\\mathrm{eff}} = \\frac{J_c^2}{\\Delta} + J\n$$\n\nWhere for the $\\Delta$ I used the second level excitation frequency instead of the first one. **I don't know if this is valid?** To get good results, $J_\\textrm{eff}$ was multiplied by $1.62$.\n\n\n\n","x":880,"y":401,"width":389,"height":454,"color":"3"},
 		{"id":"49fcc624863a676c","type":"file","file":"Data/LRU/CLRU/NegativeOffPoint/below_50.png","x":1314,"y":721,"width":400,"height":267,"color":"3"},
-		{"id":"c18b26b794e0a238","type":"file","file":"Data/LRU/CLRU/NegativeOffPoint/above_50.png","x":1754,"y":401,"width":400,"height":267,"color":"3"}
+		{"id":"c18b26b794e0a238","type":"file","file":"Data/LRU/CLRU/NegativeOffPoint/above_50.png","x":1754,"y":401,"width":400,"height":267,"color":"3"},
+		{"id":"c5f350ff127cb6f9","type":"file","file":"Data/LRU/CLRU/NegativeOffPoint/above_100.png","x":1754,"y":721,"width":400,"height":267,"color":"3"}
 	],
 	"edges":[
 		{"id":"bb76e426901aa39b","fromNode":"4cfcf615913b67ca","fromSide":"right","toNode":"7e626a360c431a9c","toSide":"left"},

@@ -2,6 +2,7 @@ using Distributions
 using Statistics
 using Plots
 using PlotAndSave
+using QuantumTimeEvolution
 
 function f()
     width = 7
@@ -12,25 +13,25 @@ function f()
 
     initial_leakage_site = (height ÷ 2 + 1, width ÷ 2 + 1)
     time_step = 0.014 # 14ns
-    total_time = 10 # 1mus, 1 round of error correction
+    total_time = 1 # 1mus, 1 round of error correction
 
-    n_traj = 10000
+    n_traj = 50000
     out = []
-    steps = 1:20
+    steps = range(0, 1, length=21)
     for step in steps
-        frequencies = rand(Normal(4789.996, 109.104 / step), height, width)
-        anharmonicities = rand(Normal(-310.393, 5.48 / step), height, width)
-        length_out = []
-        for _ in 1:n_traj
+        frequencies = rand(Normal(4789.996, 109.104 * step), height, width)
+        anharmonicities = rand(Normal(-310.393, 5.48 * step), height, width)
+        function r_f()
             visited, circuit = simulate_leakage(width, height, frequencies, anharmonicities, J, Jc, initial_leakage_site, time_step, total_time)
-            push!(length_out, length(visited))
+            return length(visited)
         end
-        push!(out, mean(length_out))
+        lengths = solvetrajectories(r_f, n_traj; paral = :threads)
+        push!(out, mean(lengths))
     end
 
     circuit_size = width * height
     path = joinpath(@__DIR__)
-    makeplot(path, LineInfo(steps, out / circuit_size, n_traj, "width = $(width), height = $(height)"); xlabel = "step", ylabel = "", copy_code = false)
+    makeplot(path, LineInfo(steps, out / circuit_size, n_traj, "width = $(width), height = $(height)"); xlabel = "% of Standard Deviation", ylabel = "% of circuit visited", copy_code = false, total_time)
 end
 
 function wc_idle(w1, w2, J, Jc) # Maybe missing + J? (+ 5 MHz)?
