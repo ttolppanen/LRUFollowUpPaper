@@ -3,26 +3,65 @@ using Statistics
 using Plots
 using PlotAndSave
 using QuantumTimeEvolution
+using OrderedCollections
 
-function f()
-    width = 7
-    height = 7
+function parameters()
+    param = OrderedDict()
+
+    param[:width] = 7
+    param[:height] = 7
+    
+    w = 4789.996
+    w_sd = 109.104
+    param[:w] = ValueInfo(w, "$(w)MHz")
+    param[:w_sd] = ValueInfo(w_sd, "$(w_sd)MHz")
+    
+    anh = -310.393
+    anh_sd = 5.48
+    param[:anh] = ValueInfo(anh, "$(anh)MHz")
+    param[:anh_sd] = ValueInfo(anh_sd, "$(anh_sd)MHz")
     
     J = 5 # 5MHz
     Jc = 50 # 50MHz
+    param[:J] = ValueInfo(J, "$(J)MHz")
+    param[:Jc] = ValueInfo(Jc, "$(Jc)MHz")
 
     initial_leakage_site = (height ÷ 2 + 1, width ÷ 2 + 1)
+    param[:initial_leakage_site] = ValueInfo(initial_leakage_site, "center")
+    
     time_step = 0.014 # 14ns
     total_time = 1 # 1mus, 1 round of error correction
+    param[:time_step] = ValueInfo(time_step, "$(time_step)μs")
+    param[:total_time] = ValueInfo(total_time, "$(total_time)μs")
+    
+    return param
+end
 
-    n_traj = 50000
+function f()
+    param = parameters()
+
+    width = param[:width]
+    height = param[:height]
+    
+    w = param[:w].val
+    w_sd = param[:w_sd].val
+    anh = param[:anh].val
+    anh_sd = param[:anh_sd].val
+    J = param[:J].val
+    Jc = param[:Jc].val
+
+    initial_leakage_site = param[:initial_leakage_site].val
+    time_step = param[:time_step].val
+    total_time = param[:total_time].val
+
+    n_traj = 1
     out = []
     steps = range(0, 1, length=21)
     for step in steps
-        frequencies = rand(Normal(4789.996, 109.104 * step), height, width)
-        anharmonicities = rand(Normal(-310.393, 5.48 * step), height, width)
+        frequencies = rand(Normal(w, w_sd * step), height, width)
+        anharmonicities = rand(Normal(anh, anh_sd * step), height, width)
         function r_f()
-            visited, circuit = simulate_leakage(width, height, frequencies, anharmonicities, J, Jc, initial_leakage_site, time_step, total_time)
+            visited, circuit, path = simulate_leakage(width, height, frequencies, anharmonicities, J, Jc, initial_leakage_site, time_step, total_time)
             return length(visited)
         end
         lengths = solvetrajectories(r_f, n_traj; paral = :threads)
@@ -122,6 +161,7 @@ function simulate_leakage(width, height, frequencies, anharmonicities, J, Jc, in
     circuit[initial_leakage_site...] = 2
 
     time_since_jump = 0
+    path = [copy(site...)]
     for _ in 1:Int(div(total_time, time_step))
         random_x_gates!(circuit)
         time_since_jump += time_step
@@ -143,8 +183,9 @@ function simulate_leakage(width, height, frequencies, anharmonicities, J, Jc, in
                 end
             end
         end
+        push!(path, copy(site...))
     end
-    return visited, circuit
+    return visited, circuit, path
 end
 
 @time f()

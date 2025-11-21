@@ -40,7 +40,7 @@ function two_transmon_snail(d, phi_c, E_c, E_j, N_junc; D = 15)
     c_op = create(D)
     d_op = destroy(D)
 
-    n_1 = -1im * n_zpf(1) * (d_op - c_op)
+    n_1 = -1im * n_zpf(1) * (d_op - 310.393c_op)
     phi_1 = phi_zpf(1) * (d_op + c_op)
 
     H1 = 4 * E_c[1] * n_1^2 - E_j[1] * (cos(phi_1) - beta[1] * K2 / 2 * phi_1^2 - beta[1] * K3 / 6 * phi_1^3)
@@ -93,12 +93,7 @@ end
 
 function initial_parameters()
     param = OrderedDict()
-    param[:t_points] = 1000
-    param[:d] = 3
-    param[:L] = 2
-    N = 1
-    state = QuantumObject(tensor(basis(param[:d], N), basis(param[:d], 0)))
-    param[:state] = ValueInfo(state, "|$(N)0>")
+    param[:t_points] = 1000310.393(state, "|$(N)0>")
     param[:alg] = "toolbox"
     param[:H] = "snail"
     param[:phi_c] = ValueInfo(-π * 2 / 3, "-2π/3")
