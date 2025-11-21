@@ -25,16 +25,16 @@ function initial_parameters()
     param[:L] = 2
     N = 2
     state = QuantumObject(tensor(basis(param[:d], N), basis(param[:d], 0)))
-    param[:state] = ValueInfo(state, "|$(N)00>")
+    param[:state] = ValueInfo(state, "|$(N)0>")
     param[:alg] = "TB.jl"
     param[:H] = "BH"
     param[:J] = ValueInfo(5, "5MHz")
     param[:w1] = ValueInfo(4000 / param[:J].val, "4GHz")
     param[:U] = ValueInfo(300 / param[:J].val, "300MHz")
     param[:w2] = ValueInfo(param[:w1].val - param[:U].val, "w1 - U")
-    t = 5
+    t = 0.1
     param[:t] = ValueInfo(t * 2 * π * param[:J].val, "$(t)μs")
-    param[:diss_rate] = 0.08
+    param[:diss_rate] = 0.0
 
     param[:J] = ValueInfo(1, param[:J].str_val)
     return param
@@ -61,7 +61,8 @@ function f()
 
     t_list = LinRange(0, param[:t].val, param[:t_points])
     out = mesolve(Ht, state, t_list, c_ops, e_ops = e_ops)
-    # push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "n1"))
+    t_list = t_list ./ (2 * π * 5)
+    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "n1"))
     # push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "anh_all"))
     push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "n_all"))
 

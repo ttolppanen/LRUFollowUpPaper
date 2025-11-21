@@ -96,7 +96,7 @@ function initial_parameters()
     param[:t_points] = 1000
     param[:d] = 3
     param[:L] = 2
-    N = 2
+    N = 1
     state = QuantumObject(tensor(basis(param[:d], N), basis(param[:d], 0)))
     param[:state] = ValueInfo(state, "|$(N)0>")
     param[:alg] = "toolbox"
