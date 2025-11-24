@@ -9,6 +9,8 @@ export qt_n_all
 export qt_bosehubbard
 export tunable_coupler
 export qt_tunable_coupler
+export tunnel_tunable_coupler
+export qt_tunnel_tunable_coupler
 export qt_two_transmon_snail
 export qt_two_transmon_snail_test
 export qt_single_transmon_snail
@@ -66,6 +68,13 @@ function tunable_coupler(w, U, g; J_sign = -1)
 end
 function qt_tunable_coupler(w, U, g; kwargs...)
     return QuantumObject(tunable_coupler(w, U, g; kwargs...), dims = (3, 3, 3))
+end
+
+function tunnel_tunable_coupler(w, U, g; J_sign = -1)
+    return bosehubbard(3, 5, [(1, 2, J_sign * g[1]), (2, 3, g[2]), (3, 4, J_sign * g[3]), (4, 5, g[4]), (1, 3, g[5]), (3, 5, g[5])]; w, U)
+end
+function qt_tunnel_tunable_coupler(w, U, g; kwargs...)
+    return QuantumObject(tunnel_tunable_coupler(w, U, g; kwargs...), dims = (3, 3, 3, 3, 3))
 end
 
 # phi_c can be for example -2π/3 or -π/2 (for -π/2 the K_2 term vanishes)
