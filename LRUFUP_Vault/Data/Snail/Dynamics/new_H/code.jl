@@ -40,20 +40,25 @@ function two_transmon_snail(d, phi_c, E_c, E_j, N_junc; D = 15)
     c_op = create(D)
     d_op = destroy(D)
 
-    n_1 = -1im * n_zpf(1) * (d_op - 310.393c_op)
+    n_1 = -1im * n_zpf(1) * (d_op - c_op)
     phi_1 = phi_zpf(1) * (d_op + c_op)
 
     H1 = 4 * E_c[1] * n_1^2 - E_j[1] * (cos(phi_1) - beta[1] * K2 / 2 * phi_1^2 - beta[1] * K3 / 6 * phi_1^3)
     λ, psi, U1 = eigenstates(H1)
     U1 = QuantumObject(U1, dims = D)
-    println(λ[1:3])
+    # println(λ[1:3])
+    println((λ[1:3] .- λ[1]))
+    a1 = λ[3] - λ[1]
     
     n_2 = -1im * n_zpf(2) * (d_op - c_op)
     phi_2 = phi_zpf(2) * (d_op + c_op)
     H2 = 4 * E_c[2] * n_2^2 - E_j[2] * (cos(phi_2) - beta[2] * K2 / 2 * phi_2^2 + beta[2] * K3 / 6 * phi_2^3)
     λ, psi, U2 = eigenstates(H2)
     U2 = QuantumObject(U2, dims = D)
-    println(λ[1:3])
+    # println(λ[1:3])
+    println((λ[1:3] .- λ[1]))
+    a2 = λ[2] - λ[1]
+    println("Resonance: $(a1 - a2)")
 
     U = tensor(U1, U2)
     coupling = -E_j[3] * (K2 * tensor(phi_1, phi_2) - K3 / 2 * (tensor(phi_1, phi_2^2) - tensor(phi_1^2, phi_2)))
@@ -83,30 +88,35 @@ function two_transmon_snail(d, phi_c, E_c, E_j, N_junc; D = 15)
     #     H[second, first] H[second, second] H[second, third];
     #     H[third, first] H[third, second] H[third, third]] # cutted dimensions
     H = QuantumObject(H_out, dims = (d, d))
-    λ, psi, U2 = eigenstates(H)
-    E = labeled_eigenvalue_dict(λ, d)
-    println("00 -> 20 = $(E["20"] - E["00"])")
-    # println("00 -> 10 = $(E["10"] - E["00"])")
-    println("00 -> 01 = $(E["01"] - E["00"])")
+    # λ, psi, U2 = eigenstates(H)
+    # E = labeled_eigenvalue_dict(λ, d)
+    # println("00 -> 20 = $(E["20"] - E["00"])")
+    # # println("00 -> 10 = $(E["10"] - E["00"])")
+    # println("00 -> 01 = $(E["01"] - E["00"])")
     return QuantumObject(H_out, dims = (d, d))
 end
 
 function initial_parameters()
     param = OrderedDict()
-    param[:t_points] = 1000310.393(state, "|$(N)0>")
+    param[:t_points] = 1000
+    param[:d] = 3
+    param[:L] = 2
+    N = 2
+    state = QuantumObject(tensor(basis(param[:d], N), basis(param[:d], 0)))
+    param[:state] = ValueInfo(state, "|$(N)0>")
     param[:alg] = "toolbox"
     param[:H] = "snail"
     param[:phi_c] = ValueInfo(-π * 2 / 3, "-2π/3")
-    Ej1 = 2.5
+    Ej1 = 20.1
     param[:Ej1] = ValueInfo(Ej1, "$(Ej1)GHz")
     param[:Ej2] = ValueInfo(7.1, "7.1 * EJ1")
-    param[:Ec1] = ValueInfo(0.3 / param[:Ej1].val, "300MHz")
+    param[:Ec1] = ValueInfo(0.374 / param[:Ej1].val, "300MHz")
     param[:Ec2] = ValueInfo(0.195 / param[:Ej1].val, "195MHz")
-    param[:Ej_snail] = ValueInfo(3 / 2 , "3/2*EJ1")
+    param[:Ej_snail] = ValueInfo(0.1 * 3 / 2 , "3/2*EJ1")
     param[:N_junc] = 2
-    t = 10
+    t = 200
     param[:t] = ValueInfo(t * 2 * π * param[:Ej1].val, "$(t)ns")
-    param[:diss_rate] = 0 * 30 * 5 * 10^-3 / Ej1
+    param[:diss_rate] = 1 * 0.08 * 30 * 5 * 10^-3 / Ej1
 
     param[:Ej1] = ValueInfo(1, param[:Ej1].str_val)
     return param
@@ -123,7 +133,8 @@ function f()
 
     n1 = qt_single_site_op(d, L, num(d), 1)
     n2 = qt_single_site_op(d, L, num(d), 2)
-    e_ops = [n1, qt_anh_all(d, L), qt_n_all(d, L), n2]
+    anh1 = qt_single_site_op(d, L, qt_anh_op(d), 1)
+    e_ops = [n1, qt_anh_all(d, L), qt_n_all(d, L), n2, anh1]
     
     c_ops = [sqrt(param[:diss_rate]) * qt_single_site_op(d, L, destroy(d), L)]
 
@@ -134,9 +145,9 @@ function f()
     t_list = LinRange(0, param[:t].val, param[:t_points])
     out = mesolve(H, state, t_list, c_ops, e_ops = e_ops)
     push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "n1"))
-    push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "anh_all"))
-    push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "n_all"))
-    push!(lines, LineInfo(t_list, real(out.expect[4, :]), 1, "n2"))
+    # push!(lines, LineInfo(t_list, real(out.expect[5, :]), 1, "anh"))
+    # push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "n_all"))
+    # push!(lines, LineInfo(t_list, real(out.expect[4, :]), 1, "n2"))
 
     path = joinpath(@__DIR__)
     makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
@@ -146,7 +157,9 @@ function f()
     # drive_op = drive_op / 2
     # pulse = gaussian_pulse(param[:gate_time].val, π)
     # Ht = H + QobjEvo(drive_op, (p, t) -> pulse(t))
+    # pl = plot(lines[1].x, lines[1].y, ylim = (0, 1.1))
+    # plot!(pl, lines[1].x, t -> exp(-t / (2 * π * 20.1) / 30))
 end
 
 
-@time f();
+@time f()
