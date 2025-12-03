@@ -1,0 +1,21 @@
+{
+	"nodes":[
+		{"id":"39f210911c8cfed3","x":640,"y":-400,"width":1780,"height":727,"color":"3","type":"group","label":"With first good parameters"},
+		{"id":"054e670286c89b3b","type":"text","text":"# SNAIL LRU","x":-226,"y":-79,"width":250,"height":60,"color":"6"},
+		{"id":"6c47e582d073a5fe","type":"text","text":"Can we find good parameters, and does the qubit protection and leakage removal look like?","x":220,"y":-108,"width":265,"height":118,"color":"1"},
+		{"id":"1463dcc8b31f3150","type":"text","text":"With Dissipation","x":1595,"y":-380,"width":250,"height":60},
+		{"id":"3bca41bf89a7e741","type":"text","text":"Qubit and leakage lifetime","x":2075,"y":-380,"width":250,"height":60},
+		{"id":"4a4a886c09c0932b","type":"file","file":"Data/Snail/FirstGoodParameters/10_diss.png","x":1520,"y":-273,"width":400,"height":267},
+		{"id":"ce1d6203e029e10e","type":"file","file":"Data/Snail/FirstGoodParameters/20_no_diss.png","x":1520,"y":40,"width":400,"height":267},
+		{"id":"c5e1404eac604945","type":"file","file":"Data/Snail/FirstGoodParameters/qubit_t1_fit.png","x":2000,"y":-273,"width":400,"height":267},
+		{"id":"d903aafa5792b73a","type":"file","file":"Data/Snail/FirstGoodParameters/leakage_t1_fit.png","x":2000,"y":40,"width":400,"height":267},
+		{"id":"35953ec972fd90ce","type":"text","text":"No Dissipation\n","x":1095,"y":-380,"width":250,"height":60},
+		{"id":"7edc9f81c1541040","type":"file","file":"Data/Snail/FirstGoodParameters/20_no_diss.png","x":1020,"y":40,"width":400,"height":267},
+		{"id":"e93ec872573da620","type":"file","file":"Data/Snail/FirstGoodParameters/10_no_diss.png","x":1020,"y":-273,"width":400,"height":267},
+		{"id":"0887a2cf8de0256d","type":"text","text":"We can have good leakage mobility and very restricted qubit interaction!\nThe parameters used here are:\n$$\n\\begin{aligned}\nE_{J1} &= 10~\\text{GHz}, \\\\\nE_{J2} &= 28.03~\\text{GHz}, \\\\\nE_{C1} &= 250~\\text{MHz}, \\\\\nE_{C2} &= 320~\\text{MHz}, \\\\\nE_{J,\\mathrm{snail}} &= 0.18~\\text{GHz}, \\\\\n\\phi_{c} &= -0.55\\pi, \\\\\nN_{\\mathrm{junc}} &= 2.\n\\end{aligned}\n$$\nHere $E_{J2}$ is a lot larger than $E_{J1}$. The ratio of them can be made smaller by having larger $E_{C2} / E_{C1}$.\n\nThe qubit lifetime is good, it is order of milliseconds. Leakage removal time is very fast! So, I think there is room to have even smaller $E_{J,\\mathrm{snail}}$.\n\nIt could be that since we need to have such high frequency for the second transmons which removes the leakage, it can limit how high the frequency of the qubit can be?","x":660,"y":-380,"width":320,"height":687}
+	],
+	"edges":[
+		{"id":"3c3df0e4bf15977c","fromNode":"054e670286c89b3b","fromSide":"right","toNode":"6c47e582d073a5fe","toSide":"left"},
+		{"id":"378a0c22eb5a4769","fromNode":"6c47e582d073a5fe","fromSide":"right","toNode":"39f210911c8cfed3","toSide":"left"}
+	]
+}

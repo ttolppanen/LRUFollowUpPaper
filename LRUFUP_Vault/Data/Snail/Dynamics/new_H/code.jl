@@ -8,6 +8,7 @@ using OrderedCollections
 using SparseArrays
 using LocalPackages
 using QuantumToolbox
+using QuantumTimes
 
 function traj_mean(result)
     out = zeros(size(result[1]))
@@ -101,22 +102,23 @@ function initial_parameters()
     param[:t_points] = 1000
     param[:d] = 3
     param[:L] = 2
-    N = 2
+    N = 1
     state = QuantumObject(tensor(basis(param[:d], N), basis(param[:d], 0)))
     param[:state] = ValueInfo(state, "|$(N)0>")
     param[:alg] = "toolbox"
     param[:H] = "snail"
-    param[:phi_c] = ValueInfo(-π * 2 / 3, "-2π/3")
+    param[:phi_c] = ValueInfo(-π * 0.55, "-2π/3")
     Ej1 = 20.1
     param[:Ej1] = ValueInfo(Ej1, "$(Ej1)GHz")
     param[:Ej2] = ValueInfo(7.1, "7.1 * EJ1")
-    param[:Ec1] = ValueInfo(0.374 / param[:Ej1].val, "300MHz")
+    ec1 = 0.3966
+    param[:Ec1] = ValueInfo(ec1 / param[:Ej1].val, "$(ec1 * 1e3)MHz")
     param[:Ec2] = ValueInfo(0.195 / param[:Ej1].val, "195MHz")
-    param[:Ej_snail] = ValueInfo(0.1 * 3 / 2 , "3/2*EJ1")
+    param[:Ej_snail] = ValueInfo(0.018, "0.018*EJ1")
     param[:N_junc] = 2
-    t = 200
+    t = 1000
     param[:t] = ValueInfo(t * 2 * π * param[:Ej1].val, "$(t)ns")
-    param[:diss_rate] = 1 * 0.08 * 30 * 5 * 10^-3 / Ej1
+    param[:diss_rate] = 1 * 0.12 * 30 * 5 * 1e-3 / Ej1
 
     param[:Ej1] = ValueInfo(1, param[:Ej1].str_val)
     return param
@@ -147,7 +149,7 @@ function f()
     push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "n1"))
     # push!(lines, LineInfo(t_list, real(out.expect[5, :]), 1, "anh"))
     # push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "n_all"))
-    # push!(lines, LineInfo(t_list, real(out.expect[4, :]), 1, "n2"))
+    push!(lines, LineInfo(t_list, real(out.expect[4, :]), 1, "n2"))
 
     path = joinpath(@__DIR__)
     makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
@@ -159,7 +161,18 @@ function f()
     # Ht = H + QobjEvo(drive_op, (p, t) -> pulse(t))
     # pl = plot(lines[1].x, lines[1].y, ylim = (0, 1.1))
     # plot!(pl, lines[1].x, t -> exp(-t / (2 * π * 20.1) / 30))
+    # t_time_from_n(t_list, real(out.expect[1, :]), 20.1 * 1e9)
 end
 
+function t_time_from_n(times, population, J)
+    x = times
+    y = real(population)
+    pl = plot(x, y)
+    n = length(times) # adjust here to make fit better
+    # n = 200
+    c, slope, f_fit = exp_fit(x[1:n], y[1:n], 1)
+    println(-1 / slope / (2 * π * J * 1e-3), "ms")
+    plot!(x, f_fit)
+end
 
 @time f()

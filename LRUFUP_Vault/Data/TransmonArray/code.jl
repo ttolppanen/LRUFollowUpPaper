@@ -22,20 +22,21 @@ function initial_parameters()
     param = OrderedDict()
     param[:t_points] = 1000
     param[:d] = 3
-    param[:L] = 3
-    N1 = 2
-    N2 = 1
-    state = QuantumObject(tensor(basis(param[:d], N1), basis(param[:d], N2), basis(param[:d], N2)))
+    param[:L] = 2
+    N1 = 1
+    N2 = 0
+    state = QuantumObject(tensor(basis(param[:d], N1), basis(param[:d], N2)))
     param[:state] = ValueInfo(state, "|$(N1)$(N2)>")
     param[:alg] = "toolbox"
     param[:H] = "Tunable Coupler"
     param[:J] = ValueInfo(5, "5MHz")
-    param[:w] = ValueInfo(4000 / param[:J].val, "4GHz")
+    param[:w1] = ValueInfo(4000 / param[:J].val, "4GHz")
+    param[:w2] = ValueInfo(3700 / param[:J].val, "3.7GHz")
     wd = 100
-    param[:wd] = ValueInfo(wd / param[:J].val, "$(wd)MHz")
+    # param[:wd] = ValueInfo(wd / param[:J].val, "$(wd)MHz")
     U = 300
     param[:U] = ValueInfo(U / param[:J].val, "$(U)MHz")
-    t = 0.1
+    t = 0.05
     param[:t] = ValueInfo(t * 2 * π * param[:J].val, "$(t)μs")
     param[:J] = ValueInfo(1, param[:J].str_val)
     return param
@@ -52,10 +53,9 @@ function f()
 
     n1 = qt_single_site_op(d, L, num(d), 1)
     n2 = qt_single_site_op(d, L, num(d), 2)
-    n3 = qt_single_site_op(d, L, num(d), 3)
-    e_ops = [n1, qt_anh_all(d, L), qt_n_all(d, L), n2, n3]
+    e_ops = [n1, qt_anh_all(d, L), qt_n_all(d, L), n2]
 
-    w = rand(L) * param[:wd].val .+ param[:w].val
+    w = [param[:w1].val, param[:w2].val]
     H = qt_bosehubbard(d, L; J = param[:J].val, U = param[:U].val, w)
 
     t_list = LinRange(0, param[:t].val, param[:t_points])
@@ -63,8 +63,8 @@ function f()
     push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "n1"))
 
     # push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "n_all"))
-    push!(lines, LineInfo(t_list, real(out.expect[4, :]), 1, "n2"))
-    push!(lines, LineInfo(t_list, real(out.expect[5, :]), 1, "n3"))
+    # push!(lines, LineInfo(t_list, real(out.expect[4, :]), 1, "n2"))
+    # push!(lines, LineInfo(t_list, real(out.expect[5, :]), 1, "n3"))
     # push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "anh_all"))
 
 
