@@ -7,6 +7,9 @@
 		{"id":"878059622f7705a3","type":"group","x":660,"y":-20,"width":540,"height":587,"label":"Single trajectories"},
 		{"id":"d59dd7da11ec7ac9","type":"group","x":1300,"y":-20,"width":440,"height":626,"label":"U = 150MHz"},
 		{"id":"80dd73dc726715ca","type":"group","x":1820,"y":-16,"width":440,"height":622,"label":"U = 250MHz"},
+		{"id":"20856a2d26caa53f","type":"text","text":"Some times we can induce the leakage to split in to a stack, which then causes a lot of problems on the qubit.","x":4640,"y":461,"width":312,"height":134},
+		{"id":"baca69619a14c76b","type":"text","text":"With the coupler LRU, we get to choose such a large dissipation rate, that in-between gates there is no leakage! (for these parameters)","x":4730,"y":-210,"width":250,"height":201},
+		{"id":"c99b729c7cdc1512","type":"text","text":"Tuanble coupler LRU seems to perform very well!","x":5377,"y":114,"width":250,"height":119,"color":"4"},
 		{"id":"46f2cf072e452dbe","type":"text","text":"Gate used is the x-gate (a + a_dag), with gaussian envelope with cutoff. In general the drive is same as the first transmon transition frequency. RWA was used to get more stabile results for a smaller time-step.","x":739,"y":-260,"width":385,"height":156},
 		{"id":"89102f364fa9d9b1","type":"file","file":"Data/Driving/SingleQubitDriveLRURWA/good.png","x":671,"y":0,"width":260,"height":173},
 		{"id":"2ad69f3519996c2f","type":"text","text":"Here the drive frequency is $1.002\\omega_1$.","x":960,"y":0,"width":220,"height":87},
@@ -29,10 +32,7 @@
 		{"id":"cf272fb1a132cda5","type":"text","text":"Are the parameters not realistic? Or chosen for our benefit? Especially the gate repetition time $1\\mu s$?","x":2580,"y":480,"width":255,"height":123,"color":"1"},
 		{"id":"c07eb2a7a2c78ba3","type":"text","text":"While our LRU is not capable of removing all the leakage, it does bound the total leakage, so that leakage cannot fully occupy the circuit. Also, the LRU works for small amounts of leakage.","x":2580,"y":53,"width":250,"height":240,"color":"4"},
 		{"id":"1097b989dead2906","type":"file","file":"Data/Driving/DriveCouplerLRU/traj/with_diss.png","x":4300,"y":-210,"width":400,"height":267},
-		{"id":"69e205712e050110","type":"file","file":"Data/Driving/DriveCouplerLRU/traj/without_diss.png","x":4300,"y":97,"width":400,"height":267},
-		{"id":"20856a2d26caa53f","type":"text","text":"Some times we can induce the leakage to split in to a stack, which then causes a lot of problems on the qubit.","x":4640,"y":461,"width":312,"height":134},
-		{"id":"baca69619a14c76b","type":"text","text":"With the coupler LRU, we get to choose such a large dissipation rate, that in-between gates there is no leakage! (for these parameters)","x":4730,"y":-210,"width":250,"height":201},
-		{"id":"c99b729c7cdc1512","type":"text","text":"Tuanble coupler LRU seems to perform very well!","x":5377,"y":114,"width":250,"height":119,"color":"4"}
+		{"id":"69e205712e050110","type":"file","file":"Data/Driving/DriveCouplerLRU/traj/without_diss.png","x":4300,"y":97,"width":400,"height":267}
 	],
 	"edges":[
 		{"id":"960a96098bc785f8","fromNode":"5c86774d7df7ac41","fromSide":"right","toNode":"ebad29d1dce194f6","toSide":"left"},

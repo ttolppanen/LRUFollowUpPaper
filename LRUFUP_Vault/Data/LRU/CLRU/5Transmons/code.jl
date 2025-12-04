@@ -23,8 +23,8 @@ function initial_parameters()
     param[:t_points] = 1000
     param[:d] = 3
     param[:L] = 5
-    N1 = 0
-    N2 = 1
+    N1 = 2
+    N2 = 2
     N3 = 0
     state = QuantumObject(tensor(basis(param[:d], N1), basis(param[:d], 0), basis(param[:d], N2), basis(param[:d], 0), basis(param[:d], N3)))
     param[:state] = ValueInfo(state, "|$(N1)0$(N2)0$(N3)>")

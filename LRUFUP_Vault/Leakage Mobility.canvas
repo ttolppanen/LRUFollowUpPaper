@@ -1,7 +1,8 @@
 {
 	"nodes":[
+		{"id":"633722981cddb536","type":"group","x":-1080,"y":1180,"width":2240,"height":692,"color":"3","label":"Leakage Tunneling"},
+		{"id":"ae7706182cb5dd6e","x":-380,"y":2780,"width":2140,"height":594,"color":"3","type":"group","label":"Middle transmon higher in frequency"},
 		{"id":"60bd5f11aad7a9d6","type":"group","x":860,"y":60,"width":1314,"height":948,"color":"3","label":"21 -> 12 transition"},
-		{"id":"633722981cddb536","type":"group","x":-840,"y":1200,"width":1768,"height":692,"color":"3","label":"Leakage Tunneling"},
 		{"id":"4cfcf615913b67ca","type":"text","text":"How is leakage mobility in 2D - transmon grids with tunable couplers?","x":-83,"y":-46,"width":283,"height":126,"color":"1"},
 		{"id":"7e626a360c431a9c","type":"text","text":"$|20\\rangle \\rightarrow |02\\rangle$ transition","x":360,"y":-124,"width":250,"height":60,"color":"1"},
 		{"id":"338da2ad90bec2ad","type":"text","text":"$|21\\rangle \\rightarrow |12\\rangle$ transition","x":360,"y":80,"width":250,"height":60,"color":"1"},
@@ -17,13 +18,23 @@
 		{"id":"c18b26b794e0a238","type":"file","file":"Data/LRU/CLRU/NegativeOffPoint/above_50.png","x":1754,"y":401,"width":400,"height":267,"color":"3"},
 		{"id":"c5f350ff127cb6f9","type":"file","file":"Data/LRU/CLRU/NegativeOffPoint/above_100.png","x":1754,"y":721,"width":400,"height":267,"color":"3"},
 		{"id":"c4861a13c307b7ee","type":"text","text":"Tunneling is not a relevant for leakage mobility in tunable coupler setups.","x":-96,"y":2120,"width":250,"height":120,"color":"4"},
-		{"id":"39062714d77139a1","type":"file","file":"Data/LRU/CLRU/5Transmons/200.png","x":-440,"y":1232,"width":400,"height":267},
-		{"id":"def266ab50b5308c","type":"file","file":"Data/LRU/CLRU/5Transmons/210.png","x":-3,"y":1232,"width":400,"height":267},
-		{"id":"49252987761d26c5","type":"file","file":"Data/LRU/CLRU/5Transmons/211.png","x":-3,"y":1530,"width":400,"height":267},
-		{"id":"17076d99f52653e6","type":"file","file":"Data/LRU/CLRU/5Transmons/201.png","x":-440,"y":1530,"width":400,"height":267},
-		{"id":"4e7d4ad16254c8fb","type":"file","file":"Data/LRU/CLRU/5Transmons/020.png","x":508,"y":1232,"width":400,"height":267},
-		{"id":"4bddb67145fee16a","type":"file","file":"Data/LRU/CLRU/5Transmons/121.png","x":508,"y":1530,"width":400,"height":267},
-		{"id":"5cef2c7a3e9f60d4","type":"text","text":"In tunable coupler setups they use CZ gate, and for this they tune the transmons to be near $|20\\rangle \\rightarrow |11\\rangle$ resonance. With this resonance, the transmons are anharmonicity $U$ detuned, and no leakage mobility happens. But with this setup the next nearest neighbors would be on resonance, so tunneling might be relevant.\n\nThe result is that there is mostly no leakage mobility. When the two qubits are populated, then there is slow tunneling, but it is not a fast process. The time here is $1\\mu s$, so in your typical error correction cycle the leakage would not passively move a lot in this kind of tunable coupler setup (Here the coupler is off so that the $|20\\rangle \\rightarrow |11\\rangle$ transition is off-resonant, previously it was the $|10\\rangle \\rightarrow |01\\rangle$).\n\nAdditional result not related to leakage mobility, in the middle transmon a lot of the population seems to go to the couplers, so there could be a possibility for leakage removal.","x":-820,"y":1237,"width":357,"height":635}
+		{"id":"a93e7e7792ef3656","type":"text","text":"In the previous results the middle transmon is lower in frequency than the edge ones, what if the middle one is higher?","x":320,"y":2440,"width":240,"height":160,"color":"1"},
+		{"id":"7894ee873a2b9397","type":"file","file":"Data/LRU/CLRU/5Transmons/EdgeTransmonsLower/210.png","x":371,"y":2800,"width":400,"height":267,"color":"3"},
+		{"id":"e17154a53b5c1280","type":"file","file":"Data/LRU/CLRU/5Transmons/EdgeTransmonsLower/211.png","x":371,"y":3087,"width":400,"height":267,"color":"3"},
+		{"id":"c6e814372e6e18e5","type":"file","file":"Data/LRU/CLRU/5Transmons/EdgeTransmonsLower/020.png","x":858,"y":2800,"width":400,"height":267,"color":"3"},
+		{"id":"3d368ac3079fa0e1","type":"file","file":"Data/LRU/CLRU/5Transmons/EdgeTransmonsLower/121.png","x":858,"y":3087,"width":400,"height":267,"color":"3"},
+		{"id":"930be7a52bece1ee","x":1320,"y":2800,"width":400,"height":267,"type":"file","file":"Data/LRU/CLRU/5Transmons/EdgeTransmonsLower/220.png"},
+		{"id":"34ac1d70a09563c6","type":"text","text":"Here, the middle transmon is higher in frequency compared to the edge ones\n$$\nw_2 = w_1 + U = w_3 + U.\n$$\nHere there actually is relevant tunneling between the transmons! And if both of the qubits in the middle are populated, the leakage propagation is faster!\n\nNote that the parameters needed to be adjusted here. To get the middle transmon to idle related to the $|20\\rangle \\rightarrow |11\\rangle$  transition, the edge transmons needed a bit higher higher frequency and the couplers also higher.","x":-360,"y":2800,"width":250,"height":554,"color":"3"},
+		{"id":"a9c074782b1f3ef2","type":"file","file":"Data/LRU/CLRU/5Transmons/EdgeTransmonsLower/200.png","x":-49,"y":2800,"width":400,"height":267,"color":"3"},
+		{"id":"bae65229ab80ffd0","type":"file","file":"Data/LRU/CLRU/5Transmons/EdgeTransmonsLower/201.png","x":-49,"y":3087,"width":400,"height":267,"color":"3"},
+		{"id":"39062714d77139a1","type":"file","file":"Data/LRU/CLRU/5Transmons/200.png","x":-680,"y":1212,"width":400,"height":267},
+		{"id":"def266ab50b5308c","type":"file","file":"Data/LRU/CLRU/5Transmons/210.png","x":-243,"y":1212,"width":400,"height":267},
+		{"id":"5cef2c7a3e9f60d4","type":"text","text":"In tunable coupler setups they use CZ gate, and for this they tune the transmons to be near $|20\\rangle \\rightarrow |11\\rangle$ resonance. With this resonance, the transmons are anharmonicity $U$ detuned, and no leakage mobility happens. But with this setup the next nearest neighbors would be on resonance, so tunneling might be relevant.\n\nThe result is that there is mostly no leakage mobility. When the two qubits are populated, then there is slow tunneling, but it is not a fast process. The time here is $1\\mu s$, so in your typical error correction cycle the leakage would not passively move a lot in this kind of tunable coupler setup (Here the coupler is off so that the $|20\\rangle \\rightarrow |11\\rangle$ transition is off-resonant, previously it was the $|10\\rangle \\rightarrow |01\\rangle$).\n\nAdditional result not related to leakage mobility, in the middle transmon a lot of the population seems to go to the couplers, so there could be a possibility for leakage removal.","x":-1060,"y":1217,"width":357,"height":635},
+		{"id":"4e7d4ad16254c8fb","type":"file","file":"Data/LRU/CLRU/5Transmons/020.png","x":268,"y":1212,"width":400,"height":267},
+		{"id":"49252987761d26c5","type":"file","file":"Data/LRU/CLRU/5Transmons/211.png","x":-243,"y":1510,"width":400,"height":267},
+		{"id":"17076d99f52653e6","type":"file","file":"Data/LRU/CLRU/5Transmons/201.png","x":-680,"y":1510,"width":400,"height":267},
+		{"id":"4bddb67145fee16a","type":"file","file":"Data/LRU/CLRU/5Transmons/121.png","x":268,"y":1510,"width":400,"height":267},
+		{"id":"d755def38f791df6","x":720,"y":1212,"width":400,"height":267,"type":"file","file":"Data/LRU/CLRU/5Transmons/220.png"}
 	],
 	"edges":[
 		{"id":"bb76e426901aa39b","fromNode":"4cfcf615913b67ca","fromSide":"right","toNode":"7e626a360c431a9c","toSide":"left"},
@@ -33,6 +44,8 @@
 		{"id":"535a248d3aca287d","fromNode":"338da2ad90bec2ad","fromSide":"right","toNode":"0af9b38c5149c3c1","toSide":"top"},
 		{"id":"f29f97fb64020a4d","fromNode":"4cfcf615913b67ca","fromSide":"bottom","toNode":"c3cf845f70a2559c","toSide":"top"},
 		{"id":"724f27382faa27d4","fromNode":"c3cf845f70a2559c","fromSide":"bottom","toNode":"633722981cddb536","toSide":"top"},
-		{"id":"f58b6da138224a05","fromNode":"633722981cddb536","fromSide":"bottom","toNode":"c4861a13c307b7ee","toSide":"top"}
+		{"id":"f58b6da138224a05","fromNode":"633722981cddb536","fromSide":"bottom","toNode":"c4861a13c307b7ee","toSide":"top"},
+		{"id":"dbf4cffa6fd1cdbe","fromNode":"c4861a13c307b7ee","fromSide":"bottom","toNode":"a93e7e7792ef3656","toSide":"top"},
+		{"id":"294bdd3d245d90d8","fromNode":"a93e7e7792ef3656","fromSide":"bottom","toNode":"ae7706182cb5dd6e","toSide":"top"}
 	]
 }
