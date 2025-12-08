@@ -23,12 +23,12 @@ function initial_parameters()
     param[:t_points] = 1000
     param[:d] = 3
     param[:L] = 3
-    N1 = 1
+    N1 = 0
+    Nc = 0
     N2 = 2
     # N3 = 0
-    state = QuantumObject(tensor(basis(param[:d], N1), basis(param[:d], 0), basis(param[:d], N2)))
-    # param[:state] = ValueInfo(state, "|$(N1)0$(N2)0$(N3)>")
-    param[:state] = ValueInfo(state, "|$(N1)0$(N2)>")
+    state = QuantumObject(tensor(basis(param[:d], N1), basis(param[:d], Nc), basis(param[:d], N2)))
+    param[:state] = ValueInfo(state, "|$(N1)$(Nc)$(N2)>")
     param[:alg] = "toolbox"
     param[:H] = "Tunable Coupler"
     param[:J] = ValueInfo(5, "5MHz")
@@ -39,7 +39,7 @@ function initial_parameters()
     param[:wc1] = ValueInfo(3206 / param[:J].val, "3.206GHz")
     # param[:wc2] = ValueInfo(3206 / param[:J].val, "3.206GHz")
     param[:U] = ValueInfo(300 / param[:J].val, "300MHz")
-    t = 0.1
+    t = 0.03
     param[:t] = ValueInfo(t * 2 * π * param[:J].val, "$(t)μs")
 
     param[:wd] = ValueInfo(4007 / param[:J].val, "4.007GHz")
@@ -82,6 +82,7 @@ function f()
     out = mesolve(H, state, t_list, e_ops = e_ops)
 
     # push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "n1"))
+    push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "anh"))
     push!(lines, LineInfo(t_list, real(out.expect[5, :]), 1, "anh_1"))
     # push!(lines, LineInfo(t_list, real(out.expect[4, :]), 1, "n2"))
     # push!(lines, LineInfo(t_list, real(out.expect[5, :]), 1, "n3"))
