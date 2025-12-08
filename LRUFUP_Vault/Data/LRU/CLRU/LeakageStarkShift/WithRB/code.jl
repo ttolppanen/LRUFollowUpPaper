@@ -53,8 +53,9 @@ function f()
     lines = []
     d = param[:d]; L = param[:L]
 
-    proj_1 = tensor(qeye(d), qeye(d), qeye(d)) - qt_single_site_op(d, L, qt_anh_op(d), 1) / 2
-    # proj_1 = qt_anh_all(d, L)
+    # proj_1 = tensor(qeye(d), qeye(d), qeye(d)) - qt_single_site_op(d, L, qt_anh_op(d), 1) / 2 # subspace
+    # proj_1 = qt_anh_all(d, L) # total anharmonicity
+    proj_1 = qt_n_all(d, L) # total excitation number
 
     w = [param[:w1].val, param[:wc].val, param[:w2].val] .- param[:wd].val
     U = [param[:U].val for _ in 1:L]
@@ -94,7 +95,7 @@ function f()
         push!(out, traj_mean(r_out))
     end
 
-    push!(lines, LineInfo(Ns, out, traj, "First Qubit Subspace Population"))
+    push!(lines, LineInfo(Ns, out, traj, "Total boson number"))
 
     path = joinpath(@__DIR__)
     makeplot(path, lines...; xlabel = "i", ylabel = "", copy_code = false, param...)

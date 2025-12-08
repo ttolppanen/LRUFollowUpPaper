@@ -1,0 +1,43 @@
+{
+	"nodes":[
+		{"id":"56057ab7110096ab","type":"group","x":-880,"y":560,"width":2080,"height":1040,"color":"3","label":"Randomized Benchmarking With Leakage on Neighboring Site"},
+		{"id":"6e613d500839837e","x":440,"y":2660,"width":1640,"height":881,"color":"3","type":"group","label":"RB With Qubits Reversed (In frequency)"},
+		{"id":"23cee119ea6bf4b1","type":"text","text":"# What processes can replicate/create new leakage?","x":-320,"y":-180,"width":309,"height":160,"color":"1"},
+		{"id":"8a6f44d4da154d72","type":"text","text":"Single excitation on neighboring site","x":-480,"y":1051,"width":167,"height":100},
+		{"id":"b6c1dde790347dc6","type":"text","text":"Empty second site","x":-480,"y":784,"width":180,"height":60},
+		{"id":"d4b2071fa4494ade","type":"file","file":"Data/LRU/CLRU/LeakageStarkShift/WithRB/without_leakage.png","x":160,"y":660,"width":400,"height":267},
+		{"id":"06a0a234325afc8a","type":"file","file":"Data/LRU/CLRU/LeakageStarkShift/WithRB/with_single.png","x":160,"y":967,"width":400,"height":267},
+		{"id":"5704cab9858f9aa8","type":"file","file":"Data/LRU/CLRU/LeakageStarkShift/WithRB/boson_number_with_single.png","x":600,"y":967,"width":400,"height":267},
+		{"id":"98ab521a621e6a9d","type":"file","file":"Data/LRU/CLRU/LeakageStarkShift/WithRB/boson_number_without_leakage.png","x":600,"y":660,"width":400,"height":267},
+		{"id":"895f8c873951208f","type":"text","text":"Total boson number","x":675,"y":580,"width":250,"height":60},
+		{"id":"5459767faf5e52d5","type":"text","text":"Can leakage cause Stark shift, and thus make single qubit gates operate non-optimally and cause more leakage generation?","x":-313,"y":180,"width":297,"height":150,"color":"1"},
+		{"id":"8e92a6c7e416afbe","type":"text","text":"Leakage on neighboring site","x":-480,"y":1347,"width":175,"height":82},
+		{"id":"7e6a85e457167036","type":"text","text":"Total leakage in the array","x":200,"y":580,"width":250,"height":60},
+		{"id":"8386cf5bb0e38656","type":"text","text":"First qubit subspace","x":-205,"y":580,"width":250,"height":60},
+		{"id":"1fec4437a35d0783","type":"file","file":"Data/LRU/CLRU/LeakageStarkShift/WithRB/subspace_with_single.png","x":-280,"y":967,"width":400,"height":267},
+		{"id":"683e5487b467740a","type":"file","file":"Data/LRU/CLRU/LeakageStarkShift/WithRB/subspace_without_leakage.png","x":-280,"y":660,"width":400,"height":267},
+		{"id":"1614402ee858a7d9","type":"file","file":"Data/LRU/CLRU/LeakageStarkShift/WithRB/subspace_with_leakage.png","x":-280,"y":1275,"width":400,"height":267},
+		{"id":"6d83d4504bad36e8","type":"file","file":"Data/LRU/CLRU/LeakageStarkShift/WithRB/with_leakage.png","x":160,"y":1275,"width":400,"height":267},
+		{"id":"b378be3b219cba7f","type":"file","file":"Data/LRU/CLRU/LeakageStarkShift/WithRB/boson_number_with_leakage.png","x":600,"y":1275,"width":400,"height":267},
+		{"id":"8f2869eb8463a376","type":"text","text":"It seems like leakage can cause more leakage generation with single qubit gates.","x":45,"y":1957,"width":235,"height":123,"color":"4"},
+		{"id":"a323395b1c38b910","type":"file","file":"Data/LRU/CLRU/LeakageStarkShift/WithRB/SitesReversed/anh_without_leakage.png","x":1240,"y":2680,"width":400,"height":267},
+		{"id":"b2ef845c716c9641","type":"file","file":"Data/LRU/CLRU/LeakageStarkShift/WithRB/SitesReversed/anh_with_single.png","x":1240,"y":2967,"width":400,"height":267},
+		{"id":"68ae90df3cd07c68","type":"file","file":"Data/LRU/CLRU/LeakageStarkShift/WithRB/SitesReversed/anh_with_leakage.png","x":1240,"y":3254,"width":400,"height":267},
+		{"id":"06e13fafbc0956a1","type":"file","file":"Data/LRU/CLRU/LeakageStarkShift/WithRB/SitesReversed/boson_without_leakage.png","x":1660,"y":2680,"width":400,"height":267},
+		{"id":"c3a4746a76e6b2f7","type":"file","file":"Data/LRU/CLRU/LeakageStarkShift/WithRB/SitesReversed/boson_with_single.png","x":1660,"y":2967,"width":400,"height":267},
+		{"id":"c3c4a0240c25d020","type":"file","file":"Data/LRU/CLRU/LeakageStarkShift/WithRB/SitesReversed/boson_with_leakage.png","x":1660,"y":3254,"width":400,"height":267},
+		{"id":"95715ebbc486ab8f","type":"file","file":"Data/LRU/CLRU/LeakageStarkShift/WithRB/SitesReversed/subspace_with_leakage.png","x":820,"y":3254,"width":400,"height":267},
+		{"id":"88a06e16f8ffc420","type":"file","file":"Data/LRU/CLRU/LeakageStarkShift/WithRB/SitesReversed/subspace_without_leakage.png","x":820,"y":2680,"width":400,"height":267},
+		{"id":"c2bdd32fe6abdd41","type":"file","file":"Data/LRU/CLRU/LeakageStarkShift/WithRB/SitesReversed/subspace_single.png","x":820,"y":2967,"width":400,"height":267},
+		{"id":"10031f4659eccf0b","type":"text","text":"Here we also see from the total boson number plots that there seems to be leakage generation. But it could also be the leakage causing a larger error, and then the final state is not $|0\\rangle$, so the boson number goes up.\n\nAnyways, here there is also increased leakage generation, maybe just slightly less than in the previous case where the qubits where different ordered.","x":480,"y":2680,"width":295,"height":343},
+		{"id":"081b3e1543e73b03","type":"text","text":"What if the sites are reversed? That the leakage is on the higher frequency qubit and we are driving the lower frequency one?","x":1085,"y":2320,"width":311,"height":146,"color":"1"},
+		{"id":"8cc6e4d387597439","type":"text","text":"Leakage could cause a stark shift in a neighboring qubit. Here I look at the effect of leakage on driving a neighboring qubit, by doing randomized benchmarking while there is excitations present on the neighboring qubit. \n\nWe see that with an empty site, or a single excitation, the driving causes the qubit to leave the qubit subspace. This is expected. It seems like a single excitation does not cause any more leakage.\n\nWith leakage on the neighboring site, we see that the qubit leaves the qubit subspace faster. But it is unclear is this due to the driving causing more leakage on the qubit, or is the leakage from the neighboring qubit traveling to the qubit of interest.\n\nFrom the total anharmonicity we should be able to see if the leakage in increasing in the system, but it is too noisy to make conclusions. At least the order of magnitude of the change is significantly larger than in the empty neighboring site case, so maybe?\n\nThe total boson number plots suggest that we are indeed creating more leakage. But it also could be that there is a larger error with the leakage present, so that the system doesn't return to the $|0\\rangle$ state.\n","x":-860,"y":620,"width":340,"height":880}
+	],
+	"edges":[
+		{"id":"9f142af8f264c5a1","fromNode":"23cee119ea6bf4b1","fromSide":"bottom","toNode":"5459767faf5e52d5","toSide":"top"},
+		{"id":"4fa673f3c3be45f9","fromNode":"5459767faf5e52d5","fromSide":"bottom","toNode":"56057ab7110096ab","toSide":"top"},
+		{"id":"a70c8f923ee57ea9","fromNode":"56057ab7110096ab","fromSide":"bottom","toNode":"8f2869eb8463a376","toSide":"top"},
+		{"id":"fe784fe7a2aa469d","fromNode":"8f2869eb8463a376","fromSide":"bottom","toNode":"081b3e1543e73b03","toSide":"top"},
+		{"id":"cfba705d5b17debb","fromNode":"081b3e1543e73b03","fromSide":"bottom","toNode":"6e613d500839837e","toSide":"top"}
+	]
+}
