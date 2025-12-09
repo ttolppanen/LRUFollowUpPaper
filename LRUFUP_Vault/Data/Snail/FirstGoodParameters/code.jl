@@ -97,6 +97,75 @@ function two_transmon_snail(d, phi_c, E_c, E_j, N_junc; D = 15)
     return QuantumObject(H_out, dims = (d, d))
 end
 
+function two_transmon_snail_with_k(d, i_K2, i_K3, E_c, E_j, N_junc; D = 15)
+    if d > D
+        D = d
+    end
+    beta = E_j[3] ./ E_j[1:2]
+    K2 = 2 * i_K2
+    K3 = 6 * i_K3
+
+    phi_zpf(i) = ((2 * E_c[i]) / (E_j[i] * (1 + beta[i] * K2)))^(1/4)
+    n_zpf(i) = ((E_j[i] * (1 + beta[i] * K2)) / (32 * E_c[i]))^(1/4)
+    c_op = create(D)
+    d_op = destroy(D)
+
+    n_1 = -1im * n_zpf(1) * (d_op - c_op)
+    phi_1 = phi_zpf(1) * (d_op + c_op)
+
+    H1 = 4 * E_c[1] * n_1^2 - E_j[1] * (cos(phi_1) - beta[1] * K2 / 2 * phi_1^2 - beta[1] * K3 / 6 * phi_1^3)
+    λ, psi, U1 = eigenstates(H1)
+    U1 = QuantumObject(U1, dims = D)
+    # println(λ[1:3])
+    println((λ[1:3] .- λ[1]))
+    a1 = λ[3] - λ[1]
+    
+    n_2 = -1im * n_zpf(2) * (d_op - c_op)
+    phi_2 = phi_zpf(2) * (d_op + c_op)
+    H2 = 4 * E_c[2] * n_2^2 - E_j[2] * (cos(phi_2) - beta[2] * K2 / 2 * phi_2^2 + beta[2] * K3 / 6 * phi_2^3)
+    λ, psi, U2 = eigenstates(H2)
+    U2 = QuantumObject(U2, dims = D)
+    # println(λ[1:3])
+    println((λ[1:3] .- λ[1]))
+    a2 = λ[2] - λ[1]
+    println("Resonance: $(a1 - a2)")
+
+    U = tensor(U1, U2)
+    coupling = -E_j[3] * (K2 * tensor(phi_1, phi_2) - K3 / 2 * (tensor(phi_1, phi_2^2) - tensor(phi_1^2, phi_2)))
+    H = U' * (tensor(H1, qeye(D)) + tensor(qeye(D), H2) + coupling) * U
+    
+    H_row = []
+    for i in 0:(d-1)
+        i_ind = (i * D + 1):(i * D + d)
+        push!(H_row, H[(1:d), i_ind])
+    end
+
+    H_out = hcat(H_row...)
+    for j in 1:(d-1)
+        j_ind = (j * D + 1):(j * D + d)
+        H_row = []
+        for i in 0:(d-1)
+            i_ind = (i * D + 1):(i * D + d)
+            push!(H_row, H[j_ind, i_ind])
+        end
+        H_out = vcat(H_out, hcat(H_row...))
+    end
+    
+    # first = 1:d # indeces of differenct blocks, look at tensor product for matrix to make sense hehe
+    # second = (D + 1):(D + d) # length is d, each block is between of D, that is the big dimension for accuracy
+    # third = (2 * D + 1):(2 * D + d)
+    # H = [H[first, first] H[first, second] H[first, third]; 
+    #     H[second, first] H[second, second] H[second, third];
+    #     H[third, first] H[third, second] H[third, third]] # cutted dimensions
+    H = QuantumObject(H_out, dims = (d, d))
+    # λ, psi, U2 = eigenstates(H)
+    # E = labeled_eigenvalue_dict(λ, d)
+    # println("00 -> 20 = $(E["20"] - E["00"])")
+    # # println("00 -> 10 = $(E["10"] - E["00"])")
+    # println("00 -> 01 = $(E["01"] - E["00"])")
+    return QuantumObject(H_out, dims = (d, d))
+end
+
 function initial_parameters()
     param = OrderedDict()
     param[:t_points] = 1000
