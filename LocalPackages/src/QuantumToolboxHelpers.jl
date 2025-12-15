@@ -9,6 +9,8 @@ export qt_n_all
 export qt_bosehubbard
 export tunable_coupler
 export qt_tunable_coupler
+export tunable_coupler_below
+export qt_tunable_coupler_below
 export tunnel_tunable_coupler
 export qt_tunnel_tunable_coupler
 export cross_tunable_coupler
@@ -70,6 +72,13 @@ function tunable_coupler(w, U, g; J_sign = -1)
 end
 function qt_tunable_coupler(w, U, g; kwargs...)
     return QuantumObject(tunable_coupler(w, U, g; kwargs...), dims = (3, 3, 3))
+end
+
+function tunable_coupler_below(w, U, g)
+    return bosehubbard(3, 3, [(1, 2, -g[1]), (2, 3, -g[2]), (1, 3, -g[3])]; w, U)
+end
+function qt_tunable_coupler_below(w, U, g)
+    return QuantumObject(tunable_coupler_below(w, U, g), dims = (3, 3, 3))
 end
 
 function tunnel_tunable_coupler(w, U, g; J_sign = -1)
