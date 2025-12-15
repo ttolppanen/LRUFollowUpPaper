@@ -24,7 +24,7 @@ function initial_parameters()
     param[:d] = 3
     param[:L] = 3
     N1 = 2
-    N2 = 1
+    N2 = 0
     state = QuantumObject(tensor(basis(param[:d], N1), basis(param[:d], 0), basis(param[:d], N2)))
     param[:state] = ValueInfo(state, "|$(N1)0$(N2)>")
     param[:alg] = "toolbox"
