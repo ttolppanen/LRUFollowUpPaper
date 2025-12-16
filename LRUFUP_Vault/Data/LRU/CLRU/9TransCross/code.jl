@@ -23,9 +23,13 @@ function initial_parameters()
     param[:t_points] = 1000
     param[:d] = 3
     param[:L] = 9
-    N = 2
-    state = QuantumObject(tensor(basis(param[:d], N), basis(param[:d], 0), basis(param[:d], 1), basis(param[:d], 0), basis(param[:d], 1), basis(param[:d], 1) , basis(param[:d], 0) , basis(param[:d], 0) , basis(param[:d], 1)))
-    param[:state] = ValueInfo(state, "|$(N)1111>")
+    N1 = 1
+    N2 = 1
+    N3 = 1
+    N4 = 2
+    N5 = 1
+    state = QuantumObject(tensor(basis(param[:d], N1), basis(param[:d], 0), basis(param[:d], N2), basis(param[:d], 0), basis(param[:d], N3), basis(param[:d], N4) , basis(param[:d], 0) , basis(param[:d], 0) , basis(param[:d], N5)))
+    param[:state] = ValueInfo(state, "|$(N1)$(N2)$(N3)$(N4)$(N5)>")
     param[:alg] = "toolbox"
     param[:H] = "Tunable Coupler"
     param[:J] = ValueInfo(5, "5MHz")

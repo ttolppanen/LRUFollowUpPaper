@@ -98,18 +98,18 @@ end
 #        8
 #        9
 
-function cross_tunable_coupler(w, U, J_c, J_direct; J_sign = -1)
+function cross_tunable_coupler(w, U, J_c, J_direct)
     return bosehubbard(3, 9, [
-        (1, 2, J_sign * J_c), (2, 3, J_c), 
-        (3, 4, J_sign * J_c), (4, 5, J_c),
-        (6, 7, J_sign * J_c), (7, 3, J_c),
-        (3, 8, J_sign * J_c), (8, 9, J_c),
-        (1, 3, J_direct), (3, 5, J_direct),
-        (6, 3, J_direct), (3, 9, J_direct)
+        (1, 2, J_c), (2, 3, J_c), 
+        (3, 4, J_c), (4, 5, J_c),
+        (6, 7, J_c), (7, 3, J_c),
+        (3, 8, J_c), (8, 9, J_c),
+        (1, 3, -J_direct), (3, 5, -J_direct),
+        (6, 3, -J_direct), (3, 9, -J_direct)
         ]; w, U)
 end
-function qt_cross_tunable_coupler(w, U, J_c, J_direct; kwargs...)
-    return QuantumObject(cross_tunable_coupler(w, U, J_c, J_direct; kwargs...), dims = (3, 3, 3, 3, 3, 3, 3, 3, 3))
+function qt_cross_tunable_coupler(w, U, J_c, J_direct)
+    return QuantumObject(cross_tunable_coupler(w, U, J_c, J_direct), dims = (3, 3, 3, 3, 3, 3, 3, 3, 3))
 end
 
 # phi_c can be for example -2π/3 or -π/2 (for -π/2 the K_2 term vanishes)
