@@ -35,6 +35,7 @@ function two_transmon_snail(d, phi_c, E_c, E_j, N_junc; D = 15)
     K2 = alpha * (cos(phi_c) + (-1)^k * N_junc^2 * abs(cos(phi_c)))
     K3 = -alpha * sin(phi_c) * (1 - 1 / N_junc^2)
     # println("alpha = $alpha \n K2 = $K2 \n K3 = $K3")
+    println("K2 = $K2 \n K3 = $K3")
 
     phi_zpf(i) = ((2 * E_c[i]) / (E_j[i] * (1 + beta[i] * K2)))^(1/4)
     n_zpf(i) = ((E_j[i] * (1 + beta[i] * K2)) / (32 * E_c[i]))^(1/4)

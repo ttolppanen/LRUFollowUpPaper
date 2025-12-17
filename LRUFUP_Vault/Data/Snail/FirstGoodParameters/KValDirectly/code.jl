@@ -100,16 +100,16 @@ function initial_parameters()
     param[:H] = "snail"
     Ej1 = 10
     param[:Ej1] = ValueInfo(Ej1, "$(Ej1)GHz")
-    param[:Ej2] = ValueInfo(35 / 20, "3/2 * Ej1GHz")
-    ec1 = 0.715
+    param[:Ej2] = ValueInfo(15 / param[:Ej1].val, "3/2 * Ej1GHz")
+    ec1 = 0.300
     param[:Ec1] = ValueInfo(ec1 / param[:Ej1].val, "$(ec1 * 1e3)MHz")
-    ec2 = 0.32
+    ec2 = 0.28
     param[:Ec2] = ValueInfo(ec2 / param[:Ej1].val, "$(ec2 * 1e3)MHz")
-    param[:Ej_snail] = ValueInfo(1 / 20, "0.5 * EJ1")
-    param[:K2] = 0.292
-    param[:K3] = 0.178
+    param[:Ej_snail] = ValueInfo(5 / param[:Ej1].val, "0.5 * EJ1")
+    param[:K2] = 0.01 / param[:Ej1].val
+    param[:K3] = 0.01 / param[:Ej1].val
 
-    t = 50
+    t = 100
     param[:t] = ValueInfo(t * 2 * π * param[:Ej1].val, "$(t)ns")
     # param[:diss_rate] = 0.0018
 
