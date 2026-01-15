@@ -1,9 +1,9 @@
 {
 	"nodes":[
 		{"id":"d6583ee273fd8a6d","type":"group","x":620,"y":1720,"width":1380,"height":1060,"color":"3","label":"Leakage Removal"},
+		{"id":"8f2523594bc16b5b","type":"group","x":2260,"y":4700,"width":870,"height":611,"color":"3","label":"21 Transition With Dissipation"},
 		{"id":"f48de0b17fb680bf","type":"group","x":440,"y":3560,"width":1636,"height":607,"color":"3","label":"Second Transmon on Resonance"},
 		{"id":"802981e94346dd4c","type":"group","x":740,"y":4700,"width":1045,"height":558,"color":"3","label":"Leakage Mobility with off-resonance"},
-		{"id":"8f2523594bc16b5b","type":"group","x":2260,"y":4700,"width":870,"height":611,"color":"3","label":"21 Transition With Dissipation"},
 		{"id":"ef33307453b8194f","type":"group","x":1040,"y":-478,"width":440,"height":1003,"color":"3","label":"Population plots"},
 		{"id":"0505476ccdd3def3","type":"group","x":2520,"y":-1080,"width":440,"height":668,"color":"3","label":"Coupler in resonance"},
 		{"id":"c94ce0f8edbc7864","type":"group","x":5000,"y":-360,"width":440,"height":520,"color":"3","label":"Untitled group"},
@@ -55,10 +55,6 @@
 		{"id":"0fa584c831458724","type":"text","text":"We cannot achieve the required anharmonicity for the coupler with the traditional transmon tunable coupler. The transmon where we do the leakage removal is out of the computations, so we do not have any limit for what its frequency can be. What if we set it to be on resonant with the other transmon?","x":1084,"y":3080,"width":315,"height":260,"color":"1"},
 		{"id":"cd6e93f3362d3046","type":"file","file":"Data/LRU/CLRU/NoCouplerTuning/off_res_state11.png","x":1126,"y":4718,"width":368,"height":245,"color":"3"},
 		{"id":"2b05d86184ec9e98","type":"text","text":"The off-resonance halts leakage mobility, and we cannot use off-resonant transmons for leakage removal. Additionally, in an off-resonant grid, leakage will be localized, only moving due to two qubit gates.","x":1110,"y":5420,"width":309,"height":221,"color":"4"},
-		{"id":"fd6ab8694ed1a260","type":"file","file":"Data/LRU/CLRU/NoCouplerTuning/res_diss_pulse_10.png","x":2280,"y":5022,"width":400,"height":267},
-		{"id":"d0649f743f46377d","type":"text","text":"We can remove leakage by repeatedly populating the second transmon, while it has dissipation. The removal is relatively fast, rougly 300ns, where for the |20> state it is 2mus. For the coupler also in resonance, we would get 66ns removal, and for the original 3 transmon array, it would be 12mus. Here the pulses have roughly 60ns in between.","x":2280,"y":4720,"width":352,"height":258},
-		{"id":"38a36115932d55d2","type":"file","file":"Data/LRU/CLRU/NoCouplerTuning/res_diss.png","x":2710,"y":4720,"width":400,"height":267},
-		{"id":"5676cd254a006127","type":"file","file":"Data/LRU/CLRU/NoCouplerTuning/res_diss_pulse_20.png","x":2710,"y":5024,"width":400,"height":267},
 		{"id":"77c19e019bbe8f4b","type":"text","text":"Due to the off-resonance used, there is no practical leakage mobility.","x":1537,"y":4718,"width":230,"height":88,"color":"3"},
 		{"id":"1430975628f60237","type":"file","file":"Data/LRU/CLRU/NoCouplerTuning/off_res_state21.png","x":1126,"y":4994,"width":368,"height":245,"color":"3"},
 		{"id":"effb5c03da074d52","type":"file","file":"Data/LRU/CLRU/NoCouplerTuning/off_res_state10.png","x":758,"y":4718,"width":368,"height":245,"color":"3"},
@@ -75,7 +71,11 @@
 		{"id":"ee19790a633de1b2","type":"file","file":"Coupler LRU/ArrayLRU Anh.png","x":1480,"y":1740,"width":400,"height":267},
 		{"id":"6b291d26049cc54b","type":"file","file":"Data/Driving/DriveCouplerLRU/PositiveU/PauliString/lru_vs_no_lru/gaussian/proj_comparison.png","x":1041,"y":2260,"width":400,"height":267},
 		{"id":"c546453e72740faa","type":"file","file":"Data/Driving/DriveCouplerLRU/PositiveU/QuantumToolboxTesting/array_anh.png","x":1066,"y":1740,"width":400,"height":267},
-		{"id":"18e2411b85a1501f","type":"text","text":"LRU does not cause dissipation in the qubit subspace.","x":640,"y":2040,"width":280,"height":93}
+		{"id":"18e2411b85a1501f","type":"text","text":"LRU does not cause dissipation in the qubit subspace.","x":640,"y":2040,"width":280,"height":93},
+		{"id":"fd6ab8694ed1a260","type":"file","file":"Data/LRU/CLRU/NoCouplerTuning/res_diss_pulse_10.png","x":2280,"y":5022,"width":400,"height":267},
+		{"id":"d0649f743f46377d","type":"text","text":"We can remove leakage by repeatedly populating the second transmon, while it has dissipation. The removal is relatively fast, rougly 300ns, where for the |20> state it is 2mus. For the coupler also in resonance, we would get 66ns removal, and for the original 3 transmon array, it would be 12mus. Here the pulses have roughly 60ns in between.","x":2280,"y":4720,"width":352,"height":258},
+		{"id":"38a36115932d55d2","type":"file","file":"Data/LRU/CLRU/NoCouplerTuning/res_diss.png","x":2710,"y":4720,"width":400,"height":267},
+		{"id":"5676cd254a006127","type":"file","file":"Data/LRU/CLRU/NoCouplerTuning/res_diss_pulse_20.png","x":2710,"y":5024,"width":400,"height":267}
 	],
 	"edges":[
 		{"id":"c80247498dfe2f6b","fromNode":"98c1ecb102ddc719","fromSide":"right","toNode":"00ec45de1e888ae3","toSide":"left"},
