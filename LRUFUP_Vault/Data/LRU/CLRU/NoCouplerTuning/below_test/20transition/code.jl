@@ -32,7 +32,7 @@ function initial_parameters()
     param[:J12] = ValueInfo(5, "5MHz")
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
     param[:w1] = ValueInfo(4000 / param[:J12].val, "4GHz")
-    param[:w2] = ValueInfo(4000 / param[:J12].val, "4GHz")
+    param[:w2] = ValueInfo(3505 / param[:J12].val, "4GHz")
     param[:wc] = ValueInfo(3505 / param[:J12].val, "3.505GHz")
     param[:U1] = ValueInfo(300 / param[:J12].val, "300MHz")
     U2 = 300
@@ -60,8 +60,9 @@ function f()
     state = param[:state].val
 
     n1 = qt_single_site_op(d, L, num(d), 1)
+    nc = qt_single_site_op(d, L, num(d), 2)
     n2 = qt_single_site_op(d, L, num(d), 3)
-    e_ops = [n1, qt_anh_all(d, L), qt_n_all(d, L), n2]
+    e_ops = [n1, qt_anh_all(d, L), qt_n_all(d, L), n2, nc]
     
     c_ops = [sqrt(param[:diss_rate]) * qt_single_site_op(d, L, destroy(d), L)]
 
@@ -80,21 +81,22 @@ function f()
     # end
 
     t_list = LinRange(0, param[:t].val, param[:t_points])
-    state20 = QuantumObject(tensor(basis(param[:d], 2), basis(param[:d], 0), basis(param[:d], 0)))
-    state10 = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 0), basis(param[:d], 0)))
+    state20 = QuantumObject(tensor(basis(param[:d], 0), basis(param[:d], 2), basis(param[:d], 0)))
+    state10 = QuantumObject(tensor(basis(param[:d], 2), basis(param[:d], 2), basis(param[:d], 0)))
     for i in [1, 2, 3]
         if i == 1
             state = state10
             out = mesolve(H, state, t_list, c_ops, e_ops = e_ops)
-            push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "initial_state = |10>, <n1>"))
+            push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "initial_state = |220>, <n1>"))
         elseif i == 2
             state = state20
             out = mesolve(H, state, t_list, c_ops, e_ops = e_ops)
-            push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "initial_state = |20>, <n1>"))
+            push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "initial_state = |020>, <n1>"))
+            push!(lines, LineInfo(t_list, real(out.expect[5, :]), 1, "initial_state = |020>, <nc>"))
         elseif i == 3
-            state = normalize(state20 + state10)
-            out = mesolve(H, state, t_list, c_ops, e_ops = e_ops)
-            push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "|10>  |20> superpos."))
+            # state = normalize(state20 + state10)
+            # out = mesolve(H, state, t_list, c_ops, e_ops = e_ops)
+            # push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "|10>  |20> superpos."))
         end
     end
     # out = mesolve(H, state, t_list, c_ops, e_ops = e_ops)
