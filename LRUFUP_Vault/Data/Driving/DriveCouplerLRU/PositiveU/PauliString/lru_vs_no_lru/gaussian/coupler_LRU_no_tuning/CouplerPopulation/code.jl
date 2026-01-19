@@ -51,8 +51,7 @@ function f()
     lines = []
     d = param[:d]; L = param[:L]
 
-    anh = tensor(qeye(d), qeye(d), qeye(d)) - qt_anh_all(d, L) / 2
-    proj_1 = tensor(proj(basis(d, 0)), qeye(d), qeye(d))
+    nc = qt_single_site_op(d, L, num(d), 2)
 
     c_ops = [sqrt(param[:diss_rate]) * qt_single_site_op(d, L, destroy(d), L)]
 
@@ -64,9 +63,8 @@ function f()
     I_op, Q_op = qt_drive_op(d, L; rwa = true)
     pulse = gaussian_pulse(param[:gate_time].val, π)
     
-    Ns = vcat(1, 100:100:2000)
+    Ns = [1000, 2000]
     out = []
-    anh_out = []
     for n in Ns
         function time_evolution()
             pauli_string = rb_pauli_string(n)
@@ -89,16 +87,14 @@ function f()
                 res = mesolve(Ht, state, t_list, c_ops; saveat=[t_list[end]], progress_bar = Val(false))
                 state = res.states[1]
             end
-            return [real(expect(proj_1, state)), real(expect(anh, state))]
+            return real(expect(nc, state))
         end
         r_out = solvetrajectories(time_evolution, traj; paral = :threads)
         r_out = traj_mean(r_out)
-        push!(out, r_out[1])
-        push!(anh_out, r_out[2])
+        push!(out, r_out)
     end
 
-    push!(lines, LineInfo(Ns, out, traj, "<Ψ|0><0|Ψ>"))
-    push!(lines, LineInfo(Ns, anh_out, traj, "Qubit subspace population"))
+    push!(lines, LineInfo(Ns, out, traj, "<nc>"))
 
     path = joinpath(@__DIR__)
     makeplot(path, lines...; xlabel = "i", ylabel = "", copy_code = false, param...)
