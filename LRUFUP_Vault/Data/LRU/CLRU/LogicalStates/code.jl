@@ -66,7 +66,7 @@ function f()
         if overlap > 0.9
             println("Eigenvalue $(i): $(E[i])")
             println("Overlap with |100>: ", overlap)
-            println("State: $state")
+            # println("State: $state")
         end
     end
 
