@@ -11,8 +11,12 @@ export tunable_coupler
 export qt_tunable_coupler
 export tunable_coupler_below
 export qt_tunable_coupler_below
+export tunable_coupler_plus_coupler
+export qt_tunable_coupler_plus_coupler
 export tunnel_tunable_coupler
 export qt_tunnel_tunable_coupler
+export tunnel_tunable_coupler_below
+export qt_tunnel_tunable_coupler_below
 export cross_tunable_coupler
 export qt_cross_tunable_coupler
 export qt_two_transmon_snail
@@ -83,11 +87,25 @@ function qt_tunable_coupler_below(w, U, g)
     return QuantumObject(tunable_coupler_below(w, U, g), dims = (3, 3, 3))
 end
 
+function tunable_coupler_plus_coupler(w, U, g; J_sign = -1)
+    return bosehubbard(3, 4, [(1, 2, g[1]), (2, 3, g[2]), (3, 4, g[3]), (1, 3, J_sign * g[4])]; w, U)
+end
+function qt_tunable_coupler_plus_coupler(w, U, g; kwargs...)
+    return QuantumObject(tunable_coupler_plus_coupler(w, U, g; kwargs...), dims = (3, 3, 3, 3))
+end
+
 function tunnel_tunable_coupler(w, U, g; J_sign = -1)
     return bosehubbard(3, 5, [(1, 2, J_sign * g[1]), (2, 3, g[2]), (3, 4, J_sign * g[3]), (4, 5, g[4]), (1, 3, g[5]), (3, 5, g[5])]; w, U)
 end
 function qt_tunnel_tunable_coupler(w, U, g; kwargs...)
     return QuantumObject(tunnel_tunable_coupler(w, U, g; kwargs...), dims = (3, 3, 3, 3, 3))
+end
+
+function tunnel_tunable_coupler_below(w, U, g)
+    return bosehubbard(3, 5, [(1, 2, g[1]), (2, 3, g[2]), (3, 4, g[3]), (4, 5, g[4]), (1, 3, -g[5]), (3, 5, -g[5])]; w, U)
+end
+function qt_tunnel_tunable_coupler_below(w, U, g; kwargs...)
+    return QuantumObject(tunnel_tunable_coupler_below(w, U, g; kwargs...), dims = (3, 3, 3, 3, 3))
 end
 
 
