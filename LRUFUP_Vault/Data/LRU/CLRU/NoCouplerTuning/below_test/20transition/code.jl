@@ -40,7 +40,7 @@ function initial_parameters()
     param[:Uc] = ValueInfo(300 / param[:J12].val, "300MHz")
     t = 2
     param[:t] = ValueInfo(t * 2 * π * param[:J12].val, "$(t)μs")
-    param[:diss_rate] = 0.08
+    param[:diss_rate] = 0.0
 
     # param[:wd] = ValueInfo(4007 / param[:J12].val, "4.007GHz")
     # param[:gate_time] = ValueInfo(14 * 10^(-3) * 2 * π * param[:J12].val, "14ns")
@@ -82,26 +82,35 @@ function f()
 
     t_list = LinRange(0, param[:t].val, param[:t_points])
     state20 = QuantumObject(tensor(basis(param[:d], 2), basis(param[:d], 0), basis(param[:d], 0)))
-    # state10 = QuantumObject(tensor(basis(param[:d], 2), basis(param[:d], 2), basis(param[:d], 0)))
+    state210 = QuantumObject(tensor(basis(param[:d], 2), basis(param[:d], 1), basis(param[:d], 0)))
+    state010 = QuantumObject(tensor(basis(param[:d], 0), basis(param[:d], 1), basis(param[:d], 0)))
+    state11 = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 1), basis(param[:d], 0)))
 
     E, psi, U = eigenstates(H)
     state10 = psi[4]
-    for i in [1, 2, 3]
-        if i == 1
-            state = state10
-            out = mesolve(H, state, t_list, c_ops, e_ops = e_ops)
-            push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "initial_state = logical |10>, <n1>"))
-            push!(lines, LineInfo(t_list, real(out.expect[6, :]), 1, "initial_state = logical |10>, <nc + n1>"))
-        elseif i == 2
-            state = state20
-            out = mesolve(H, state, t_list, c_ops, e_ops = e_ops)
-            push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "initial_state = |200>, <n1>"))
-        elseif i == 3
-            # state = normalize(state20 + state10)
-            # out = mesolve(H, state, t_list, c_ops, e_ops = e_ops)
-            # push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "|10>  |20> superpos."))
-        end
-    end
+
+    state = state10
+    out = mesolve(H, state, t_list, c_ops, e_ops = e_ops)
+    # push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "initial_state = logical |10>, <n1>"))
+    push!(lines, LineInfo(t_list, real(out.expect[6, :]), 1, "initial_state = logical |10>, <nc + n1>"))
+
+    state = state20
+    out = mesolve(H, state, t_list, c_ops, e_ops = e_ops)
+    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "initial_state = |200>, <n1>"))
+
+    state = state11
+    out = mesolve(H, state, t_list, c_ops, e_ops = e_ops)
+    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "initial_state = |110>, <n1>"))
+     push!(lines, LineInfo(t_list, real(out.expect[4, :]), 1, "initial_state = |110>, <n2>"))
+
+    # state = state010
+    # out = mesolve(H, state, t_list, c_ops, e_ops = e_ops)
+    # push!(lines, LineInfo(t_list, real(out.expect[5, :]), 1, "initial_state = |010>, <n1>"))
+
+    state = state210
+    out = mesolve(H, state, t_list, c_ops, e_ops = e_ops)
+    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "initial_state = |210>, <n1>"))
+
     # out = mesolve(H, state, t_list, c_ops, e_ops = e_ops)
     # push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "n1"))
 
