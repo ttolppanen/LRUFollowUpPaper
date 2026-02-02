@@ -79,7 +79,7 @@ function qt_tunable_coupler(w, U, g; kwargs...)
 end
 
 # In Tunable Coupling Architecture for Fixed-Frequency Transmon Superconducting Qubits
-# they have negative direct coupling
+# they have negative direct coupling???
 function tunable_coupler_below(w, U, g)
     return bosehubbard(3, 3, [(1, 2, g[1]), (2, 3, g[2]), (1, 3, -g[3])]; w, U)
 end
