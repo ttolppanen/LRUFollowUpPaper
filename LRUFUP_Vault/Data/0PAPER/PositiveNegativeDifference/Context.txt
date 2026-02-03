@@ -1,0 +1,2 @@
+Here the idea was just to check if the leakage hopping |200> -> |002> behaves differently,
+if the off-position of the coupler is below/above the two qubits.
