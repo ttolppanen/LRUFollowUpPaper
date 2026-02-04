@@ -1,5 +1,6 @@
 export tunable_coupler_paper, qt_tunable_coupler_paper
 export tunable_coupler_paper_positive, qt_tunable_coupler_paper_positive
+export w_off_position
 
 
 # In Tunable Coupling Architecture for Fixed-Frequency Transmon Superconducting Qubits
@@ -18,4 +19,13 @@ function tunable_coupler_paper_positive(w, U, g)
 end
 function qt_tunable_coupler_paper_positive(w, U, g)
     return QuantumObject(tunable_coupler_paper_positive(w, U, g), dims = (3, 3, 3))
+end
+
+function w_off_position(w1, w2, g1c, g2c, g12; is_above = false)
+    G = 2 * g12 / (g1c * g2c)
+    if is_above
+        return (w1 + w2) / 2 + 1 / G + sqrt(1 / G^2 + ((w1 - w2) / 2)^2) - 1
+    else
+        return (w1 + w2) / 2 - 1 / G - sqrt(1 / G^2 + ((w1 - w2) / 2)^2) + 1
+    end
 end
