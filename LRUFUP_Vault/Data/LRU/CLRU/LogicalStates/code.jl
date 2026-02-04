@@ -88,6 +88,35 @@ function f()
             println("n2: ", expect(n2, state))
         end
     end
+
+    i_00, i_01, i_10, i_11 = logical_state_index(psi, d)
+    display((E[i_11] - E[i_10]) - (E[i_01] - E[i_00]))
+end
+
+function logical_state_index(eigen_states, d)
+    state00 = QuantumObject(tensor(basis(d, 0), basis(d, 0), basis(d, 0)))
+    state10 = QuantumObject(tensor(basis(d, 1), basis(d, 0), basis(d, 0)))
+    state01 = QuantumObject(tensor(basis(d, 0), basis(d, 1), basis(d, 0)))
+    state11 = QuantumObject(tensor(basis(d, 1), basis(d, 1), basis(d, 0)))
+    out = []
+    for bare_state in [state00, state01, state10, state11]
+        max_overlap = 0.0
+        max_index = 0
+        for (i, eigen_state) in enumerate(eigen_states)
+            overlap = abs(bare_state' * eigen_state)^2
+            if overlap > max_overlap
+                max_overlap = overlap
+                max_index = i
+            end
+        end
+        push!(out, max_index)
+    end
+    return out[1], out[2], out[3], out[4]
+end
+
+function zz_coupling_strength(eigen_states, d)
+    i_00, i_01, i_10, i_11 = logical_state_index(eigen_states, d)
+    return (eigen_states[i_11] - eigen_states[i_10]) - (eigen_states[i_01] - eigen_states[i_00])
 end
 
 f()

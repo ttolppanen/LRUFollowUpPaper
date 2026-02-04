@@ -1,0 +1,59 @@
+using Plots
+using LinearAlgebra
+using QuantumStates
+using QuantumOperators
+using PlotAndSave
+using OrderedCollections
+using SparseArrays
+using LocalPackages
+using QuantumToolbox
+
+
+function initial_parameters()
+    param = OrderedDict()
+    param[:t_points] = 1000
+    param[:d] = 3
+    param[:L] = 3
+
+    param[:J12] = ValueInfo(5, "5MHz")
+    param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
+    param[:w1] = ValueInfo(4000 / param[:J12].val, "4GHz")
+    w2s = collect(range(3750, 4000, length=100)) ./ param[:J12].val
+    param[:w2] = ValueInfo(w2s, "(3.75-4)GHz")
+    wcs = collect(range(3000, 4500, length=200)) ./ param[:J12].val
+    param[:wc] = ValueInfo(wcs, "(3-4.5)GHz")
+    U = 300
+    param[:U1] = ValueInfo(U / param[:J12].val, "$(U)MHz")
+    U2 = U
+    param[:U2] = ValueInfo(U2 / param[:J12].val, "$(U2)MHz")
+    Uc = U
+    param[:Uc] = ValueInfo(Uc / param[:J12].val, "$(Uc)MHz")
+
+    param[:J12] = ValueInfo(1, param[:J12].str_val)
+    return param
+end
+
+function f()
+    param = initial_parameters()
+    # -----------
+    # -----------
+
+    lines = []
+    d = param[:d]; L = param[:L]
+
+    zzs = []
+    comparison_states = []
+
+    println("Calculating zz coupling...")
+    zzs = [zz_zero_point(param[:w1].val, w2, param[:wc].val,
+        [param[:U1].val, param[:Uc].val, param[:U2].val],
+        [param[:Jc].val, param[:Jc].val, param[:J12].val]) for w2 in param[:w2].val]
+    g0s = [w_off_position(param[:w1].val, w2, param[:Jc].val, param[:Jc].val, param[:J12].val; is_above = false) for w2 in param[:w2].val]
+    push!(lines, LineInfo(param[:w2].val .* 5, zzs .* 5, 1, "zz"))
+    push!(lines, LineInfo(param[:w2].val .* 5, g0s .* 5, 1, "g0"))
+    
+    path = joinpath(@__DIR__)
+    makeplot(path, lines...; xlabel = "w2 frequency", ylabel = "wc frequency", copy_code = false, param...)
+end
+
+f()
