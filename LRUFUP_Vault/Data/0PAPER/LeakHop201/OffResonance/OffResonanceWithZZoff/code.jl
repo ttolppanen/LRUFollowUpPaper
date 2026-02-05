@@ -32,8 +32,10 @@ function initial_parameters()
     param[:J12] = ValueInfo(5, "5MHz")
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
     param[:w1] = ValueInfo(4000 / param[:J12].val, "4GHz")
-    w2s = vcat(collect(range(3995, 4000, length=50)), collect(range(4000, 4005, length=50))) ./ param[:J12].val
-    param[:w2] = ValueInfo(w2s, "(3.995-4.005)GHz")
+    w2s = vcat(collect(range(3800, 4000, length=100)), collect(range(4000, 4200, length=100))) ./ param[:J12].val
+    param[:w2] = ValueInfo(w2s, "(3.8-4.2)GHz")
+    wcs = collect(range(3000, 4500, length=1200)) ./ param[:J12].val
+    param[:wc] = ValueInfo(wcs, "(3-4.5)GHz")
 
     # param[:w2] = ValueInfo(4000 / param[:J12].val, "4GHz")
     # param[:wc_below] = ValueInfo(3505 / param[:J12].val, "3.505GHz")
@@ -44,9 +46,9 @@ function initial_parameters()
     param[:U2] = ValueInfo(U2 / param[:J12].val, "$(U2)MHz")
     Uc = U
     param[:Uc] = ValueInfo(Uc / param[:J12].val, "$(Uc)MHz")
-    t_below = 1
+    t_below = 0.1
     param[:t_below] = ValueInfo(t_below * 2 * π * param[:J12].val, "$(t_below)μs")
-    t_above = 15
+    t_above = 0.2
     param[:t_above] = ValueInfo(t_above * 2 * π * param[:J12].val, "$(t_above)μs")
     # param[:diss_rate] = 0.0
 
@@ -70,48 +72,52 @@ function f()
 
     n1 = qt_single_site_op(d, L, num(d), 1)
     nc = qt_single_site_op(d, L, num(d), 2)
-    n2 = qt_single_site_op(d, L, num(d), 3) / 2
+    n2 = qt_single_site_op(d, L, num(d), 3) - tensor(qeye(d), qeye(d), qeye(d))
     e_ops = [n1 + nc, n1, n2]
     
     # c_ops = [sqrt(param[:diss_rate]) * qt_single_site_op(d, L, destroy(d), L)]
 
-    state20 = QuantumObject(tensor(basis(param[:d], 2), basis(param[:d], 0), basis(param[:d], 0)))
+    state201 = QuantumObject(tensor(basis(param[:d], 2), basis(param[:d], 0), basis(param[:d], 1)))
 
-    max_amplitude_below = []
+    max_amplitude_maximum_point = []
+    max_amplitude_minimum_point = []
     for w2 in param[:w2].val
-        wc = w_off_position(param[:w1].val, w2, param[:Jc].val, param[:Jc].val, param[:J12].val; is_above = false)
-        w = [param[:w1].val, wc, w2]
         U = [param[:U1].val, param[:Uc].val, param[:U2].val]
         g = [param[:Jc].val, param[:Jc].val, param[:J12].val]
+        wc = zz_zero_point(param[:w1].val, w2, param[:wc].val, U, g)
+        w = [param[:w1].val, maximum(wc), w2]
 
         H = qt_tunable_coupler_paper(w, U, g)
 
-        state = state20
+        state = state201
         out = mesolve(H, state, t_list_below, e_ops = e_ops, progress_bar= false)
-        push!(max_amplitude_below, maximum(real(out.expect[3, :])))
+        push!(max_amplitude_maximum_point, maximum(real(out.expect[3, :])))
+
+        w = [param[:w1].val, minimum(wc), w2]
+        H = qt_tunable_coupler_paper(w, U, g)
+
+        out = mesolve(H, state, t_list_below, e_ops = e_ops, progress_bar= false)
+        push!(max_amplitude_minimum_point, maximum(real(out.expect[3, :])))
     end
-    push!(lines, LineInfo(param[:w2].val .* 5, max_amplitude_below, 1, "below, max(<n2>)"))
-
-    max_amplitude_above = []
-    for w2 in param[:w2].val
-        println(w2)
-        wc = w_off_position(param[:w1].val, w2, param[:Jc].val, param[:Jc].val, param[:J12].val; is_above = true)
-        w = [param[:w1].val, wc, w2]
-        U = [param[:U1].val, param[:Uc].val, param[:U2].val]
-        g = [param[:Jc].val, param[:Jc].val, param[:J12].val]
-
-        H = qt_tunable_coupler_paper_positive(w, U, g)
-
-        state = state20
-        out = mesolve(H, state, t_list_above, e_ops = e_ops, progress_bar= false, maxiters = 10^8)
-        push!(max_amplitude_above, maximum(real(out.expect[3, :])))
-    end
-    push!(lines, LineInfo(param[:w2].val .* 5, max_amplitude_above, 1, "above, max(<n2>)"))
+    push!(lines, LineInfo(param[:w2].val .* 5, max_amplitude_maximum_point, 1, "zz larger, max(<n2-I>)"))
+    push!(lines, LineInfo(param[:w2].val .* 5, max_amplitude_minimum_point, 1, "zz smaller, max(<n2-I>)"))
     
     path = joinpath(@__DIR__)
     makeplot(path, lines...; xlabel = "MHz", ylabel = "", copy_code = false, param...)
     # addtrajectories(path, line)
 end
 
+function combine_this_and_g0_plots()
+    zz_data = loaddata(@__DIR__)
+    g0_data = loaddata(joinpath(@__DIR__, ".."))
+    zz_line = zz_data.lines["zz larger, max(<n2-I>)"]
+    g0_line = g0_data.lines["below, max(<n2-I>)"]
+    
+    plot(zz_line.x, zz_line.y, label="zz larger", xlabel="MHz", ylabel="max(<n2-I>)")
+    plot!(g0_line.x, g0_line.y, label="g0 below")
+    savefig(joinpath(@__DIR__, "combined_plot.png"))
+end
+
 
 @time f()
+combine_this_and_g0_plots()
