@@ -89,5 +89,5 @@ function zz_zero_point(w1, w2, wcs, Us, gs)
             prev_zz_sign = sign(zz)
         end
     end
-    return maximum(wc_zeros)
+    return wc_zeros
 end
