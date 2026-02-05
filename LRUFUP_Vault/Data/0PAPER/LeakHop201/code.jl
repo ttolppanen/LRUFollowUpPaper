@@ -89,19 +89,20 @@ function f()
     state = state201
     out = mesolve(H_below, state, t_list, e_ops = e_ops, maxiters = 10^7)
     push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "below, s_0 = |201>, <n1>"))
-    w = [param[:w1].val, param[:wc_above].val, param[:w2].val]
-    H_above = qt_tunable_coupler_paper_positive(w, U, g)
+   
+    # w = [param[:w1].val, param[:wc_above].val, param[:w2].val]
+    # H_above = qt_tunable_coupler_paper_positive(w, U, g)
 
-    E, psi, Uni = eigenstates(H_above)
-    state10 = psi[3]
+    # E, psi, Uni = eigenstates(H_above)
+    # state10 = psi[3]
 
-    state = state10
-    out = mesolve(H_above, state, t_list, e_ops = e_ops)
-    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "above, s_0 = |10>, <nc+n1>"))
+    # state = state10
+    # out = mesolve(H_above, state, t_list, e_ops = e_ops)
+    # push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "above, s_0 = |10>, <nc+n1>"))
 
-    state = state201
-    out = mesolve(H_above, state, t_list, e_ops = e_ops, maxiters = 10^7)
-    push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "above, s_0 = |201>, <n1>"))
+    # state = state201
+    # out = mesolve(H_above, state, t_list, e_ops = e_ops, maxiters = 10^7)
+    # push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "above, s_0 = |201>, <n1>"))
     
     path = joinpath(@__DIR__)
     makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)

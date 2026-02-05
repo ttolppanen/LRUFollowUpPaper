@@ -41,7 +41,7 @@ function initial_parameters()
     param[:U2] = ValueInfo(U2 / param[:J12].val, "$(U2)MHz")
     Uc = U
     param[:Uc] = ValueInfo(Uc / param[:J12].val, "$(Uc)MHz")
-    t = 10
+    t = 5
     param[:t] = ValueInfo(t * 2 * π * param[:J12].val, "$(t)μs")
     # param[:diss_rate] = 0.0
 
@@ -89,40 +89,24 @@ function f()
     state = state20
     out = mesolve(H_below, state, t_list, e_ops = e_ops, maxiters = 10^7)
     push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "below, s_0 = |200>, <n1>"))
-    w = [param[:w1].val, param[:wc_above].val, param[:w2].val]
-    H_above = qt_tunable_coupler_paper_positive(w, U, g)
+    
+    # w = [param[:w1].val, param[:wc_above].val, param[:w2].val]
+    # H_above = qt_tunable_coupler_paper_positive(w, U, g)
 
-    E, psi, Uni = eigenstates(H_above)
-    state10 = psi[3]
+    # E, psi, Uni = eigenstates(H_above)
+    # state10 = psi[3]
 
-    state = state10
-    out = mesolve(H_above, state, t_list, e_ops = e_ops)
-    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "above, s_0 = |10>, <nc+n1>"))
+    # state = state10
+    # out = mesolve(H_above, state, t_list, e_ops = e_ops)
+    # push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "above, s_0 = |10>, <nc+n1>"))
 
-    state = state20
-    out = mesolve(H_above, state, t_list, e_ops = e_ops, maxiters = 10^7)
-    push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "above, s_0 = |200>, <n1>"))
+    # state = state20
+    # out = mesolve(H_above, state, t_list, e_ops = e_ops, maxiters = 10^7)
+    # push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "above, s_0 = |200>, <n1>"))
     
     path = joinpath(@__DIR__)
     makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
     # addtrajectories(path, line)
-end
-
-function t_time_from_n(out)
-    x = out.times
-    y = real(out.expect[1, :])
-    pl = plot(x, y)
-    n = length(out.times) # adjust here to make fit better
-    c, slope, f_fit = exp_fit(x[1:n], y[1:n], 2)
-    println(-1 / slope / (2 * π * 5 * 1e6 * 1e-9), "ns")
-    plot!(x, f_fit)
-end
-
-function J_eff(g, w)
-    delta_1 = w[1] - w[2] + 1
-    delta_2 = w[3] - w[2] + 1
-    one_over_delta = 0.5 * (1 / delta_1 + 1 / delta_2)
-    return -g[1] * g[2] * one_over_delta + g[3]
 end
 
 @time f()
