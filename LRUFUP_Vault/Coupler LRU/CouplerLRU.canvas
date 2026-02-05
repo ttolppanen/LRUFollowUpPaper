@@ -1,11 +1,11 @@
 {
 	"nodes":[
 		{"id":"d6583ee273fd8a6d","type":"group","x":620,"y":1720,"width":1380,"height":1060,"color":"3","label":"Leakage Removal"},
+		{"id":"0505476ccdd3def3","type":"group","x":2520,"y":-1080,"width":440,"height":668,"color":"3","label":"Coupler in resonance"},
 		{"id":"f48de0b17fb680bf","type":"group","x":440,"y":3560,"width":1636,"height":607,"color":"3","label":"Second Transmon on Resonance"},
 		{"id":"802981e94346dd4c","type":"group","x":740,"y":4700,"width":1045,"height":558,"color":"3","label":"Leakage Mobility with off-resonance"},
 		{"id":"8f2523594bc16b5b","type":"group","x":2260,"y":4700,"width":870,"height":611,"color":"3","label":"21 Transition With Dissipation"},
 		{"id":"ef33307453b8194f","type":"group","x":1040,"y":-478,"width":440,"height":1003,"color":"3","label":"Population plots"},
-		{"id":"0505476ccdd3def3","type":"group","x":2520,"y":-1080,"width":440,"height":668,"color":"3","label":"Coupler in resonance"},
 		{"id":"c94ce0f8edbc7864","type":"group","x":5000,"y":-360,"width":440,"height":520,"color":"3","label":"Untitled group"},
 		{"id":"ba4a9f0548c63d7f","type":"file","file":"Data/Coupler/InitialTest/dis20SlightTuning.png","x":2525,"y":940,"width":400,"height":267,"color":"3"},
 		{"id":"21d6f9d50a7b09d0","type":"file","file":"Data/Coupler/InitialTest/dis20NoCoupler.png","x":2525,"y":624,"width":400,"height":267,"color":"3"},
@@ -27,10 +27,7 @@
 		{"id":"c098804d72dfd69f","type":"text","text":"Removing the coupler we get normal leakage mobility\n","x":1647,"y":-18,"width":250,"height":99,"color":"3"},
 		{"id":"70bd38efaedd5f96","type":"text","text":"What is tolerable qubit population?","x":5095,"y":0,"width":250,"height":69,"color":"1"},
 		{"id":"70d837bc7f596e99","type":"text","text":"We see logarithmic growth as we increase coupling, and thus the anharmonicity.","x":5583,"y":-275,"width":250,"height":137,"color":"4"},
-		{"id":"8866b3c03a308b7f","type":"text","text":"In these plots the couplers leakage states are **not in resonance** with the rest of the system. How does this change the figures?","x":2080,"y":-840,"width":250,"height":169,"color":"1"},
 		{"id":"84ceefe7c82fcf2c","type":"text","text":"We can detune the coupler to recover normal leakage mobility.","x":2080,"y":-18,"width":263,"height":99,"color":"4"},
-		{"id":"cb6a82d5e0d2acf6","type":"file","file":"Data/Coupler/FLevelResonance/low_coupling/combined.png","x":2540,"y":-699,"width":400,"height":267,"color":"3"},
-		{"id":"1c73967d5923e5ef","type":"file","file":"Data/Coupler/FLevelResonance/high_coupling/combined.png","x":2540,"y":-1060,"width":400,"height":267,"color":"3"},
 		{"id":"f904bff2f1f406f5","type":"text","text":"We see leakage mobility, and the qubit coupling is turned off.","x":3160,"y":-1060,"width":250,"height":94,"color":"3"},
 		{"id":"5d6c542de61fc45c","type":"text","text":"For large coupling the anharmonicity required to have the levels in resonance is very large.","x":3160,"y":-812,"width":250,"height":113,"color":"3"},
 		{"id":"0cdf3a7805f8fa97","type":"text","text":"For small coupling we lose a lot of the qubit population to the coupler.","x":3160,"y":-565,"width":250,"height":111,"color":"3"},
@@ -75,7 +72,10 @@
 		{"id":"1b49ef185cd65df2","type":"file","file":"Data/Driving/DriveCouplerLRU/PositiveU/QuantumToolboxTesting/single_excitation.png","x":640,"y":1740,"width":400,"height":267},
 		{"id":"18e2411b85a1501f","type":"text","text":"LRU does not cause dissipation in the qubit subspace.","x":640,"y":2040,"width":280,"height":93},
 		{"id":"8428e75f42a12937","type":"text","text":"[Leakage RB](https://arxiv.org/abs/1704.03081)","x":840,"y":2300,"width":149,"height":60},
-		{"id":"6b291d26049cc54b","type":"file","file":"Data/Driving/DriveCouplerLRU/PositiveU/PauliString/lru_vs_no_lru/gaussian/proj_comparison.png","x":1041,"y":2260,"width":400,"height":267}
+		{"id":"6b291d26049cc54b","type":"file","file":"Data/Driving/DriveCouplerLRU/PositiveU/PauliString/lru_vs_no_lru/gaussian/proj_comparison.png","x":1041,"y":2260,"width":400,"height":267},
+		{"id":"8866b3c03a308b7f","type":"text","text":"In these plots the couplers leakage states are **not in resonance** with the rest of the system. How does this change the figures?","x":2080,"y":-840,"width":250,"height":169,"color":"1"},
+		{"id":"cb6a82d5e0d2acf6","type":"file","file":"Data/Coupler/FLevelResonance/low_coupling/combined.png","x":2540,"y":-699,"width":400,"height":267,"color":"3"},
+		{"id":"1c73967d5923e5ef","type":"file","file":"Data/Coupler/FLevelResonance/high_coupling/combined.png","x":2540,"y":-1060,"width":400,"height":267,"color":"3"}
 	],
 	"edges":[
 		{"id":"c80247498dfe2f6b","fromNode":"98c1ecb102ddc719","fromSide":"right","toNode":"00ec45de1e888ae3","toSide":"left"},
