@@ -1,5 +1,6 @@
 export tunable_coupler_paper, qt_tunable_coupler_paper
 export tunable_coupler_paper_positive, qt_tunable_coupler_paper_positive
+export tunnel_tunable_coupler_paper, qt_tunnel_tunable_coupler_paper
 export w_off_position
 export logical_state_index, zz_coupling_strength, zz_zero_point
 
@@ -20,6 +21,13 @@ function tunable_coupler_paper_positive(w, U, g)
 end
 function qt_tunable_coupler_paper_positive(w, U, g)
     return QuantumObject(tunable_coupler_paper_positive(w, U, g), dims = (3, 3, 3))
+end
+
+function tunnel_tunable_coupler_paper(w, U, g)
+    return bosehubbard(3, 5, [(1, 2, g[1]), (2, 3, -g[2]), (3, 4, -g[3]), (4, 5, g[4]), (1, 3, g[5]), (3, 5, g[5])]; w, U)
+end
+function qt_tunnel_tunable_coupler_paper(w, U, g; kwargs...)
+    return QuantumObject(tunnel_tunable_coupler_paper(w, U, g; kwargs...), dims = (3, 3, 3, 3, 3))
 end
 
 function w_off_position(w1, w2, g1c, g2c, g12; is_above = false)
