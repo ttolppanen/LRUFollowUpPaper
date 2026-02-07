@@ -1,6 +1,8 @@
 export tunable_coupler_paper, qt_tunable_coupler_paper
 export tunable_coupler_paper_positive, qt_tunable_coupler_paper_positive
 export tunnel_tunable_coupler_paper, qt_tunnel_tunable_coupler_paper
+export four_qubit_coupler_paper, qt_four_qubit_coupler_paper
+export five_qubit_coupler_paper, qt_five_qubit_coupler_paper
 export w_off_position
 export logical_state_index, zz_coupling_strength, zz_zero_point
 
@@ -28,6 +30,20 @@ function tunnel_tunable_coupler_paper(w, U, g)
 end
 function qt_tunnel_tunable_coupler_paper(w, U, g; kwargs...)
     return QuantumObject(tunnel_tunable_coupler_paper(w, U, g; kwargs...), dims = (3, 3, 3, 3, 3))
+end
+
+function four_qubit_coupler_paper(w, U, g)
+    return bosehubbard(3, 7, [(1, 2, g[1]), (2, 3, -g[1]), (3, 4, -g[1]), (4, 5, g[1]), (5, 6, g[1]), (6, 7, -g[1]), (1, 3, g[2]), (3, 5, g[2]), (5, 7, g[2])]; w, U)
+end
+function qt_four_qubit_coupler_paper(w, U, g; kwargs...)
+    return QuantumObject(four_qubit_coupler_paper(w, U, g; kwargs...), dims = (3, 3, 3, 3, 3, 3, 3))
+end
+
+function five_qubit_coupler_paper(w, U, g)
+    return bosehubbard(3, 9, [(1, 2, g[1]), (2, 3, -g[1]), (3, 4, -g[1]), (4, 5, g[1]), (5, 6, g[1]), (6, 7, -g[1]), (7, 8, -g[1]), (8, 9, g[1]), (1, 3, g[2]), (3, 5, g[2]), (5, 7, g[2]), (7, 9, g[2])]; w, U)
+end
+function qt_five_qubit_coupler_paper(w, U, g; kwargs...)
+    return QuantumObject(five_qubit_coupler_paper(w, U, g; kwargs...), dims = (3, 3, 3, 3, 3, 3, 3, 3, 3))
 end
 
 function w_off_position(w1, w2, g1c, g2c, g12; is_above = false)

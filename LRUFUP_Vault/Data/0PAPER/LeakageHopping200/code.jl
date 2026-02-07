@@ -31,9 +31,9 @@ function initial_parameters()
     param[:H] = "Tunable Coupler"
     param[:J12] = ValueInfo(5, "5MHz")
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
-    param[:w1] = ValueInfo(4000 / param[:J12].val, "4GHz")
-    param[:w2] = ValueInfo(4000 / param[:J12].val, "4GHz")
-    param[:wc_below] = ValueInfo(3505 / param[:J12].val, "3.505GHz")
+    param[:w1] = ValueInfo(3750 / param[:J12].val, "4GHz")
+    param[:w2] = ValueInfo(3750 / param[:J12].val, "4GHz")
+    param[:wc_below] = ValueInfo(3255 / param[:J12].val, "3.505GHz")
     param[:wc_above] = ValueInfo(4495 / param[:J12].val, "4.495GHz")
     U = 300
     param[:U1] = ValueInfo(U / param[:J12].val, "$(U)MHz")

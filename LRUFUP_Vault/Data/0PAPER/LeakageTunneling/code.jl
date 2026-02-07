@@ -27,19 +27,20 @@ function initial_parameters()
     param[:H] = "Tunable Coupler"
     param[:J12] = ValueInfo(5, "5MHz")
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
-    param[:w1] = ValueInfo(4000 / param[:J12].val, "4GHz")
+    param[:w1] = ValueInfo(4000 / param[:J12].val, "3.75GHz")
     param[:w2] = ValueInfo(4000 / param[:J12].val, "4GHz")
-    param[:w3] = ValueInfo(4000 / param[:J12].val, "4GHz")
-    param[:wc1] = ValueInfo(3505 / param[:J12].val, "3.505GHz")
-    param[:wc2] = ValueInfo(3505 / param[:J12].val, "3.505GHz")
+    param[:w3] = ValueInfo(3.75 / param[:J12].val, "3.75GHz")
+    param[:wc1] = ValueInfo(3505 / param[:J12].val, "3.713313GHz")
+    param[:wc2] = ValueInfo(3713.313 / param[:J12].val, "3.713313GHz")
     param[:U] = ValueInfo(300 / param[:J12].val, "300MHz")
     t = 2
     param[:t] = ValueInfo(t * 2 * π * param[:J12].val, "$(t)μs")
-    # param[:diss_rate] = 0.0
 
-    # param[:wd] = ValueInfo(4007 / param[:J12].val, "4.007GHz")
-    # param[:gate_time] = ValueInfo(14 * 10^(-3) * 2 * π * param[:J12].val, "14ns")
-    # param[:gate_repeat_time] = ValueInfo(4 * 10^(-3) * 2 * π * param[:J12].val, "4ns")
+    # U = [param[:U].val, param[:U].val, param[:U].val]
+    # gs = [param[:Jc].val, param[:Jc].val, param[:J12].val]
+    # wcs = collect(range(2000, 4200, length=1000)) ./ param[:J12].val
+    # wcs = zz_zero_point(param[:w1].val, param[:w2].val, wcs, U, gs)
+    # display(wcs .* param[:J12].val)
 
     param[:J12] = ValueInfo(1, param[:J12].str_val)
     return param
@@ -79,12 +80,13 @@ function f()
     state10 = psi[4]
 
     state = state200
+    label_s = "200"
     out = mesolve(H, state, t_list, e_ops = e_ops, maxiters = 10^7)
-    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "s_0 = |200>, <n1>"))
-    push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "s_0 = |200>, <n2>"))
-    push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "s_0 = |200>, <n3>"))
-    push!(lines, LineInfo(t_list, real(out.expect[4, :]), 1, "s_0 = |200>, <nc1>"))
-    push!(lines, LineInfo(t_list, real(out.expect[5, :]), 1, "s_0 = |200>, <nc2>"))
+    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "s_0 = |$label_s>, <n1>"))
+    push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "s_0 = |$label_s>, <n2>"))
+    push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "s_0 = |$label_s>, <n3>"))
+    push!(lines, LineInfo(t_list, real(out.expect[4, :]), 1, "s_0 = |$label_s>, <nc1>"))
+    push!(lines, LineInfo(t_list, real(out.expect[5, :]), 1, "s_0 = |$label_s>, <nc2>"))
 
     # state = state20
     # out = mesolve(H_below, state, t_list, e_ops = e_ops, maxiters = 10^7)
@@ -94,5 +96,7 @@ function f()
     makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
     # addtrajectories(path, line)
 end
+
+# initial_parameters()
 
 @time f()
