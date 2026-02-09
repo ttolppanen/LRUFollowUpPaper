@@ -1,0 +1,178 @@
+using Plots
+using LinearAlgebra
+using QuantumStates
+using QuantumOperators
+using PlotAndSave
+using QuantumTimeEvolution
+using OrderedCollections
+using SparseArrays
+using LocalPackages
+using QuantumToolbox
+using QuantumTimes
+
+function traj_mean(result)
+    out = zeros(size(result[1]))
+    for traj in result
+        out .+= traj
+    end
+    return out ./ length(result)
+end
+
+# this is calculated so that |2> -> |1> is in resonance
+function Ec2(Ej1, Ej2, Ec1)
+    c = 2 * (sqrt(8 * Ej1 * Ec1) - Ec1) - Ec1
+    Ec2 = (sqrt(32 * Ej2 + 4 * c) - 2 * sqrt(8 * Ej2)) / 2
+    return Ec2
+end
+
+# CHECK K2 IS OK HERE! IN A AND IN THE HAMILTONIAN
+# IS THE DIAGONALIZING WORKING SINCE n1n2 is added AFTER DIAGONALIZATION?
+function two_transmon_snail_with_k(d, i_K2, i_K3, E_c, E_j; D = 15)
+    if d > D
+        D = d
+    end
+    beta = E_j[3] ./ E_j[1:2]
+
+    A = abs((1 + i_K2 * (beta[1] + beta[2])) / (i_K2^2 * beta[1] * beta[2]))
+    c_12 = ((1 / E_c[1] + 1 / E_c[2]) / (2 * A)) * (1 + sqrt(1 + (4 * A) / (E_c[1] * E_c[2] * (1 / E_c[1] + 1 / E_c[2])^2)))
+    E_c12 = 1 / (1 / E_c[1] + 1 / E_c[2] + 1 / (E_c[1] * E_c[2] * c_12)) 
+
+    K2 = 2 * i_K2
+    K3 = 6 * i_K3
+
+    phi_zpf(i) = ((2 * E_c[i]) / (E_j[i] * (1 + beta[i] * K2)))^(1/4)
+    n_zpf(i) = ((E_j[i] * (1 + beta[i] * K2)) / (32 * E_c[i]))^(1/4)
+    c_op = create(D)
+    d_op = destroy(D)
+
+    n_1 = -1im * n_zpf(1) * (d_op - c_op)
+    phi_1 = phi_zpf(1) * (d_op + c_op)
+
+    H1 = 4 * E_c[1] * n_1^2 - E_j[1] * (cos(phi_1) - beta[1] * K2 / 2 * phi_1^2 - beta[1] * K3 / 6 * phi_1^3)
+    λ, psi, U1 = eigenstates(H1)
+    U1 = QuantumObject(U1, dims = D)
+    # println(λ[1:3])
+    println((λ[1:3] .- λ[1]))
+    a1 = λ[3] - λ[1]
+    
+    n_2 = -1im * n_zpf(2) * (d_op - c_op)
+    phi_2 = phi_zpf(2) * (d_op + c_op)
+    H2 = 4 * E_c[2] * n_2^2 - E_j[2] * (cos(phi_2) - beta[2] * K2 / 2 * phi_2^2 + beta[2] * K3 / 6 * phi_2^3)
+    λ, psi, U2 = eigenstates(H2)
+    U2 = QuantumObject(U2, dims = D)
+    # println(λ[1:3])
+    println((λ[1:3] .- λ[1]))
+    a2 = λ[2] - λ[1]
+    println("Resonance: $(a1 - a2)")
+
+    U = tensor(U1, U2)
+    coupling = -E_j[3] * (K2 * tensor(phi_1, phi_2) - K3 / 2 * (tensor(phi_1, phi_2^2) - tensor(phi_1^2, phi_2)))
+    coupling += 8 * E_c12 * tensor(n_1, n_2)
+    H = U' * (tensor(H1, qeye(D)) + tensor(qeye(D), H2) + coupling) * U
+    
+    H_row = []
+    for i in 0:(d-1)
+        i_ind = (i * D + 1):(i * D + d)
+        push!(H_row, H[(1:d), i_ind])
+    end
+
+    H_out = hcat(H_row...)
+    for j in 1:(d-1)
+        j_ind = (j * D + 1):(j * D + d)
+        H_row = []
+        for i in 0:(d-1)
+            i_ind = (i * D + 1):(i * D + d)
+            push!(H_row, H[j_ind, i_ind])
+        end
+        H_out = vcat(H_out, hcat(H_row...))
+    end
+    
+    H = QuantumObject(H_out, dims = (d, d))
+    # λ, psi, U2 = eigenstates(H)
+    # E = labeled_eigenvalue_dict(λ, d)
+    # println("00 -> 20 = $(E["20"] - E["00"])")
+    # # println("00 -> 10 = $(E["10"] - E["00"])")
+    # println("00 -> 01 = $(E["01"] - E["00"])")
+    return QuantumObject(H_out, dims = (d, d))
+end
+
+function initial_parameters()
+    param = OrderedDict()
+    param[:t_points] = 1000
+    param[:d] = 3
+    param[:L] = 2
+    N = 2
+    state = QuantumObject(tensor(basis(param[:d], N), basis(param[:d], 0)))
+    param[:state] = ValueInfo(state, "|$(N)0>")
+    param[:alg] = "toolbox"
+    param[:H] = "snail"
+    Ej1 = 10
+    param[:Ej1] = ValueInfo(Ej1, "$(Ej1)GHz")
+    param[:Ej2] = ValueInfo(15 / param[:Ej1].val, "3/2 * Ej1GHz")
+    ec1 = 0.300
+    param[:Ec1] = ValueInfo(ec1 / param[:Ej1].val, "$(ec1 * 1e3)MHz")
+    ec2 = 0.28
+    param[:Ec2] = ValueInfo(ec2 / param[:Ej1].val, "$(ec2 * 1e3)MHz")
+    param[:Ej_snail] = ValueInfo(5 / param[:Ej1].val, "0.5 * EJ1")
+    param[:K2] = 0.01 / param[:Ej1].val
+    param[:K3] = 0.01 / param[:Ej1].val
+
+    t = 100
+    param[:t] = ValueInfo(t * 2 * π * param[:Ej1].val, "$(t)ns")
+    # param[:diss_rate] = 0.0018
+
+    param[:Ej1] = ValueInfo(1, param[:Ej1].str_val)
+    return param
+end
+
+function f()
+    param = initial_parameters()
+    # -----------
+    # -----------
+    lines = []
+    d = param[:d]; L = param[:L]
+    state = param[:state].val
+
+    n1 = qt_single_site_op(d, L, num(d), 1)
+    n2 = qt_single_site_op(d, L, num(d), 2)
+    anh1 = qt_single_site_op(d, L, qt_anh_op(d), 1)
+    e_ops = [n1, qt_anh_all(d, L), qt_n_all(d, L), n2, anh1]
+    
+    # c_ops = [sqrt(param[:diss_rate]) * qt_single_site_op(d, L, destroy(d), L)]
+
+    E_c = [param[:Ec1].val, param[:Ec2].val]
+    E_j = [param[:Ej1].val, param[:Ej2].val, param[:Ej_snail].val]
+    H = two_transmon_snail_with_k(d, param[:K2], param[:K3], E_c, E_j)
+
+    t_list = LinRange(0, param[:t].val, param[:t_points])
+    out = mesolve(H, state, t_list, e_ops = e_ops)
+    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "n1"))
+    # push!(lines, LineInfo(t_list, real(out.expect[5, :]), 1, "anh"))
+    # push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "n_all"))
+    # push!(lines, LineInfo(t_list, real(out.expect[4, :]), 1, "n2"))
+
+    path = joinpath(@__DIR__)
+    makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
+    # addtrajectories(path, line)
+
+    # drive_op = qt_single_site_op(d, L, destroy(d), 1) + qt_single_site_op(d, L, create(d), 1)
+    # drive_op = drive_op / 2
+    # pulse = gaussian_pulse(param[:gate_time].val, π)
+    # Ht = H + QobjEvo(drive_op, (p, t) -> pulse(t))
+    # pl = plot(lines[1].x, lines[1].y, ylim = (0, 1.1))
+    # plot!(pl, lines[1].x, t -> exp(-t / (2 * π * 20.1) / 30))
+    # t_time_from_n(t_list, real(out.expect[1, :]), 10 * 1e9)
+end
+
+function t_time_from_n(times, population, J)
+    x = times
+    y = real(population)
+    pl = plot(x, y, label = "data")
+    n = length(times) # adjust here to make fit better
+    # n = 200
+    c, slope, f_fit = exp_fit(x[1:n], y[1:n], 1)
+    println((-1 / slope) / (2 * π * J * 1e-6), "μs")
+    plot!(x, f_fit, label = "fit, T1 = 1000μs")
+end
+
+@time f()
