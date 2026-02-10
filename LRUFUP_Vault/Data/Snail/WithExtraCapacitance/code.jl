@@ -25,7 +25,7 @@ function Ec2(Ej1, Ej2, Ec1)
     return Ec2
 end
 
-# CHECK K2 IS OK HERE! IN A AND IN THE HAMILTONIAN
+
 # IS THE DIAGONALIZING WORKING SINCE n1n2 is added AFTER DIAGONALIZATION?
 function two_transmon_snail_with_k(d, i_K2, i_K3, E_c, E_j; D = 15)
     if d > D
@@ -33,12 +33,13 @@ function two_transmon_snail_with_k(d, i_K2, i_K3, E_c, E_j; D = 15)
     end
     beta = E_j[3] ./ E_j[1:2]
 
-    A = abs((1 + i_K2 * (beta[1] + beta[2])) / (i_K2^2 * beta[1] * beta[2]))
-    c_12 = ((1 / E_c[1] + 1 / E_c[2]) / (2 * A)) * (1 + sqrt(1 + (4 * A) / (E_c[1] * E_c[2] * (1 / E_c[1] + 1 / E_c[2])^2)))
-    E_c12 = 1 / (1 / E_c[1] + 1 / E_c[2] + 1 / (E_c[1] * E_c[2] * c_12)) 
-
     K2 = 2 * i_K2
     K3 = 6 * i_K3
+
+    A = abs((1 + i_K2 * (beta[1] + beta[2])) / (i_K2^2 * beta[1] * beta[2]))
+    c_12 = ((1 / E_c[1] + 1 / E_c[2]) / (2 * A)) * (1 + sqrt(1 + (4 * A) / (E_c[1] * E_c[2] * (1 / E_c[1] + 1 / E_c[2])^2)))
+    E_c12 = 1 / (1 / E_c[1] + 1 / E_c[2] + 1 / (E_c[1] * E_c[2] * c_12))
+
 
     phi_zpf(i) = ((2 * E_c[i]) / (E_j[i] * (1 + beta[i] * K2)))^(1/4)
     n_zpf(i) = ((E_j[i] * (1 + beta[i] * K2)) / (32 * E_c[i]))^(1/4)
@@ -101,14 +102,14 @@ function initial_parameters()
     param[:t_points] = 1000
     param[:d] = 3
     param[:L] = 2
-    N = 2
+    N = 1
     state = QuantumObject(tensor(basis(param[:d], N), basis(param[:d], 0)))
     param[:state] = ValueInfo(state, "|$(N)0>")
     param[:alg] = "toolbox"
     param[:H] = "snail"
     Ej1 = 10
     param[:Ej1] = ValueInfo(Ej1, "$(Ej1)GHz")
-    param[:Ej2] = ValueInfo(15 / param[:Ej1].val, "3/2 * Ej1GHz")
+    param[:Ej2] = ValueInfo(3/2, "3/2 * Ej1GHz")
     ec1 = 0.300
     param[:Ec1] = ValueInfo(ec1 / param[:Ej1].val, "$(ec1 * 1e3)MHz")
     ec2 = 0.28
@@ -117,7 +118,7 @@ function initial_parameters()
     param[:K2] = 0.01 / param[:Ej1].val
     param[:K3] = 0.01 / param[:Ej1].val
 
-    t = 100
+    t = 1000
     param[:t] = ValueInfo(t * 2 * π * param[:Ej1].val, "$(t)ns")
     # param[:diss_rate] = 0.0018
 

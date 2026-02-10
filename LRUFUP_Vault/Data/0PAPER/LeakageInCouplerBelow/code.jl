@@ -21,7 +21,7 @@ end
 function initial_parameters()
     param = OrderedDict()
     param[:t_points] = 1000
-    param[:d] = 3
+    param[:d] = 5
     param[:L] = 3
     N1 = 1
     N2 = 0
@@ -74,7 +74,7 @@ function f()
     g = [param[:Jc].val, param[:Jc].val, param[:J12].val]
 
 
-    H_below = qt_tunable_coupler_paper(w, U, g)
+    H_below = qt_tunable_coupler_paper(d, w, U, g)
 
     t_list = LinRange(0, param[:t].val, param[:t_points])
     

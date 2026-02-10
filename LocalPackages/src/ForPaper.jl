@@ -11,39 +11,39 @@ export logical_state_index, zz_coupling_strength, zz_zero_point
 # They show that for the setup where the coupler is below in frequency, the direct coupling
 # and one of the coupligns to coupler have negative sign. But they don't use Bose-Hubbard model,
 # in the BH model this should translate to g_2c being negative.
-function tunable_coupler_paper(w, U, g)
-    return bosehubbard(3, 3, [(1, 2, g[1]), (2, 3, -g[2]), (1, 3, g[3])]; w, U)
+function tunable_coupler_paper(d, w, U, g)
+    return bosehubbard(d, 3, [(1, 2, g[1]), (2, 3, -g[2]), (1, 3, g[3])]; w, U)
 end
-function qt_tunable_coupler_paper(w, U, g)
-    return QuantumObject(tunable_coupler_paper(w, U, g), dims = (3, 3, 3))
-end
-
-function tunable_coupler_paper_positive(w, U, g)
-    return bosehubbard(3, 3, [(1, 2, g[1]), (2, 3, g[2]), (1, 3, g[3])]; w, U)
-end
-function qt_tunable_coupler_paper_positive(w, U, g)
-    return QuantumObject(tunable_coupler_paper_positive(w, U, g), dims = (3, 3, 3))
+function qt_tunable_coupler_paper(d, w, U, g)
+    return QuantumObject(tunable_coupler_paper(d, w, U, g), dims = (d, d, d))
 end
 
-function tunnel_tunable_coupler_paper(w, U, g)
-    return bosehubbard(3, 5, [(1, 2, g[1]), (2, 3, -g[2]), (3, 4, -g[3]), (4, 5, g[4]), (1, 3, g[5]), (3, 5, g[5])]; w, U)
+function tunable_coupler_paper_positive(d, w, U, g)
+    return bosehubbard(d, 3, [(1, 2, g[1]), (2, 3, g[2]), (1, 3, g[3])]; w, U)
 end
-function qt_tunnel_tunable_coupler_paper(w, U, g; kwargs...)
-    return QuantumObject(tunnel_tunable_coupler_paper(w, U, g; kwargs...), dims = (3, 3, 3, 3, 3))
-end
-
-function four_qubit_coupler_paper(w, U, g)
-    return bosehubbard(3, 7, [(1, 2, g[1]), (2, 3, -g[1]), (3, 4, -g[1]), (4, 5, g[1]), (5, 6, g[1]), (6, 7, -g[1]), (1, 3, g[2]), (3, 5, g[2]), (5, 7, g[2])]; w, U)
-end
-function qt_four_qubit_coupler_paper(w, U, g; kwargs...)
-    return QuantumObject(four_qubit_coupler_paper(w, U, g; kwargs...), dims = (3, 3, 3, 3, 3, 3, 3))
+function qt_tunable_coupler_paper_positive(d, w, U, g)
+    return QuantumObject(tunable_coupler_paper_positive(d, w, U, g), dims = (d, d, d))
 end
 
-function five_qubit_coupler_paper(w, U, g)
-    return bosehubbard(3, 9, [(1, 2, g[1]), (2, 3, -g[1]), (3, 4, -g[1]), (4, 5, g[1]), (5, 6, g[1]), (6, 7, -g[1]), (7, 8, -g[1]), (8, 9, g[1]), (1, 3, g[2]), (3, 5, g[2]), (5, 7, g[2]), (7, 9, g[2])]; w, U)
+function tunnel_tunable_coupler_paper(d, w, U, g)
+    return bosehubbard(d, 5, [(1, 2, g[1]), (2, 3, -g[2]), (3, 4, -g[3]), (4, 5, g[4]), (1, 3, g[5]), (3, 5, g[5])]; w, U)
 end
-function qt_five_qubit_coupler_paper(w, U, g; kwargs...)
-    return QuantumObject(five_qubit_coupler_paper(w, U, g; kwargs...), dims = (3, 3, 3, 3, 3, 3, 3, 3, 3))
+function qt_tunnel_tunable_coupler_paper(d, w, U, g; kwargs...)
+    return QuantumObject(tunnel_tunable_coupler_paper(d, w, U, g; kwargs...), dims = (d, d, d, d, d))
+end
+
+function four_qubit_coupler_paper(d, w, U, g)
+    return bosehubbard(d, 7, [(1, 2, g[1]), (2, 3, -g[1]), (3, 4, -g[1]), (4, 5, g[1]), (5, 6, g[1]), (6, 7, -g[1]), (1, 3, g[2]), (3, 5, g[2]), (5, 7, g[2])]; w, U)
+end
+function qt_four_qubit_coupler_paper(d, w, U, g; kwargs...)
+    return QuantumObject(four_qubit_coupler_paper(d, w, U, g; kwargs...), dims = (d, d, d, d, d, d, d))
+end
+
+function five_qubit_coupler_paper(d, w, U, g)
+    return bosehubbard(d, 9, [(1, 2, g[1]), (2, 3, -g[1]), (3, 4, -g[1]), (4, 5, g[1]), (5, 6, g[1]), (6, 7, -g[1]), (7, 8, -g[1]), (8, 9, g[1]), (1, 3, g[2]), (3, 5, g[2]), (5, 7, g[2]), (7, 9, g[2])]; w, U)
+end
+function qt_five_qubit_coupler_paper(d, w, U, g; kwargs...)
+    return QuantumObject(five_qubit_coupler_paper(d, w, U, g; kwargs...), dims = (d, d, d, d, d, d, d, d, d))
 end
 
 function w_off_position(w1, w2, g1c, g2c, g12; is_above = false)
@@ -84,10 +84,9 @@ function zz_coupling_strength(dressed_states_i, E, d)
     return (E[i_11] - E[i_10]) - (E[i_01] - E[i_00])
 end
 
-function zz_zero_point(w1, w2, wcs, Us, gs)
+function zz_zero_point(d, w1, w2, wcs, Us, gs)
     zzs = []
     comparison_states = []
-    d = 3
     for wc in wcs
         if isempty(comparison_states)
             push!(comparison_states, QuantumObject(tensor(basis(d, 0), basis(d, 0), basis(d, 0))))
@@ -98,7 +97,7 @@ function zz_zero_point(w1, w2, wcs, Us, gs)
         w = [w1, wc, w2]
         U = Us
         g = gs
-        H = qt_tunable_coupler_paper(w, U, g)
+        H = qt_tunable_coupler_paper(d, w, U, g)
 
         E, psi, Uni = eigenstates(H)
         dressed_states_i = logical_state_index(comparison_states, psi, d)
@@ -112,6 +111,9 @@ function zz_zero_point(w1, w2, wcs, Us, gs)
             push!(wc_zeros, wcs[i])
             prev_zz_sign = sign(zz)
         end
+    end
+    if isempty(wc_zeros)
+        error("No ZZ zero points found")
     end
     return wc_zeros
 end
