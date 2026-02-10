@@ -21,7 +21,7 @@ end
 function initial_parameters()
     param = OrderedDict()
     param[:t_points] = 1000
-    param[:d] = 3
+    param[:d] = 4
     param[:L] = 3
     N1 = 1
     N2 = 0
@@ -84,7 +84,7 @@ function f()
         U = [param[:U1].val, param[:Uc].val, param[:U2].val]
         g = [param[:Jc].val, param[:Jc].val, param[:J12].val]
 
-        H = qt_tunable_coupler_paper(w, U, g)
+        H = qt_tunable_coupler_paper(d, w, U, g)
 
         state = state201
         out = mesolve(H, state, t_list_below, e_ops = e_ops, progress_bar= false)

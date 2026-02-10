@@ -30,17 +30,17 @@ function initial_parameters()
     param[:w1] = ValueInfo(3750 / param[:J12].val, "3.75GHz")
     param[:w2] = ValueInfo(4000 / param[:J12].val, "4GHz")
     param[:w3] = ValueInfo(3750 / param[:J12].val, "3.75GHz")
-    param[:wc1] = ValueInfo(3642.84 / param[:J12].val, "3.64284GHz")
-    param[:wc2] = ValueInfo(3642.84 / param[:J12].val, "3.64284GHz")
+    param[:wc1] = ValueInfo(3245.86 / param[:J12].val, "3.24586GHz")
+    param[:wc2] = ValueInfo(3245.86 / param[:J12].val, "3.24586GHz")
     param[:U] = ValueInfo(300 / param[:J12].val, "300MHz")
     t = 2
     param[:t] = ValueInfo(t * 2 * π * param[:J12].val, "$(t)μs")
 
-    # U = [param[:U].val, param[:U].val, param[:U].val]
-    # gs = [param[:Jc].val, param[:Jc].val, param[:J12].val]
-    # wcs = collect(range(2000, 4200, length=1000)) ./ param[:J12].val
-    # wcs = zz_zero_point(param[:d], param[:w3].val, param[:w2].val, wcs, U, gs)
-    # display(wcs .* param[:J12].val)
+    U = [param[:U].val, param[:U].val, param[:U].val]
+    gs = [param[:Jc].val, param[:Jc].val, 1]
+    wcs = collect(range(2000, 4200, length=1000)) ./ param[:J12].val
+    wcs = zz_zero_point(param[:w1].val, param[:w2].val, wcs, U, gs)
+    display(wcs .* param[:J12].val)
 
     param[:J12] = ValueInfo(1, param[:J12].str_val)
     return param
@@ -59,7 +59,7 @@ function f()
     n3 = qt_single_site_op(d, L, num(d), 5)
     nc1 = qt_single_site_op(d, L, num(d), 2)
     nc2 = qt_single_site_op(d, L, num(d), 4)
-    e_ops = [n1, n2, n3, nc1, nc2]
+    e_ops = [n1, n2, n3, nc1, nc2, qt_n_all(d, L)]
     
     # c_ops = [sqrt(param[:diss_rate]) * qt_single_site_op(d, L, destroy(d), L)]
 
@@ -75,18 +75,19 @@ function f()
     state201 = QuantumObject(tensor(basis(d, 2), basis(d, 0), basis(d, 0), basis(d, 0), basis(d, 1)))
     state210 = QuantumObject(tensor(basis(d, 2), basis(d, 0), basis(d, 1), basis(d, 0), basis(d, 0)))
     state211 = QuantumObject(tensor(basis(d, 2), basis(d, 0), basis(d, 1), basis(d, 0), basis(d, 1)))
-    # state111 = QuantumObject(tensor(basis(d, 1), basis(d, 0), basis(d, 0), basis(d, 0), basis(d, 1)))
+    state111 = QuantumObject(tensor(basis(d, 1), basis(d, 0), basis(d, 0), basis(d, 0), basis(d, 0)))
     E, psi, Uni = eigenstates(H)
     state10 = psi[4]
 
-    state = state200
-    label_s = "200"
+    state = state111
+    label_s = "111"
     out = mesolve(H, state, t_list, e_ops = e_ops, maxiters = 10^7)
     push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "s_0 = |$label_s>, <n1>"))
     push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "s_0 = |$label_s>, <n2>"))
     push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "s_0 = |$label_s>, <n3>"))
     push!(lines, LineInfo(t_list, real(out.expect[4, :]), 1, "s_0 = |$label_s>, <nc1>"))
     push!(lines, LineInfo(t_list, real(out.expect[5, :]), 1, "s_0 = |$label_s>, <nc2>"))
+    push!(lines, LineInfo(t_list, real(out.expect[6, :]), 1, "s_0 = |$label_s>, <n tot>"))
 
     # state = state20
     # out = mesolve(H_below, tate, t_list, e_ops = e_ops, maxiters = 10^7)

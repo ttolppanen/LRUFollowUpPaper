@@ -21,7 +21,7 @@ end
 function initial_parameters()
     param = OrderedDict()
     param[:t_points] = 1000
-    param[:d] = 3
+    param[:d] = 4
     param[:L] = 3
     N1 = 1
     N2 = 0
@@ -34,8 +34,8 @@ function initial_parameters()
     param[:w1] = ValueInfo(4000 / param[:J12].val, "4GHz")
     w2s = vcat(collect(range(3800, 4000, length=100)), collect(range(4000, 4200, length=100))) ./ param[:J12].val
     param[:w2] = ValueInfo(w2s, "(3.8-4.2)GHz")
-    wcs = collect(range(3000, 4500, length=1200)) ./ param[:J12].val
-    param[:wc] = ValueInfo(wcs, "(3-4.5)GHz")
+    wcs = collect(range(2800, 3800, length= 1 * 10)) ./ param[:J12].val
+    param[:wc] = ValueInfo(wcs, "(2.8-3.8)GHz")
 
     # param[:w2] = ValueInfo(4000 / param[:J12].val, "4GHz")
     # param[:wc_below] = ValueInfo(3505 / param[:J12].val, "3.505GHz")
@@ -86,7 +86,7 @@ function f()
         U = [param[:U1].val, param[:Uc].val, param[:U2].val]
         g = [param[:Jc].val, param[:Jc].val, param[:J12].val]
 
-        H = qt_tunable_coupler_paper(w, U, g)
+        H = qt_tunable_coupler_paper(d, w, U, g)
 
         state = state201
         out = mesolve(H, state, t_list_below, e_ops = e_ops, progress_bar= false)
@@ -114,9 +114,9 @@ function f()
         U = [param[:U1].val, param[:Uc].val, param[:U2].val]
         g = [param[:Jc].val, param[:Jc].val, param[:J12].val]
         wc = zz_zero_point(param[:w1].val, w2, param[:wc].val, U, g)
-        w = [param[:w1].val, maximum(wc), w2]
+        w = [param[:w1].val, minimum(wc), w2]
 
-        H = qt_tunable_coupler_paper(w, U, g)
+        H = qt_tunable_coupler_paper(d, w, U, g)
 
         state = state201
         out = mesolve(H, state, t_list_below, e_ops = e_ops, progress_bar= false)

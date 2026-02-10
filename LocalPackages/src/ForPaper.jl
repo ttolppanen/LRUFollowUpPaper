@@ -84,9 +84,10 @@ function zz_coupling_strength(dressed_states_i, E, d)
     return (E[i_11] - E[i_10]) - (E[i_01] - E[i_00])
 end
 
-function zz_zero_point(d, w1, w2, wcs, Us, gs)
+function zz_zero_point(w1, w2, wcs, Us, gs)
     zzs = []
     comparison_states = []
+    d = 3
     for wc in wcs
         if isempty(comparison_states)
             push!(comparison_states, QuantumObject(tensor(basis(d, 0), basis(d, 0), basis(d, 0))))

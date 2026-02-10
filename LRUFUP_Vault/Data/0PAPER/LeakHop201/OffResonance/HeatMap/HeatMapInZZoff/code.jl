@@ -1,0 +1,100 @@
+using Plots
+using LinearAlgebra
+using QuantumStates
+using QuantumOperators
+using PlotAndSave
+using QuantumTimeEvolution
+using OrderedCollections
+using SparseArrays
+using LocalPackages
+using QuantumToolbox
+using QuantumTimes
+
+function traj_mean(result)
+    out = zeros(size(result[1]))
+    for traj in result
+        out .+= traj
+    end
+    return out ./ length(result)
+end
+
+function initial_parameters()
+    param = OrderedDict()
+    param[:t_points] = 1000
+    param[:d] = 4
+    param[:L] = 3
+    param[:alg] = "toolbox"
+    param[:H] = "Tunable Coupler"
+    param[:J12] = ValueInfo(5, "5MHz")
+    param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
+    param[:w1] = ValueInfo(4000 / param[:J12].val, "4GHz")
+    w2s = vcat(collect(range(3800, 4000, length=100)), collect(range(4000, 4200, length=100))) ./ param[:J12].val
+    param[:w2] = ValueInfo(w2s, "(3.8-4.2)GHz")
+    wcs = collect(range(2800, 3800, length=1000 * 10)) ./ param[:J12].val
+    param[:wc] = ValueInfo(wcs, "(2.8-3.8)GHz")
+
+    # param[:w2] = ValueInfo(4000 / param[:J12].val, "4GHz")
+    # param[:wc_below] = ValueInfo(3505 / param[:J12].val, "3.505GHz")
+    # param[:wc_above] = ValueInfo(4495 / param[:J12].val, "4.495GHz")
+    U = 300
+    param[:U1] = ValueInfo(U / param[:J12].val, "$(U)MHz")
+    U2 = U
+    param[:U2] = ValueInfo(U2 / param[:J12].val, "$(U2)MHz")
+    Uc = U
+    param[:Uc] = ValueInfo(Uc / param[:J12].val, "$(Uc)MHz")
+    t_below = 0.1
+    param[:t_below] = ValueInfo(t_below * 2 * π * param[:J12].val, "$(t_below)μs")
+    t_above = 0.2
+    param[:t_above] = ValueInfo(t_above * 2 * π * param[:J12].val, "$(t_above)μs")
+    # param[:diss_rate] = 0.0
+
+    # param[:wd] = ValueInfo(4007 / param[:J12].val, "4.007GHz")
+    # param[:gate_time] = ValueInfo(14 * 10^(-3) * 2 * π * param[:J12].val, "14ns")
+    # param[:gate_repeat_time] = ValueInfo(4 * 10^(-3) * 2 * π * param[:J12].val, "4ns")
+
+    param[:J12] = ValueInfo(1, param[:J12].str_val)
+    return param
+end
+
+function f()
+    param = initial_parameters()
+    # -----------
+    # -----------
+
+    lines = []
+    d = param[:d]; L = param[:L]
+    t_list_below = LinRange(0, param[:t_below].val, param[:t_points])
+    t_list_above = LinRange(0, param[:t_above].val, param[:t_points])
+
+    n1 = qt_single_site_op(d, L, num(d), 1)
+    nc = qt_single_site_op(d, L, num(d), 2)
+    n2 = qt_single_site_op(d, L, num(d), 3) - tensor(qeye(d), qeye(d), qeye(d))
+    e_ops = [n1 + nc, n1, n2]
+    
+    # c_ops = [sqrt(param[:diss_rate]) * qt_single_site_op(d, L, destroy(d), L)]
+
+    state201 = QuantumObject(tensor(basis(param[:d], 2), basis(param[:d], 0), basis(param[:d], 1)))
+
+    n2s = []
+    for w2 in param[:w2].val
+        U = [param[:U1].val, param[:Uc].val, param[:U2].val]
+        g = [param[:Jc].val, param[:Jc].val, param[:J12].val]
+        wc = zz_zero_point(param[:w1].val, w2, param[:wc].val, U, g)
+        w = [param[:w1].val, minimum(wc), w2]
+
+        H = qt_tunable_coupler_paper(d, w, U, g)
+
+        state = state201
+        out = mesolve(H, state, t_list_below, e_ops = e_ops, progress_bar= false)
+        push!(n2s, real(out.expect[3, :]))
+    end
+    n2s = hcat(n2s...)
+    x = param[:w2].val .* 5
+    t = t_list_below ./ (2 * π * 5) * 1000
+    
+    heatmap(x, t, n2s, xlabel = "w2 (MHz)", ylabel = "t (ns)", colorbar_title = "<n2 / 2>")
+    savefig(joinpath(@__DIR__, "heatmap.png"))
+end
+
+
+@time f()

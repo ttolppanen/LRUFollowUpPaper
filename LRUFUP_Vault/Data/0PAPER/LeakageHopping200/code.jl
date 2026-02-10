@@ -9,6 +9,7 @@ using SparseArrays
 using LocalPackages
 using QuantumToolbox
 using QuantumTimes
+using OrdinaryDiffEq
 
 function traj_mean(result)
     out = zeros(size(result[1]))
@@ -65,7 +66,7 @@ function f()
     n1 = qt_single_site_op(d, L, num(d), 1)
     nc = qt_single_site_op(d, L, num(d), 2)
     # n2 = qt_single_site_op(d, L, num(d), 3)
-    e_ops = [n1 + nc, n1]
+    e_ops = [n1 + nc, n1, qt_n_all(d, L)]
     
     # c_ops = [sqrt(param[:diss_rate]) * qt_single_site_op(d, L, destroy(d), L)]
 
@@ -83,12 +84,14 @@ function f()
     state10 = psi[4]
 
     state = state10
-    out = mesolve(H_below, state, t_list, e_ops = e_ops)
+    out = sesolve(H_below, state, t_list, e_ops = e_ops; alg = Vern9())
     push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "below, s_0 = |10>, <nc+n1>"))
+    push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "below, s_0 = |10>, <N>"))
 
     state = state20
-    out = mesolve(H_below, state, t_list, e_ops = e_ops, maxiters = 10^7)
+    out = sesolve(H_below, state, t_list, e_ops = e_ops, alg = Vern9(), maxiters = 10^7)
     push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "below, s_0 = |200>, <n1>"))
+    push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "below, s_0 = |200>, <N>"))
     
     # w = [param[:w1].val, param[:wc_above].val, param[:w2].val]
     # H_above = qt_tunable_coupler_paper_positive(w, U, g)
