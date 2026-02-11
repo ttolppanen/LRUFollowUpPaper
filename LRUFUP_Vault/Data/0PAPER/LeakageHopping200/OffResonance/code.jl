@@ -9,6 +9,7 @@ using SparseArrays
 using LocalPackages
 using QuantumToolbox
 using QuantumTimes
+using OrdinaryDiffEq
 
 function traj_mean(result)
     out = zeros(size(result[1]))
@@ -27,7 +28,9 @@ function initial_parameters()
     N2 = 0
     state = QuantumObject(tensor(basis(param[:d], N1), basis(param[:d], 0), basis(param[:d], N2)))
     param[:state] = ValueInfo(state, "|$(N1)0$(N2)>")
-    param[:alg] = "toolbox"
+    param[:abstol] = 1e-14
+    param[:reltol] = 1e-8
+    param[:alg] = "toolbox Vern9"
     param[:H] = "Tunable Coupler"
     param[:J12] = ValueInfo(5, "5MHz")
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
@@ -45,7 +48,7 @@ function initial_parameters()
     param[:U2] = ValueInfo(U2 / param[:J12].val, "$(U2)MHz")
     Uc = U
     param[:Uc] = ValueInfo(Uc / param[:J12].val, "$(Uc)MHz")
-    t_below = 1
+    t_below = 10
     param[:t_below] = ValueInfo(t_below * 2 * π * param[:J12].val, "$(t_below)μs")
     t_above = 15
     param[:t_above] = ValueInfo(t_above * 2 * π * param[:J12].val, "$(t_above)μs")
@@ -85,10 +88,10 @@ function f()
         U = [param[:U1].val, param[:Uc].val, param[:U2].val]
         g = [param[:Jc].val, param[:Jc].val, param[:J12].val]
 
-        H = qt_tunable_coupler_paper(w, U, g)
+        H = qt_tunable_coupler_paper(d, w, U, g)
 
         state = state20
-        out = mesolve(H, state, t_list_below, e_ops = e_ops, progress_bar= false)
+        out = mesolve(H, state, t_list_below, e_ops = e_ops, progress_bar= false; abstol = param[:abstol], reltol = param[:reltol], alg = Vern9(), maxiters = 10^7)
         push!(max_amplitude_below, maximum(real(out.expect[1, :])))
     end
     push!(lines, LineInfo(param[:w2].val .* 5, max_amplitude_below, 1, "g = 0, max(<n2 / 2>)"))
@@ -114,15 +117,15 @@ function f()
         U = [param[:U1].val, param[:Uc].val, param[:U2].val]
         g = [param[:Jc].val, param[:Jc].val, param[:J12].val]
         wc = zz_zero_point(param[:w1].val, w2, param[:wc].val, U, g)
-        w = [param[:w1].val, maximum(wc), w2]
+        w = [param[:w1].val, minimum(wc), w2]
 
-        H = qt_tunable_coupler_paper(w, U, g)
+        H = qt_tunable_coupler_paper(d, w, U, g)
 
         state = state20
-        out = mesolve(H, state, t_list_below, e_ops = e_ops, progress_bar= false)
+        out = mesolve(H, state, t_list_below, e_ops = e_ops, progress_bar= false; abstol = param[:abstol], reltol = param[:reltol], alg = Vern9(), maxiters = 10^7)
         push!(max_amplitude_zz_off, maximum(real(out.expect[1, :])))
     end
-    push!(lines, LineInfo(param[:w2].val .* 5, max_amplitude_zz_off, 1, "zz = 0, max(<n2 / 2>)"))
+    push!(lines, LineInfo(param[:w2].val .* 5, max_amplitude_zz_off, 1, "zz = 0 (min), max(<n2 / 2>)"))
     
     path = joinpath(@__DIR__)
     makeplot(path, lines...; xlabel = "MHz", ylabel = "", copy_code = false, param...)
