@@ -9,6 +9,7 @@ using SparseArrays
 using LocalPackages
 using QuantumToolbox
 using QuantumTimes
+using OrdinaryDiffEq
 
 function traj_mean(result)
     out = zeros(size(result[1]))
@@ -21,23 +22,18 @@ end
 function initial_parameters()
     param = OrderedDict()
     param[:t_points] = 1000
-    param[:d] = 4
+    param[:d] = 3
     param[:L] = 3
-    N1 = 1
-    N2 = 0
-    state = QuantumObject(tensor(basis(param[:d], N1), basis(param[:d], 0), basis(param[:d], N2)))
-    param[:state] = ValueInfo(state, "|$(N1)0$(N2)>")
-    param[:alg] = "toolbox"
+    param[:abstol] = 1e-14
+    param[:reltol] = 1e-8
+    param[:alg] = "toolbox Vern9"
     param[:H] = "Tunable Coupler"
     param[:J12] = ValueInfo(5, "5MHz")
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
     param[:w1] = ValueInfo(4000 / param[:J12].val, "4GHz")
-    w2s = vcat(collect(range(3800, 4000, length=100)), collect(range(4000, 4200, length=100))) ./ param[:J12].val
+    w2s = vcat(collect(range(3800, 4000, length=150)), collect(range(4000, 4200, length=150))) ./ param[:J12].val
     param[:w2] = ValueInfo(w2s, "(3.8-4.2)GHz")
 
-    # param[:w2] = ValueInfo(4000 / param[:J12].val, "4GHz")
-    # param[:wc_below] = ValueInfo(3505 / param[:J12].val, "3.505GHz")
-    # param[:wc_above] = ValueInfo(4495 / param[:J12].val, "4.495GHz")
     U = 300
     param[:U1] = ValueInfo(U / param[:J12].val, "$(U)MHz")
     U2 = U
@@ -46,13 +42,6 @@ function initial_parameters()
     param[:Uc] = ValueInfo(Uc / param[:J12].val, "$(Uc)MHz")
     t_below = 0.1
     param[:t_below] = ValueInfo(t_below * 2 * π * param[:J12].val, "$(t_below)μs")
-    t_above = 0.2
-    param[:t_above] = ValueInfo(t_above * 2 * π * param[:J12].val, "$(t_above)μs")
-    # param[:diss_rate] = 0.0
-
-    # param[:wd] = ValueInfo(4007 / param[:J12].val, "4.007GHz")
-    # param[:gate_time] = ValueInfo(14 * 10^(-3) * 2 * π * param[:J12].val, "14ns")
-    # param[:gate_repeat_time] = ValueInfo(4 * 10^(-3) * 2 * π * param[:J12].val, "4ns")
 
     param[:J12] = ValueInfo(1, param[:J12].str_val)
     return param
@@ -66,7 +55,6 @@ function f()
     lines = []
     d = param[:d]; L = param[:L]
     t_list_below = LinRange(0, param[:t_below].val, param[:t_points])
-    t_list_above = LinRange(0, param[:t_above].val, param[:t_points])
 
     n1 = qt_single_site_op(d, L, num(d), 1)
     nc = qt_single_site_op(d, L, num(d), 2)
@@ -87,14 +75,14 @@ function f()
         H = qt_tunable_coupler_paper(d, w, U, g)
 
         state = state201
-        out = mesolve(H, state, t_list_below, e_ops = e_ops, progress_bar= false)
+        out = mesolve(H, state, t_list_below, e_ops = e_ops, progress_bar= false; abstol = param[:abstol], reltol = param[:reltol], alg = Vern9())
         push!(n2s, real(out.expect[3, :]))
     end
     n2s = hcat(n2s...)
     x = param[:w2].val .* 5
-    t = t_list_below ./ (2 * π * 5) * 1000
+    t = t_list_below ./ (2 * π * 5)
     
-    heatmap(x, t, n2s, xlabel = "w2 (MHz)", ylabel = "t (ns)", colorbar_title = "<n2 / 2>")
+    heatmap(x, t, n2s, xlabel = "w2 (MHz)", ylabel = "t (μs)", colorbar_title = "<n2 - I>")
     savefig(joinpath(@__DIR__, "heatmap.png"))
 end
 
