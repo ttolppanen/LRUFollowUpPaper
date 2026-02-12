@@ -21,13 +21,11 @@ end
 function initial_parameters()
     param = OrderedDict()
     param[:t_points] = 1000
-    param[:d] = 3
+    param[:d] = 5
     param[:L] = 3
-    N1 = 1
-    N2 = 0
-    state = QuantumObject(tensor(basis(param[:d], N1), basis(param[:d], 0), basis(param[:d], N2)))
-    param[:state] = ValueInfo(state, "|$(N1)0$(N2)>")
-    param[:alg] = "toolbox"
+    param[:abstol] = 1e-14
+    param[:reltol] = 1e-8
+    param[:alg] = "toolbox Vern9"
     param[:H] = "Tunable Coupler"
     param[:J12] = ValueInfo(5, "5MHz")
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
@@ -81,10 +79,10 @@ function f()
         U = [param[:U1].val, param[:Uc].val, param[:U2].val]
         g = [param[:Jc].val, param[:Jc].val, param[:J12].val]
 
-        H = qt_tunable_coupler_paper(w, U, g)
+        H = qt_tunable_coupler_paper(d, w, U, g)
 
         state = state110
-        out = mesolve(H, state, t_list_below, e_ops = e_ops, progress_bar= false)
+        out = mesolve(H, state, t_list_below, e_ops = e_ops, progress_bar= false, alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol])
         push!(n2s, real(out.expect[1, :]))
     end
     n2s = hcat(n2s...)
