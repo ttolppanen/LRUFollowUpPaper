@@ -41,7 +41,7 @@ function initial_parameters()
     param[:U2] = ValueInfo(U2 / param[:J12].val, "$(U2)MHz")
     Uc = U
     param[:Uc] = ValueInfo(Uc / param[:J12].val, "$(Uc)MHz")
-    t = 1
+    t = 10
     param[:t] = ValueInfo(t * 2 * π * param[:J12].val, "$(t)μs")
 
     # U = [param[:U1].val, param[:Uc].val, param[:U2].val]
@@ -80,7 +80,7 @@ function f()
     
     state20 = QuantumObject(tensor(basis(param[:d], 2), basis(param[:d], 0), basis(param[:d], 0)))
     E, psi, Uni = eigenstates(H_below)
-    state10 = psi[4]
+    state10 = psi[2 ]
 
     state = state10
     out = mesolve(H_below, state, t_list, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)

@@ -24,10 +24,6 @@ function initial_parameters()
     param[:t_points] = 1000
     param[:d] = 3
     param[:L] = 3
-    N1 = 1
-    N2 = 0
-    state = QuantumObject(tensor(basis(param[:d], N1), basis(param[:d], 0), basis(param[:d], N2)))
-    param[:state] = ValueInfo(state, "|$(N1)0$(N2)>")
     param[:alg] = "toolbox Vern9"
     param[:abstol] = 1e-14
     param[:reltol] = 1e-8
@@ -44,7 +40,7 @@ function initial_parameters()
     param[:U2] = ValueInfo(U2 / param[:J12].val, "$(U2)MHz")
     Uc = U
     param[:Uc] = ValueInfo(Uc / param[:J12].val, "$(Uc)MHz")
-    t = 5
+    t = 10
     param[:t] = ValueInfo(t * 2 * π * param[:J12].val, "$(t)μs")
     # param[:diss_rate] = 0.0
 
@@ -63,7 +59,6 @@ function f()
 
     lines = []
     d = param[:d]; L = param[:L]
-    state = param[:state].val
 
     n1 = qt_single_site_op(d, L, num(d), 1)
     nc = qt_single_site_op(d, L, num(d), 2)

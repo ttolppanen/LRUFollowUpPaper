@@ -46,12 +46,13 @@ function qt_five_qubit_coupler_paper(d, w, U, g; kwargs...)
     return QuantumObject(five_qubit_coupler_paper(d, w, U, g; kwargs...), dims = (d, d, d, d, d, d, d, d, d))
 end
 
+# WEIRD +- G12!
 function w_off_position(w1, w2, g1c, g2c, g12; is_above = false)
     G = 2 * g12 / (g1c * g2c)
     if is_above
-        return (w1 + w2) / 2 + 1 / G + sqrt(1 / G^2 + ((w1 - w2) / 2)^2) - 1
+        return (w1 + w2) / 2 + 1 / G + sqrt(1 / G^2 + ((w1 - w2) / 2)^2) - g12
     else
-        return (w1 + w2) / 2 - 1 / G - sqrt(1 / G^2 + ((w1 - w2) / 2)^2) + 1
+        return (w1 + w2) / 2 - 1 / G - sqrt(1 / G^2 + ((w1 - w2) / 2)^2) + g12
     end
 end
 
