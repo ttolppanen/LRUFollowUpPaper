@@ -31,7 +31,7 @@ function initial_parameters()
     param[:J12] = ValueInfo(5, "5MHz")
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
     param[:w1] = ValueInfo(4000 / param[:J12].val, "4GHz")
-    param[:w2] = ValueInfo(4000 / param[:J12].val, "4GHz")
+    param[:w2] = ValueInfo(4000/ param[:J12].val, "4GHz")
     param[:wc_below] = ValueInfo(3505 / param[:J12].val, "3.505GHz")
     param[:wc_above] = ValueInfo(4495 / param[:J12].val, "4.495GHz")
     U = 300
@@ -40,7 +40,7 @@ function initial_parameters()
     param[:U2] = ValueInfo(U2 / param[:J12].val, "$(U2)MHz")
     Uc = U
     param[:Uc] = ValueInfo(Uc / param[:J12].val, "$(Uc)MHz")
-    t = 10
+    t = 3
     param[:t] = ValueInfo(t * 2 * π * param[:J12].val, "$(t)μs")
     # param[:diss_rate] = 0.0
 
