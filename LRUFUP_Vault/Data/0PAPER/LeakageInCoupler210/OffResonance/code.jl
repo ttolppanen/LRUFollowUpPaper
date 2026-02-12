@@ -21,15 +21,17 @@ end
 function initial_parameters()
     param = OrderedDict()
     param[:t_points] = 1000
-    param[:d] = 3
+    param[:d] = 5
     param[:L] = 3
 
-    param[:alg] = "toolbox"
+    param[:abstol] = 1e-14
+    param[:reltol] = 1e-8
+    param[:alg] = "toolbox Vern9"
     param[:H] = "Tunable Coupler"
     param[:J12] = ValueInfo(5, "5MHz")
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
     param[:w1] = ValueInfo(4000 / param[:J12].val, "4GHz")
-    w2s = vcat(collect(range(3750, 4000, length=200)), collect(range(4000, 4250, length=200))) ./ param[:J12].val
+    w2s = vcat(collect(range(3750, 4000, length=20)), collect(range(4000, 4250, length=20))) ./ param[:J12].val
     param[:w2] = ValueInfo(w2s, "(3.75-4.25)GHz")
     wcs = collect(range(3000, 4500, length=1200)) ./ param[:J12].val
     param[:wc] = ValueInfo(wcs, "(3-4.5)GHz")
@@ -43,7 +45,7 @@ function initial_parameters()
     param[:U2] = ValueInfo(U2 / param[:J12].val, "$(U2)MHz")
     Uc = U
     param[:Uc] = ValueInfo(Uc / param[:J12].val, "$(Uc)MHz")
-    t_below = 0.5
+    t_below = 1
     param[:t_below] = ValueInfo(t_below * 2 * π * param[:J12].val, "$(t_below)μs")
     # param[:diss_rate] = 0.0
 
@@ -80,10 +82,10 @@ function f()
         U = [param[:U1].val, param[:Uc].val, param[:U2].val]
         g = [param[:Jc].val, param[:Jc].val, param[:J12].val]
 
-        H = qt_tunable_coupler_paper(w, U, g)
+        H = qt_tunable_coupler_paper(d, w, U, g)
 
         state = state110
-        out = mesolve(H, state, t_list_below, e_ops = e_ops, progress_bar= false)
+        out = mesolve(H, state, t_list_below, e_ops = e_ops, progress_bar= false, alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol])
         push!(max_amplitude_below, maximum(real(out.expect[1, :])))
     end
     push!(lines, LineInfo(param[:w2].val .* 5, max_amplitude_below, 1, "g = 0, max(<n2>)"))
@@ -93,12 +95,12 @@ function f()
         U = [param[:U1].val, param[:Uc].val, param[:U2].val]
         g = [param[:Jc].val, param[:Jc].val, param[:J12].val]
         wc = zz_zero_point(param[:w1].val, w2, param[:wc].val, U, g)
-        w = [param[:w1].val, maximum(wc), w2]
+        w = [param[:w1].val, minimum(wc), w2]
 
-        H = qt_tunable_coupler_paper(w, U, g)
+        H = qt_tunable_coupler_paper(d, w, U, g)
 
         state = state110
-        out = mesolve(H, state, t_list_below, e_ops = e_ops, progress_bar= false)
+        out = mesolve(H, state, t_list_below, e_ops = e_ops, progress_bar= false, alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol])
         push!(max_amplitude_zz_off, maximum(real(out.expect[1, :])))
     end
     push!(lines, LineInfo(param[:w2].val .* 5, max_amplitude_zz_off, 1, "zz = 0, max(<n2>)"))

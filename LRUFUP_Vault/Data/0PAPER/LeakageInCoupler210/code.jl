@@ -9,6 +9,7 @@ using SparseArrays
 using LocalPackages
 using QuantumToolbox
 using QuantumTimes
+using OrdinaryDiffEq
 
 function traj_mean(result)
     out = zeros(size(result[1]))
@@ -23,11 +24,9 @@ function initial_parameters()
     param[:t_points] = 1000
     param[:d] = 5
     param[:L] = 3
-    N1 = 1
-    N2 = 0
-    state = QuantumObject(tensor(basis(param[:d], N1), basis(param[:d], 0), basis(param[:d], N2)))
-    param[:state] = ValueInfo(state, "|$(N1)0$(N2)>")
-    param[:alg] = "toolbox"
+    param[:alg] = "toolbox Vern9"
+    param[:abstol] = 1e-14
+    param[:reltol] = 1e-8
     param[:H] = "Tunable Coupler"
     param[:J12] = ValueInfo(5, "5MHz")
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
@@ -60,7 +59,6 @@ function f()
 
     lines = []
     d = param[:d]; L = param[:L]
-    state = param[:state].val
 
     n1 = qt_single_site_op(d, L, num(d), 1)
     nc = qt_single_site_op(d, L, num(d), 2)
@@ -83,52 +81,20 @@ function f()
     state11 = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 1), basis(param[:d], 0)))
 
     state = state11
-    out = mesolve(H_below, state, t_list, e_ops = e_ops)
+    out = mesolve(H_below, state, t_list, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
     push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "below, s_0 = |110>, <n1>"))
 
     state = state210
-    out = mesolve(H_below, state, t_list, e_ops = e_ops, maxiters = 10^7)
+    out = mesolve(H_below, state, t_list, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
     push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "below, s_0 = |210>, <n1>"))
 
     state = state211
-    out = mesolve(H_below, state, t_list, e_ops = e_ops, maxiters = 10^7)
+    out = mesolve(H_below, state, t_list, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
     push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "below, s_0 = |211>, <n1>"))
-
-    # w = [param[:w1].val, param[:wc_above].val, param[:w2].val]
-    # H_above = qt_tunable_coupler_paper_positive(w, U, g)
-
-    # state = state11
-    # out = mesolve(H_above, state, t_list, e_ops = e_ops)
-    # push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "above, s_0 = |110>, <n1>"))
-
-    # state = state210
-    # out = mesolve(H_above, state, t_list, e_ops = e_ops, maxiters = 10^7)
-    # push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "above, s_0 = |210>, <n1>"))
-
-    # state = state211
-    # out = mesolve(H_above, state, t_list, e_ops = e_ops, maxiters = 10^7)
-    # push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "above, s_0 = |211>, <n1>"))
     
     path = joinpath(@__DIR__)
     makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
     # addtrajectories(path, line)
-end
-
-function t_time_from_n(out)
-    x = out.times
-    y = real(out.expect[1, :])
-    pl = plot(x, y)
-    n = length(out.times) # adjust here to make fit better
-    c, slope, f_fit = exp_fit(x[1:n], y[1:n], 2)
-    println(-1 / slope / (2 * π * 5 * 1e6 * 1e-9), "ns")
-    plot!(x, f_fit)
-end
-
-function J_eff(g, w)
-    delta_1 = w[1] - w[2] + 1
-    delta_2 = w[3] - w[2] + 1
-    one_over_delta = 0.5 * (1 / delta_1 + 1 / delta_2)
-    return -g[1] * g[2] * one_over_delta + g[3]
 end
 
 @time f()
