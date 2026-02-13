@@ -18,15 +18,7 @@ function traj_mean(result)
     return out ./ length(result)
 end
 
-# this is calculated so that |2> -> |1> is in resonance
-function Ec2(Ej1, Ej2, Ec1)
-    c = 2 * (sqrt(8 * Ej1 * Ec1) - Ec1) - Ec1
-    Ec2 = (sqrt(32 * Ej2 + 4 * c) - 2 * sqrt(8 * Ej2)) / 2
-    return Ec2
-end
 
-
-# IS THE DIAGONALIZING WORKING SINCE n1n2 is added AFTER DIAGONALIZATION?
 function two_transmon_snail_with_k(d, i_K2, i_K3, E_c, E_j; D = 15)
     if d > D
         D = d
@@ -38,7 +30,7 @@ function two_transmon_snail_with_k(d, i_K2, i_K3, E_c, E_j; D = 15)
 
     A = abs((1 + i_K2 * (beta[1] + beta[2])) / (i_K2^2 * beta[1] * beta[2]))
     c_12 = ((1 / E_c[1] + 1 / E_c[2]) / (2 * A)) * (1 + sqrt(1 + (4 * A) / (E_c[1] * E_c[2] * (1 / E_c[1] + 1 / E_c[2])^2)))
-    E_c12 = 1 / (1 / E_c[1] + 1 / E_c[2] + 1 / (E_c[1] * E_c[2] * c_12))
+    E_c12 = 1 / (1 / E_c[1] + 1 / E_c[2] + 1 / (E_c[1] * E_c[2] * c_12))*2.016
 
 
     phi_zpf(i) = ((2 * E_c[i]) / (E_j[i] * (1 + beta[i] * K2)))^(1/4)
@@ -102,23 +94,23 @@ function initial_parameters()
     param[:t_points] = 1000
     param[:d] = 3
     param[:L] = 2
-    N = 1
+    N = 2
     state = QuantumObject(tensor(basis(param[:d], N), basis(param[:d], 0)))
     param[:state] = ValueInfo(state, "|$(N)0>")
     param[:alg] = "toolbox"
     param[:H] = "snail"
     Ej1 = 10
     param[:Ej1] = ValueInfo(Ej1, "$(Ej1)GHz")
-    param[:Ej2] = ValueInfo(3/2, "3/2 * Ej1GHz")
+    param[:Ej2] = ValueInfo(1, "3/2 * Ej1GHz")
     ec1 = 0.300
     param[:Ec1] = ValueInfo(ec1 / param[:Ej1].val, "$(ec1 * 1e3)MHz")
-    ec2 = 0.28
+    ec2 = 0.3
     param[:Ec2] = ValueInfo(ec2 / param[:Ej1].val, "$(ec2 * 1e3)MHz")
-    param[:Ej_snail] = ValueInfo(5 / param[:Ej1].val, "0.5 * EJ1")
-    param[:K2] = 0.01 / param[:Ej1].val
-    param[:K3] = 0.01 / param[:Ej1].val
+    param[:Ej_snail] = ValueInfo(1 / param[:Ej1].val, "0.5 * EJ1")
+    param[:K2] = 0.365
+    param[:K3] = 0.161
 
-    t = 1000
+    t = 25
     param[:t] = ValueInfo(t * 2 * π * param[:Ej1].val, "$(t)ns")
     # param[:diss_rate] = 0.0018
 
@@ -146,11 +138,11 @@ function f()
     H = two_transmon_snail_with_k(d, param[:K2], param[:K3], E_c, E_j)
 
     t_list = LinRange(0, param[:t].val, param[:t_points])
-    out = mesolve(H, state, t_list, e_ops = e_ops)
+    out = mesolve(H, state, t_list, e_ops = e_ops; abstol = 1e-14, reltol = 1e-8, maxiters = 10^7)
     push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "n1"))
     # push!(lines, LineInfo(t_list, real(out.expect[5, :]), 1, "anh"))
-    # push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "n_all"))
-    # push!(lines, LineInfo(t_list, real(out.expect[4, :]), 1, "n2"))
+    push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "n_all"))
+    push!(lines, LineInfo(t_list, real(out.expect[4, :]), 1, "n2"))
 
     path = joinpath(@__DIR__)
     makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
