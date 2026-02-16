@@ -101,4 +101,18 @@ function f()
     # addtrajectories(path, line)
 end
 
-@time f()
+function plot_with_analytical()
+    plotinfo = loaddata(@__DIR__)
+    numerical_line = plotinfo.lines["below, s_0 = |201>, <n1>"]
+    pl = plot(numerical_line.x, numerical_line.y, label = numerical_line.tag)
+
+    param = initial_parameters()
+    g_eff = 2 * param[:J12].val - 2 * param[:Jc].val^2 / (param[:w1].val - param[:wc_below].val - param[:U1].val)
+    sigma = g_eff # assuming resonance here
+    plot!(numerical_line.x, x -> cos(sigma * x)^2  + 1, label = "analytical")
+    savefig(pl, joinpath(@__DIR__, "analytical_comparison.png"))
+end
+
+plot_with_analytical()
+
+# @time f()

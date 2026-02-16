@@ -109,4 +109,17 @@ function f()
     # addtrajectories(path, line)
 end
 
-@time f()
+# not correct!
+function plot_with_analytical()
+    # plotinfo = loaddata(@__DIR__)
+    # numerical_line = plotinfo.lines["below, s_0 = |200>, <n1>"]
+    # pl = plot(numerical_line.x, numerical_line.y, label = numerical_line.tag)
+
+    # param = initial_parameters()
+    # delta = param[:w1].val - param[:wc_below].val
+    # g_eff = sqrt(2) * 0.5 * param[:Jc].val^2 * (1 / (delta - param[:U1].val) - 1 / delta)
+    # sigma = g_eff # assuming resonance here
+    # plot!(numerical_line.x, x -> cos(sigma * x / 2)^2 * 2, label = "analytical")
+end
+
+# @time f()
