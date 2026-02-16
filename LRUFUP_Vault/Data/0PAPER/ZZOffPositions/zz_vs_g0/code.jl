@@ -33,30 +33,49 @@ function initial_parameters()
     return param
 end
 
-function f()
-    param = initial_parameters()
-    # -----------
-    # -----------
+# function f()
+#     param = initial_parameters()
+#     # -----------
+#     # -----------
 
-    lines = []
-    d = param[:d]; L = param[:L]
+#     lines = []
+#     d = param[:d]; L = param[:L]
 
-    zzs = []
-    comparison_states = []
+#     zzs = []
+#     comparison_states = []
 
-    println("Calculating zz coupling...")
-    zzs = [zz_zero_point(d, param[:w1].val, w2, param[:wc].val,
-        [param[:U1].val, param[:Uc].val, param[:U2].val],
-        [param[:Jc].val, param[:Jc].val, param[:J12].val]) for w2 in param[:w2].val]
-    zz_min = [minimum(zz) for zz in zzs]
-    zz_max = [maximum(zz) for zz in zzs]
-    g0s = [w_off_position(param[:w1].val, w2, param[:Jc].val, param[:Jc].val, param[:J12].val; is_above = false) for w2 in param[:w2].val]
-    push!(lines, LineInfo(param[:w2].val .* 5, zz_min .* 5, 1, "zz min"))
-    push!(lines, LineInfo(param[:w2].val .* 5, zz_max .* 5, 1, "zz max"))
-    push!(lines, LineInfo(param[:w2].val .* 5, g0s .* 5, 1, "g0"))
+#     println("Calculating zz coupling...")
+#     zzs = [zz_zero_point(d, param[:w1].val, w2, param[:wc].val,
+#         [param[:U1].val, param[:Uc].val, param[:U2].val],
+#         [param[:Jc].val, param[:Jc].val, param[:J12].val]) for w2 in param[:w2].val]
+#     zz_min = [minimum(zz) for zz in zzs]
+#     zz_max = [maximum(zz) for zz in zzs]
+#     g0s = [w_off_position(param[:w1].val, w2, param[:Jc].val, param[:Jc].val, param[:J12].val; is_above = false) for w2 in param[:w2].val]
+#     push!(lines, LineInfo(param[:w2].val .* 5, zz_min .* 5, 1, "zz min"))
+#     push!(lines, LineInfo(param[:w2].val .* 5, zz_max .* 5, 1, "zz max"))
+#     push!(lines, LineInfo(param[:w2].val .* 5, g0s .* 5, 1, "g0"))
     
-    path = joinpath(@__DIR__)
-    makeplot(path, lines...; xlabel = "w2 frequency", ylabel = "wc frequency", copy_code = false, param...)
+#     path = joinpath(@__DIR__)
+#     makeplot(path, lines...; xlabel = "w2 frequency", ylabel = "wc frequency", copy_code = false, param...)
+# end
+
+function add_g0_2()
+    param = initial_parameters()
+    w2s = param[:w2].val
+    g0s = [w_off_position(param[:w1].val - param[:U1].val, w2 - param[:U2].val, param[:Jc].val, param[:Jc].val, param[:J12].val; is_above = false) for w2 in w2s]
+    data = loaddata(joinpath(@__DIR__))
+
+    g0_line = data.lines["g0"]
+    zz_min_line = data.lines["zz min"]
+    zz_max_line = data.lines["zz max"]
+    g0_2_line = LineInfo(w2s .* 5, g0s .* 5, 1, "g0 for leakage")
+    pl = plot()
+    plot!(pl, g0_line.x, g0_line.y, label = g0_line.tag)
+    plot!(pl, zz_min_line.x, zz_min_line.y, label = zz_min_line.tag)
+    plot!(pl, zz_max_line.x, zz_max_line.y, label = zz_max_line.tag)
+    plot!(pl, g0_2_line.x, g0_2_line.y, label = g0_2_line.tag)
 end
 
-@time f()
+add_g0_2()
+
+# @time f()
