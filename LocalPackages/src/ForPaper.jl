@@ -3,6 +3,7 @@ export tunable_coupler_paper_positive, qt_tunable_coupler_paper_positive
 export tunnel_tunable_coupler_paper, qt_tunnel_tunable_coupler_paper
 export four_qubit_coupler_paper, qt_four_qubit_coupler_paper
 export five_qubit_coupler_paper, qt_five_qubit_coupler_paper
+export qt_duff_paper
 export w_off_position
 export logical_state_index, zz_coupling_strength, zz_zero_point
 
@@ -44,6 +45,17 @@ function five_qubit_coupler_paper(d, w, U, g)
 end
 function qt_five_qubit_coupler_paper(d, w, U, g; kwargs...)
     return QuantumObject(five_qubit_coupler_paper(d, w, U, g; kwargs...), dims = (d, d, d, d, d, d, d, d, d))
+end
+
+function qt_duff_paper(d, w, U, g)
+    H_tc = QuantumObject(tunable_coupler_paper(d, w, U, g), dims = (d, d, d))
+    b1 = tensor(destroy(d), qeye(d), qeye(d))
+    b1_dag = tensor(create(d), qeye(d), qeye(d))
+    bc = tensor(qeye(d), destroy(d), qeye(d))
+    bc_dag = tensor(qeye(d), create(d), qeye(d))
+    b2 = tensor(qeye(d), qeye(d), destroy(d))
+    b2_dag = tensor(qeye(d), qeye(d), create(d))
+    return H_tc - g[1] * (b1_dag * bc_dag + b1 * bc) + g[2] * (b2_dag * bc_dag + b2 * bc) - g[3] * (b1_dag * b2_dag + b1 * b2)
 end
 
 # WEIRD +- G12!
