@@ -21,7 +21,7 @@ end
 
 function initial_parameters()
     param = OrderedDict()
-    param[:t_points] = 5000
+    param[:t_points] = 1000
     param[:d] = 5
     param[:L] = 5
     param[:alg] = "toolbox Vern9"
@@ -30,21 +30,22 @@ function initial_parameters()
     param[:H] = "Tunable Coupler"
     param[:J12] = ValueInfo(5, "5MHz")
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
-    w = 3750
+    w = 3719.50
     param[:w1] = ValueInfo(w / param[:J12].val, "3.75GHz")
     param[:w2] = ValueInfo(4000 / param[:J12].val, "4GHz")
-    param[:w3] = ValueInfo(3750 / param[:J12].val, "3.75GHz")
-    param[:wc1] = ValueInfo(3162 / param[:J12].val, "3.222222GHz")
-    param[:wc2] = ValueInfo(3162 / param[:J12].val, "3.222222GHz")
+    param[:w3] = ValueInfo(w / param[:J12].val, "3.75GHz")
+    wc = zz_0_with_w_4GHZ(w)
+    param[:wc1] = ValueInfo(wc / param[:J12].val, "3.162762GHz")
+    param[:wc2] = ValueInfo(wc / param[:J12].val, "3.162762GHz")
     param[:U] = ValueInfo(300 / param[:J12].val, "300MHz")
-    t = 0.5
+    t = 1
     param[:t] = ValueInfo(t * 2 * π * param[:J12].val, "$(t)μs")
 
-    U = [param[:U].val, param[:U].val, param[:U].val]
-    gs = [param[:Jc].val, param[:Jc].val, 1]
-    wcs = collect(range(2000, 4200, length=1000)) ./ param[:J12].val
-    wcs = zz_zero_point(param[:w1].val, param[:w2].val, wcs, U, gs)
-    display(wcs .* param[:J12].val)
+    # U = [param[:U].val, param[:U].val, param[:U].val]
+    # gs = [param[:Jc].val, param[:Jc].val, 1]
+    # wcs = collect(range(2000, 4200, length=1000)) ./ param[:J12].val
+    # wcs = zz_zero_point(param[:w1].val, param[:w2].val, wcs, U, gs)
+    # display(wcs .* param[:J12].val)
 
     param[:J12] = ValueInfo(1, param[:J12].str_val)
     return param
@@ -88,9 +89,9 @@ function f()
     # state10 = psi[4]
 
     # CHANGE HERE
-    id = initial_id_211
-    state = state211
-    label_s = "211"
+    id = initial_id_200
+    state = state200
+    label_s = "200"
     
     state = QuantumObject(state[id])
     H = QuantumObject(H[id])

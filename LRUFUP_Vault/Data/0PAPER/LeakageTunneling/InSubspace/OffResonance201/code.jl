@@ -32,7 +32,7 @@ function initial_parameters()
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
     param[:w1] = ValueInfo(3750 / param[:J12].val, "3.75GHz")
     param[:w2] = ValueInfo(4000 / param[:J12].val, "4GHz")
-    length = 10
+    length = 100
     w3s = vcat(collect(range(3745, 3750, length)), collect(range(3750, 3755, length))) ./ param[:J12].val
     param[:w3] = ValueInfo(w3s, "(3.995-4.005)GHz")
     param[:wc1] = ValueInfo(3162.762 / param[:J12].val, "3.162762GHz")
