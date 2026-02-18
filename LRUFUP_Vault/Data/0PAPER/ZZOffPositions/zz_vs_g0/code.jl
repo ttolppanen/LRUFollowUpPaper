@@ -76,6 +76,15 @@ function add_g0_2()
     plot!(pl, g0_2_line.x, g0_2_line.y, label = g0_2_line.tag)
 end
 
+# function test_zz_0_interpolation()
+#     data = loaddata(joinpath(@__DIR__))
+
+#     zz_min_line = data.lines["zz min"]
+#     pl = plot(size=(1000, 800))  # Increase the size of the plot
+#     plot!(pl, zz_min_line.x, zz_min_line.y, label = zz_min_line.tag)
+#     plot!(pl, 3702:1:4298, x -> zz_0_with_w_4GHZ(x), label = "interpolated", linestyle = :dash)
+# end
+
 add_g0_2()
 
 # @time f()

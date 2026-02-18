@@ -6,6 +6,7 @@ export five_qubit_coupler_paper, qt_five_qubit_coupler_paper
 export qt_duff_paper
 export w_off_position
 export logical_state_index, zz_coupling_strength, zz_zero_point
+export zz_0_with_w_4GHZ
 
 
 # In Tunable Coupling Architecture for Fixed-Frequency Transmon Superconducting Qubits
@@ -130,4 +131,26 @@ function zz_zero_point(w1, w2, wcs, Us, gs)
         error("No ZZ zero points found")
     end
     return wc_zeros
+end
+
+using PlotAndSave
+const ZZ_DATA = Ref{Union{Nothing, LineInfo}}(nothing)
+function zz_0_with_w_4GHZ(w2)
+    if ZZ_DATA[] === nothing
+        ZZ_DATA[] = loaddata(@__DIR__, "zz_0_data.jld2").lines["zz min"]
+    end
+    x_min = minimum(ZZ_DATA[].x); x_max = maximum(ZZ_DATA[].x)
+    if w2 < x_min || w2 > x_max
+        error("w2 = $w2 is outside the range [$x_min, $x_max]")
+    end
+    x = ZZ_DATA[].x
+    n = length(x)
+    y = ZZ_DATA[].y
+    if w2 == x_max
+        return y[end]
+    end
+    i_float = (n - 1) * (w2 - x_min) / (x_max - x_min)
+    i_min = Int(floor(i_float)) + 1
+    i_max = i_min + 1
+    return (y[i_min] * (x[i_max] - w2)  + y[i_max] * (w2 - x[i_min])) / (x[i_max] - x[i_min])
 end

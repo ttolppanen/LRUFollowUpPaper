@@ -30,20 +30,21 @@ function initial_parameters()
     param[:H] = "Tunable Coupler"
     param[:J12] = ValueInfo(5, "5MHz")
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
-    param[:w1] = ValueInfo(3750 / param[:J12].val, "3.75GHz")
+    w = 3750
+    param[:w1] = ValueInfo(w / param[:J12].val, "3.75GHz")
     param[:w2] = ValueInfo(4000 / param[:J12].val, "4GHz")
     param[:w3] = ValueInfo(3750 / param[:J12].val, "3.75GHz")
-    param[:wc1] = ValueInfo(3162.762 / param[:J12].val, "3.162762GHz")
-    param[:wc2] = ValueInfo(3162.762 / param[:J12].val, "3.162762GHz")
+    param[:wc1] = ValueInfo(3162 / param[:J12].val, "3.222222GHz")
+    param[:wc2] = ValueInfo(3162 / param[:J12].val, "3.222222GHz")
     param[:U] = ValueInfo(300 / param[:J12].val, "300MHz")
-    t = 2
+    t = 0.5
     param[:t] = ValueInfo(t * 2 * π * param[:J12].val, "$(t)μs")
 
-    # U = [param[:U].val, param[:U].val, param[:U].val]
-    # gs = [param[:Jc].val, param[:Jc].val, 1]
-    # wcs = collect(range(2000, 4200, length=1000)) ./ param[:J12].val
-    # wcs = zz_zero_point(param[:w1].val, param[:w2].val, wcs, U, gs)
-    # display(wcs .* param[:J12].val)
+    U = [param[:U].val, param[:U].val, param[:U].val]
+    gs = [param[:Jc].val, param[:Jc].val, 1]
+    wcs = collect(range(2000, 4200, length=1000)) ./ param[:J12].val
+    wcs = zz_zero_point(param[:w1].val, param[:w2].val, wcs, U, gs)
+    display(wcs .* param[:J12].val)
 
     param[:J12] = ValueInfo(1, param[:J12].str_val)
     return param
@@ -87,9 +88,9 @@ function f()
     # state10 = psi[4]
 
     # CHANGE HERE
-    id = initial_id_201
-    state = state201
-    label_s = "201"
+    id = initial_id_211
+    state = state211
+    label_s = "211"
     
     state = QuantumObject(state[id])
     H = QuantumObject(H[id])
