@@ -32,7 +32,7 @@ function initial_parameters()
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
     param[:w1] = ValueInfo(3750 / param[:J12].val, "3.75GHz")
     param[:w2] = ValueInfo(4000 / param[:J12].val, "4GHz")
-    length = 100
+    length = 10
     w3s = vcat(collect(range(3745, 3750, length)), collect(range(3750, 3755, length))) ./ param[:J12].val
     param[:w3] = ValueInfo(w3s, "(3.995-4.005)GHz")
     param[:wc1] = ValueInfo(3162.762 / param[:J12].val, "3.162762GHz")
@@ -70,8 +70,8 @@ function f()
 
     max_amplitude_below = []
     for w3 in param[:w3].val
-        # wc = w_off_position(param[:w1].val, w2, param[:Jc].val, param[:Jc].val, param[:J12].val; is_above = false)
-        w = [param[:w1].val, param[:wc1].val, param[:w2].val, param[:wc2].val, w3]
+        wc2 = zz_0_with_w_4GHZ(w3 * 5) / 5
+        w = [param[:w1].val, param[:wc1].val, param[:w2].val, wc2, w3]
         U = [param[:U].val, param[:U].val, param[:U].val, param[:U].val, param[:U].val]
         g = [param[:Jc].val, param[:Jc].val, param[:Jc].val, param[:Jc].val, param[:J12].val]
 
