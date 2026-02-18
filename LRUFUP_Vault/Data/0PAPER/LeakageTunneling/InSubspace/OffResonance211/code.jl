@@ -85,7 +85,7 @@ function f()
     push!(lines, LineInfo(param[:w3].val .* 5, max_amplitude_below, 1, "max(<n3>)"))
     
     path = joinpath(@__DIR__)
-    makeplot(path, lines...; xlabel = "MHz", ylabel = "", copy_code = false, param...)
+    makeplot(path, lines...; xlabel = "w3 MHz", ylabel = "", copy_code = false, param...)
     # addtrajectories(path, line)
 end
 

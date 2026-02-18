@@ -21,7 +21,7 @@ end
 
 function initial_parameters()
     param = OrderedDict()
-    param[:t_points] = 1000
+    param[:t_points] = 5000
     param[:d] = 5
     param[:L] = 5
     param[:alg] = "toolbox Vern9"
@@ -87,9 +87,9 @@ function f()
     # state10 = psi[4]
 
     # CHANGE HERE
-    id = initial_id_211
-    state = state211
-    label_s = "211"
+    id = initial_id_201
+    state = state201
+    label_s = "201"
     
     state = QuantumObject(state[id])
     H = QuantumObject(H[id])
