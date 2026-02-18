@@ -71,7 +71,7 @@ function f()
     U = [param[:U].val, param[:U].val, param[:U].val, param[:U].val, param[:U].val, param[:U].val, param[:U].val]
     g = [param[:Jc].val, param[:J12].val]
 
-    H = qt_four_qubit_coupler_paper(w, U, g)
+    H = qt_four_qubit_coupler_paper(d, w, U, g)
 
     t_list = LinRange(0, param[:t].val, param[:t_points])
     

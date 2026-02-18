@@ -74,7 +74,7 @@ function f()
     w = [param[:w1].val, wc, param[:w2].val]
     U = [param[:U1].val, param[:Uc].val, param[:U2].val]
     g = [param[:Jc].val, param[:Jc].val, param[:J12].val]
-    H_above = qt_tunable_coupler_paper_positive(w, U, g)
+    H_above = qt_tunable_coupler_paper_positive(d, w, U, g)
 
     state20 = QuantumObject(tensor(basis(param[:d], 2), basis(param[:d], 0), basis(param[:d], 0)))
     E, psi, Uni = eigenstates(H_above)

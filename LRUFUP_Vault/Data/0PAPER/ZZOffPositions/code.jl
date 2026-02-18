@@ -58,7 +58,7 @@ function f()
         w = [param[:w1].val, wc, param[:w2].val]
         U = [param[:U1].val, param[:Uc].val, param[:U2].val]
         g = [param[:Jc].val, param[:Jc].val, param[:J12].val]
-        H = qt_tunable_coupler_paper(w, U, g)
+        H = qt_tunable_coupler_paper(d, w, U, g)
 
         E, psi, Uni = eigenstates(H)
         dressed_states_i = logical_state_index(comparison_states, psi, d)

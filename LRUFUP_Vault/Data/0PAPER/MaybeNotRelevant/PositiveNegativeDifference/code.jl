@@ -74,7 +74,7 @@ function f()
     g = [param[:Jc].val, param[:Jc].val, param[:J12].val]
 
 
-    H_below = qt_tunable_coupler_paper(w, U, g)
+    H_below = qt_tunable_coupler_paper(d, w, U, g)
 
     t_list = LinRange(0, param[:t].val, param[:t_points])
     
@@ -90,7 +90,7 @@ function f()
     out = mesolve(H_below, state, t_list, e_ops = e_ops, maxiters = 10^7)
     push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "below, s_0 = |200>, <n1>"))
     w = [param[:w1].val, param[:wc_above].val, param[:w2].val]
-    H_above = qt_tunable_coupler_paper_positive(w, U, g)
+    H_above = qt_tunable_coupler_paper_positive(d, w, U, g)
 
     E, psi, Uni = eigenstates(H_above)
     state10 = psi[3]

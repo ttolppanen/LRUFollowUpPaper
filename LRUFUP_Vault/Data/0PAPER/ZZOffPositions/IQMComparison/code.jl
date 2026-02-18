@@ -45,7 +45,7 @@ function f()
     comparison_states = []
 
     println("Calculating zz coupling...")
-    println(5.0 * zz_zero_point(d, param[:w1].val, param[:w2].val, param[:wc].val,
+    println(5.0 * zz_zero_point(param[:w1].val, param[:w2].val, param[:wc].val,
         [param[:U1].val, param[:Uc].val, param[:U2].val],
         [param[:Jc].val, param[:Jc].val, param[:J12].val]))
     for wc in param[:wc].val
