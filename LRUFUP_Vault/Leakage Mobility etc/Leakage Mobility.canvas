@@ -48,9 +48,9 @@
 		{"id":"49605eda15b8e029","type":"file","file":"Data/0PAPER/LeakageTunneling/InSubspace/OffResonance201/Heatmap/3710.png","x":860,"y":4440,"width":200,"height":133},
 		{"id":"8f2fa45faae65faa","type":"file","file":"Data/0PAPER/LeakageTunneling/InSubspace/OffResonance210/Heatmap/U300.png","x":1620,"y":4044,"width":400,"height":267},
 		{"id":"5b53d514aabc7c5b","type":"file","file":"Data/0PAPER/LeakageTunneling/InSubspace/OffResonance210/Heatmap/U200.png","x":1760,"y":4140,"width":180,"height":120},
-		{"id":"a80bc36261e0e696","x":1620,"y":4367,"width":400,"height":267,"type":"file","file":"Data/0PAPER/LeakageTunneling/InSubspace/OffResonance211/Heatmap/wide.png"},
-		{"id":"a5a077a06f342cbd","x":2020,"y":4354,"width":220,"height":147,"type":"file","file":"Data/0PAPER/LeakageTunneling/InSubspace/OffResonance211/Heatmap/zoom.png"},
-		{"id":"834d57232049baf8","x":2020,"y":4501,"width":220,"height":147,"type":"file","file":"Data/0PAPER/LeakageTunneling/InSubspace/OffResonance211/Heatmap/furtherZoom.png"}
+		{"id":"a80bc36261e0e696","type":"file","file":"Data/0PAPER/LeakageTunneling/InSubspace/OffResonance211/Heatmap/wide.png","x":1620,"y":4367,"width":400,"height":267},
+		{"id":"a5a077a06f342cbd","type":"file","file":"Data/0PAPER/LeakageTunneling/InSubspace/OffResonance211/Heatmap/zoom.png","x":2020,"y":4354,"width":220,"height":147},
+		{"id":"834d57232049baf8","type":"file","file":"Data/0PAPER/LeakageTunneling/InSubspace/OffResonance211/Heatmap/furtherZoom.png","x":2020,"y":4501,"width":220,"height":147}
 	],
 	"edges":[
 		{"id":"bb76e426901aa39b","fromNode":"4cfcf615913b67ca","fromSide":"right","toNode":"7e626a360c431a9c","toSide":"left"},
