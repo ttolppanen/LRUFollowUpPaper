@@ -109,17 +109,31 @@ function f()
     # addtrajectories(path, line)
 end
 
-# not correct!
 function plot_with_analytical()
-    # plotinfo = loaddata(@__DIR__)
-    # numerical_line = plotinfo.lines["below, s_0 = |200>, <n1>"]
-    # pl = plot(numerical_line.x, numerical_line.y, label = numerical_line.tag)
+    plotinfo = loaddata(@__DIR__)
+    numerical_line = plotinfo.lines["below, s_0 = |200>, <n1>"]
+    pl = plot(numerical_line.x, numerical_line.y, label = numerical_line.tag)
 
-    # param = initial_parameters()
-    # delta = param[:w1].val - param[:wc_below].val
-    # g_eff = sqrt(2) * 0.5 * param[:Jc].val^2 * (1 / (delta - param[:U1].val) - 1 / delta)
-    # sigma = g_eff # assuming resonance here
-    # plot!(numerical_line.x, x -> cos(sigma * x / 2)^2 * 2, label = "analytical")
+    param = initial_parameters()
+    g1c = param[:Jc].val
+    g2c = -param[:Jc].val
+    g12 = param[:J12].val
+    delta = param[:w1].val - param[:wc_below].val
+    U = param[:Uc].val
+    gamma1 = 2*g12*g1c*g2c*(1/(delta-U)^2 + 1/(delta*(delta-U))) + 0.5*g1c^2*g2c^2*(-3/(delta*(delta-U)^2) + 6/((delta-U)^2*(delta+U)) - 1/(delta^2*(delta-U)) - 2/((delta-U)*(delta+U)^2))
+
+    gamma2 = 2*(g12 + (g1c * g2c / 2) * (1 / (delta - U) - 1 / delta))^2 / U
+    
+    display(gamma1)
+    display(gamma2)
+
+    plot!(numerical_line.x, x -> cos(x * (gamma1 + gamma2))^2 * 2, label = "analytical")
+    plot!(numerical_line.x, x -> cos(gamma1 * x)^2 * 2, label = "analytical only gamma1")
+    plot!(title = PlotAndSave.parameters_to_title(; param..., gamma1, gamma2), titlefont = 8)
+    savefig(joinpath(@__DIR__, "analytical comparison"))
 end
 
-# @time f()
+@time f()
+
+plot_with_analytical()
+

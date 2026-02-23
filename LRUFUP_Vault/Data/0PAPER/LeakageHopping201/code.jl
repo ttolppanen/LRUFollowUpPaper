@@ -107,12 +107,27 @@ function plot_with_analytical()
     pl = plot(numerical_line.x, numerical_line.y, label = numerical_line.tag)
 
     param = initial_parameters()
-    g_eff = 2 * param[:J12].val - 2 * param[:Jc].val^2 / (param[:w1].val - param[:wc_below].val - param[:U1].val)
-    sigma = g_eff # assuming resonance here
-    plot!(numerical_line.x, x -> cos(sigma * x)^2  + 1, label = "analytical")
+
+    g1c   = param[:Jc].val
+    g2c   = -param[:Jc].val          # change sign here if needed by convention
+    g12   = param[:J12].val
+    Δ     = param[:w1].val - param[:wc_below].val
+    U     = param[:U1].val
+
+    gamma2 = 2*g12 + 2*(g1c*g2c)/(Δ - U)
+
+    gamma4 = g12*(g1c^2 + g2c^2)*(-1/Δ^2 - 2/(Δ - U)^2 + 1/(Δ*(Δ - U))) + (g1c*g2c)*(g1c^2 + g2c^2)*(-4/(Δ - U)^3 - 1/(Δ*(Δ - U)^2) + 1/(2*Δ^2*(Δ - U)) + 3/((Δ + U)*(Δ - U)^2) - 1/(Δ*(Δ - U)*(Δ + U)) - 1/((Δ + U)^2*(Δ - U)) - 1/(2*Δ^2*(Δ + U)))
+
+    display(gamma2)
+    display(gamma4)
+    gamma = gamma2 + gamma4
+
+    plot!(numerical_line.x, x -> cos(gamma * x)^2 + 1, label = "analytical")
+    plot!(numerical_line.x, x -> cos(gamma2 * x)^2 + 1, label = "analytical only gamma2")
+    plot!(title = PlotAndSave.parameters_to_title(; param..., gamma2, gamma4), titlefont = 8)
     savefig(pl, joinpath(@__DIR__, "analytical_comparison.png"))
 end
 
+@time f()
 plot_with_analytical()
 
-# @time f()
