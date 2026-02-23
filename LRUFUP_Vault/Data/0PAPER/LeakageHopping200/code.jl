@@ -122,7 +122,7 @@ function plot_with_analytical()
     U = param[:Uc].val
     gamma1 = 2*g12*g1c*g2c*(1/(delta-U)^2 + 1/(delta*(delta-U))) + 0.5*g1c^2*g2c^2*(-3/(delta*(delta-U)^2) + 6/((delta-U)^2*(delta+U)) - 1/(delta^2*(delta-U)) - 2/((delta-U)*(delta+U)^2))
 
-    gamma2 = 2*(g12 + (g1c * g2c / 2) * (1 / (delta - U) - 1 / delta))^2 / U
+    gamma2 = 2*(g12 + (g1c * g2c / 2) * (1 / (delta - U) + 1 / delta))^2 / U
     
     display(gamma1)
     display(gamma2)
