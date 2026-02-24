@@ -85,6 +85,20 @@ end
 #     plot!(pl, 3702:1:4298, x -> zz_0_with_w_4GHZ(x), label = "interpolated", linestyle = :dash)
 # end
 
-add_g0_2()
+function plot_difference()
+    data = loaddata(joinpath(@__DIR__))
+
+    g0_line = data.lines["g0"]
+    zz_min_line = data.lines["zz min"]
+    zz_max_line = data.lines["zz max"]
+    pl = plot()
+    plot!(pl, g0_line.x, g0_line.x .- g0_line.y, label = g0_line.tag)
+    plot!(pl, zz_min_line.x, zz_min_line.x .- zz_min_line.y, label = zz_min_line.tag)
+    plot!(pl, zz_max_line.x, zz_max_line.x .- zz_max_line.y, label = zz_max_line.tag)
+end
+
+# add_g0_2()
 
 # @time f()
+
+plot_difference()
