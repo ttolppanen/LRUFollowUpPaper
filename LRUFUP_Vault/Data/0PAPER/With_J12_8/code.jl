@@ -32,14 +32,14 @@ function initial_parameters()
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
     param[:w1] = ValueInfo(4000 / param[:J12].val, "4GHz")
     param[:w2] = ValueInfo(4000 / param[:J12].val, "4GHz")
-    param[:wc_below] = ValueInfo(3694.5 / param[:J12].val, "3.7Hz")
+    param[:wc_below] = ValueInfo(3694.5 / param[:J12].val, "3.6945Hz")
     U = 300
     param[:U1] = ValueInfo(U / param[:J12].val, "$(U)MHz")
     U2 = U
     param[:U2] = ValueInfo(U2 / param[:J12].val, "$(U2)MHz")
     Uc = U
     param[:Uc] = ValueInfo(Uc / param[:J12].val, "$(Uc)MHz")
-    t = 1
+    t = 0.1
     param[:t] = ValueInfo(t * 2 * π * param[:J12].val, "$(t)μs")
     param[:diss_rate] = 0.1
 
@@ -91,29 +91,57 @@ function f()
     # state10 = psi[3]
 
     # state = state10 = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 0), basis(param[:d], 0)))
-    # out = mesolve(H_below, state, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
-    # push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "below, s_0 = |100>, <n1 + nc>"))
+    # out = mesolve(H_below, state, t_list, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
+    # # push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "below, s_0 = |100>, <n1 + nc>"))
     # push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "below, s_0 = |100>, <n1>"))
-    # push!(lines, LineInfo(t_list, real(out.expect[4, :]), 1, "below, s_0 = |100>, <n2>"))
+    # # push!(lines, LineInfo(t_list, real(out.expect[4, :]), 1, "below, s_0 = |100>, <n2>"))
+
+    # state = state101 = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 0), basis(param[:d], 1)))
+    # out = mesolve(H_below, state, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
+    # push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "below, s_0 = |101>, <n1>"))
 
     # state = state200
     # out = mesolve(H_below, state, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
     # push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "below, s_0 = |200>, <n1>"))
     
-    # state = state201
-    # out = mesolve(H_below, state, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
+    state = state201
+    out = mesolve(H_below, state, t_list, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
     # push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "below, s_0 = |201>, <n1>"))
     # push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "below, s_0 = |201>, <nc>"))
+    push!(lines, LineInfo(t_list, real(out.expect[4, :]), 1, "below, s_0 = |201>, <n2>"))
+
+    state = state210 = QuantumObject(tensor(basis(param[:d], 2), basis(param[:d], 1), basis(param[:d], 0)))
+    out = mesolve(H_below, state, t_list, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
+    # push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "below, s_0 = |210>, <n1>"))
+    # push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "below, s_0 = |210>, <nc>"))
+    push!(lines, LineInfo(t_list, real(out.expect[4, :]), 1, "below, s_0 = |210>, <n2>"))
 
     # state = state010 = QuantumObject(tensor(basis(param[:d], 0), basis(param[:d], 1), basis(param[:d], 0)))
     # out = mesolve(H_below, state, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
     # push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "below, s_0 = |010>, <nc>"))
 
     state = state011 = QuantumObject(tensor(basis(param[:d], 0), basis(param[:d], 1), basis(param[:d], 1)))
-    out = mesolve(H_below, state, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
-    push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "below, s_0 = |011>, <nc>"))
+    out = mesolve(H_below, state, t_list, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
+    # push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "below, s_0 = |011>, <nc>"))
     # push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "below, s_0 = |011>, <n1>"))
     push!(lines, LineInfo(t_list, real(out.expect[4, :]), 1, "below, s_0 = |011>, <n2>"))
+
+
+    # state = state111 = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 1), basis(param[:d], 1)))
+    # out = mesolve(H_below, state, t_list, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
+    # # push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "below, s_0 = |111>, <nc>"))
+    # # push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "below, s_0 = |111>, <n1>"))
+    # push!(lines, LineInfo(t_list, real(out.expect[4, :]), 1, "below, s_0 = |111>, <n2>"))
+
+    state = state110 = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 1), basis(param[:d], 0)))
+    out = mesolve(H_below, state, t_list, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
+    # push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "below, s_0 = |110>, <nc>"))
+    # push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "below, s_0 = |110>, <n1>"))
+    push!(lines, LineInfo(t_list, real(out.expect[4, :]), 1, "below, s_0 = |110>, <n2>"))
+
+
+    # multiplied_line = LineInfo(t_list, (lines[1].y .- 1) .* (lines[2].y .- 1),1, "multiplied")
+    # lines = [multiplied_line]
 
     path = joinpath(@__DIR__)
     makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
