@@ -19,29 +19,21 @@ function traj_mean(result)
 end
 
 
-function two_transmon_snail_with_k(d, i_K2, i_K3, E_c, E_j; D = 15)
+function two_transmon_snail_with_k(d, K2, K3, E_c, E_j, phi; D = 15)
     if d > D
         D = d
     end
-    beta = E_j[3] ./ E_j[1:2]
+    beta = E_j[1:2] ./ E_j[3]
 
-    K2 = 2 * i_K2
-    K3 = 6 * i_K3
-
-    A = abs((1 + i_K2 * (beta[1] + beta[2])) / (i_K2^2 * beta[1] * beta[2]))
-    c_12 = ((1 / E_c[1] + 1 / E_c[2]) / (2 * A)) * (1 + sqrt(1 + (4 * A) / (E_c[1] * E_c[2] * (1 / E_c[1] + 1 / E_c[2])^2)))
-    E_c12 = 1 / (1 / E_c[1] + 1 / E_c[2] + 1 / (E_c[1] * E_c[2] * c_12))*2.016
-
-
-    phi_zpf(i) = ((2 * E_c[i]) / (E_j[i] * (1 + beta[i] * K2)))^(1/4)
-    n_zpf(i) = ((E_j[i] * (1 + beta[i] * K2)) / (32 * E_c[i]))^(1/4)
+    phi_zpf(i) = ((2 * E_c[i]) / (E_j[3] * (beta[i] * cos(phi[i]) + K2)))^(1/4)
+    n_zpf(i) = ((E_j[3] * (beta[i] * cos(phi[i]) + K2)) / (32 * E_c[i]))^(1/4)
     c_op = create(D)
     d_op = destroy(D)
 
     n_1 = -1im * n_zpf(1) * (d_op - c_op)
     phi_1 = phi_zpf(1) * (d_op + c_op)
 
-    H1 = 4 * E_c[1] * n_1^2 - E_j[1] * (cos(phi_1) - beta[1] * K2 / 2 * phi_1^2 - beta[1] * K3 / 6 * phi_1^3)
+    H1 = 4 * E_c[1] * n_1^2 + E_j[3] / 2 * (beta[1] * cos(phi[1]) + K2) * phi_1^2 - E_j[3] / 6 * (beta[1] * sin(phi[1]) - K3) * phi_1^3 - E_j[3]/24 * beta[1]*cos(phi[1]) * phi_1^4
     λ, psi, U1 = eigenstates(H1)
     U1 = QuantumObject(U1, dims = D)
     # println(λ[1:3])
@@ -50,7 +42,7 @@ function two_transmon_snail_with_k(d, i_K2, i_K3, E_c, E_j; D = 15)
     
     n_2 = -1im * n_zpf(2) * (d_op - c_op)
     phi_2 = phi_zpf(2) * (d_op + c_op)
-    H2 = 4 * E_c[2] * n_2^2 - E_j[2] * (cos(phi_2) - beta[2] * K2 / 2 * phi_2^2 + beta[2] * K3 / 6 * phi_2^3)
+    H2 = 4 * E_c[2] * n_2^2 + E_j[3] / 2 * (beta[2] * cos(phi[2]) + K2) * phi_2^2 - E_j[3] / 6 * (beta[2] * sin(phi[2]) + K3) * phi_2^3 - E_j[3]/24 * beta[2]*cos(phi[2]) * phi_2^4
     λ, psi, U2 = eigenstates(H2)
     U2 = QuantumObject(U2, dims = D)
     # println(λ[1:3])
@@ -59,8 +51,7 @@ function two_transmon_snail_with_k(d, i_K2, i_K3, E_c, E_j; D = 15)
     println("Resonance: $(a1 - a2)")
 
     U = tensor(U1, U2)
-    coupling = -E_j[3] * (K2 * tensor(phi_1, phi_2) - K3 / 2 * (tensor(phi_1, phi_2^2) - tensor(phi_1^2, phi_2)))
-    coupling += 8 * E_c12 * tensor(n_1, n_2)
+    coupling = 8 * E_c[3] * tensor(n_1, n_2) - E_j[3] * K2 * tensor(phi_1, phi_2) - E_j[3]/2 * K3 * (tensor(phi_1^2, phi_2) - tensor(phi_1, phi_2^2))
     H = U' * (tensor(H1, qeye(D)) + tensor(qeye(D), H2) + coupling) * U
     
     H_row = []
@@ -94,27 +85,30 @@ function initial_parameters()
     param[:t_points] = 1000
     param[:d] = 3
     param[:L] = 2
-    N = 2
+    N = 1
     state = QuantumObject(tensor(basis(param[:d], N), basis(param[:d], 0)))
     param[:state] = ValueInfo(state, "|$(N)0>")
     param[:alg] = "toolbox"
     param[:H] = "snail"
-    Ej1 = 10
-    param[:Ej1] = ValueInfo(Ej1, "$(Ej1)GHz")
-    param[:Ej2] = ValueInfo(1, "3/2 * Ej1GHz")
-    ec1 = 0.300
-    param[:Ec1] = ValueInfo(ec1 / param[:Ej1].val, "$(ec1 * 1e3)MHz")
-    ec2 = 0.3
-    param[:Ec2] = ValueInfo(ec2 / param[:Ej1].val, "$(ec2 * 1e3)MHz")
-    param[:Ej_snail] = ValueInfo(1 / param[:Ej1].val, "0.5 * EJ1")
-    param[:K2] = 0.365
-    param[:K3] = 0.161
 
-    t = 25
-    param[:t] = ValueInfo(t * 2 * π * param[:Ej1].val, "$(t)ns")
-    # param[:diss_rate] = 0.0018
+    Ejs = 30
+    param[:Ejs] = ValueInfo(1, "$(Ejs)GHz")
+    param[:Units] = ValueInfo(Ejs, "Ejs")
 
-    param[:Ej1] = ValueInfo(1, param[:Ej1].str_val)
+    param[:Ej1] = ValueInfo(0.5, "b_1 = 0.5 -> Ej1 = $(0.5 * Ejs)GHz")
+    param[:Ej2] = ValueInfo(4, "b_2 = 4 -> Ej2 = $(4 * Ejs)GHz")
+    param[:Ec1] = ValueInfo(0.15 / param[:Units].val, "150MHz")
+    param[:Ec2] = ValueInfo(0.082 / param[:Units].val, "82MHz")
+    param[:Ec12] = ValueInfo(0.0087 / param[:Units].val, "8.7MHz")
+
+    param[:K2] = 0.123
+    param[:K3] = -0.177
+    param[:phi1] = -0.089
+    param[:phi2] = 0.011
+
+    t = 1
+    param[:t] = ValueInfo(t * 2 * π * param[:Units].val, "$(t)ns")
+    # param[:diss_rate] = 0.01
     return param
 end
 
@@ -133,15 +127,16 @@ function f()
     
     # c_ops = [sqrt(param[:diss_rate]) * qt_single_site_op(d, L, destroy(d), L)]
 
-    E_c = [param[:Ec1].val, param[:Ec2].val]
-    E_j = [param[:Ej1].val, param[:Ej2].val, param[:Ej_snail].val]
-    H = two_transmon_snail_with_k(d, param[:K2], param[:K3], E_c, E_j)
+    E_c = [param[:Ec1].val, param[:Ec2].val, param[:Ec12].val]
+    E_j = [param[:Ej1].val, param[:Ej2].val, param[:Ejs].val]
+    phi = [param[:phi1], param[:phi2]]
+    H = two_transmon_snail_with_k(d, param[:K2], param[:K3], E_c, E_j, phi)
 
     t_list = LinRange(0, param[:t].val, param[:t_points])
     out = mesolve(H, state, t_list, e_ops = e_ops; abstol = 1e-14, reltol = 1e-8, maxiters = 10^7)
-    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "n1"))
+    # push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "n1"))
     # push!(lines, LineInfo(t_list, real(out.expect[5, :]), 1, "anh"))
-    push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "n_all"))
+    # push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "n_all"))
     push!(lines, LineInfo(t_list, real(out.expect[4, :]), 1, "n2"))
 
     path = joinpath(@__DIR__)
@@ -155,17 +150,6 @@ function f()
     # pl = plot(lines[1].x, lines[1].y, ylim = (0, 1.1))
     # plot!(pl, lines[1].x, t -> exp(-t / (2 * π * 20.1) / 30))
     # t_time_from_n(t_list, real(out.expect[1, :]), 10 * 1e9)
-end
-
-function t_time_from_n(times, population, J)
-    x = times
-    y = real(population)
-    pl = plot(x, y, label = "data")
-    n = length(times) # adjust here to make fit better
-    # n = 200
-    c, slope, f_fit = exp_fit(x[1:n], y[1:n], 1)
-    println((-1 / slope) / (2 * π * J * 1e-6), "μs")
-    plot!(x, f_fit, label = "fit, T1 = 1000μs")
 end
 
 @time f()
