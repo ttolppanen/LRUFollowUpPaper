@@ -7,6 +7,8 @@ export qt_duff_paper
 export w_off_position
 export logical_state_index, zz_coupling_strength, zz_zero_point
 export zz_0_with_w_4GHZ
+export zz_0_with_roots
+export calc_zz
 
 
 # In Tunable Coupling Architecture for Fixed-Frequency Transmon Superconducting Qubits
@@ -155,6 +157,50 @@ function zz_0_with_w_4GHZ(w2)
     return (y[i_min] * (x[i_max] - w2)  + y[i_max] * (w2 - x[i_min])) / (x[i_max] - x[i_min])
 end
 
-function zz_0_with_minima_roots(w1, w2, min_wc, max_wc, Us, gs)
-    
+# using Optim
+using Roots
+function zz_0_with_roots(w1, w2, min_wc, max_wc, Us, gs)
+    d = 3
+    function calc_zz(wc, comparison_states, w1, w2, Us, gs)
+        if isempty(comparison_states)
+            push!(comparison_states, QuantumObject(tensor(basis(d, 0), basis(d, 0), basis(d, 0))))
+            push!(comparison_states, QuantumObject(tensor(basis(d, 1), basis(d, 0), basis(d, 0))))
+            push!(comparison_states, QuantumObject(tensor(basis(d, 0), basis(d, 0), basis(d, 1))))
+            push!(comparison_states, QuantumObject(tensor(basis(d, 1), basis(d, 0), basis(d, 1))))
+        end
+        w = [w1, wc, w2]
+        U = Us
+        g = gs
+        H = qt_tunable_coupler_paper(d, w, U, g)
+
+        E, psi, Uni = eigenstates(H)
+        dressed_states_i = logical_state_index(comparison_states, psi, d)
+        comparison_states = psi[collect(dressed_states_i)]
+        return real(zz_coupling_strength(dressed_states_i, E, d))
+    end
+    comparison_states = []
+    f(x) = calc_zz(x, comparison_states, w1, w2, Us, gs)
+    # min_spot = optimize(x->f(first(x)), [min_wc], [max_wc], [min_wc])
+    wc_zeros = find_zeros(f, min_wc, max_wc)
+    if length(wc_zeros) < 2        
+        error("No ZZ zero points found")
+    end
+    return wc_zeros
+end
+function calc_zz(wc, comparison_states, w1, w2, Us, gs; d = 3)
+    if isempty(comparison_states)
+        push!(comparison_states, QuantumObject(tensor(basis(d, 0), basis(d, 0), basis(d, 0))))
+        push!(comparison_states, QuantumObject(tensor(basis(d, 1), basis(d, 0), basis(d, 0))))
+        push!(comparison_states, QuantumObject(tensor(basis(d, 0), basis(d, 0), basis(d, 1))))
+        push!(comparison_states, QuantumObject(tensor(basis(d, 1), basis(d, 0), basis(d, 1))))
+    end
+    w = [w1, wc, w2]
+    U = Us
+    g = gs
+    H = qt_tunable_coupler_paper(d, w, U, g)
+
+    E, psi, Uni = eigenstates(H)
+    dressed_states_i = logical_state_index(comparison_states, psi, d)
+    comparison_states = psi[collect(dressed_states_i)]
+    return real(zz_coupling_strength(dressed_states_i, E, d))
 end
