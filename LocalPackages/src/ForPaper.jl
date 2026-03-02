@@ -154,3 +154,7 @@ function zz_0_with_w_4GHZ(w2)
     i_max = i_min + 1
     return (y[i_min] * (x[i_max] - w2)  + y[i_max] * (w2 - x[i_min])) / (x[i_max] - x[i_min])
 end
+
+function zz_0_with_minima_roots(w1, w2, min_wc, max_wc, Us, gs)
+    
+end

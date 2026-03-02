@@ -34,7 +34,7 @@ function initial_parameters()
     param[:w] = ValueInfo(ws, "(3.71-3.73)GHz")
     param[:w2] = ValueInfo(4000 / param[:J12].val, "4GHz")
 
-    param[:U] = ValueInfo(250 / param[:J12].val, "250MHz")
+    param[:U] = ValueInfo(300 / param[:J12].val, "300MHz")
     t = 8
     param[:t] = ValueInfo(t * 2 * π * param[:J12].val, "$(t)μs")
 

@@ -18,8 +18,8 @@ function initial_parameters()
     param[:J12] = ValueInfo(5, "5MHz")
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
     param[:w1] = ValueInfo(4000 / param[:J12].val, "4GHz")
-    param[:w2] = ValueInfo(3800 / param[:J12].val, "4GHz")
-    wcs = collect(range(3000, 4000, length=1000)) ./ param[:J12].val
+    param[:w2] = ValueInfo(4000 / param[:J12].val, "4GHz")
+    wcs = collect(range(3200, 3650, length=1000)) ./ param[:J12].val
     param[:wc] = ValueInfo(wcs, "(3-4)GHz")
     U = 300
     param[:U1] = ValueInfo(U / param[:J12].val, "$(U)MHz")
@@ -45,9 +45,9 @@ function f()
     comparison_states = []
 
     println("Calculating zz coupling...")
-    println(5 .* zz_zero_point(param[:w1].val, param[:w2].val, param[:wc].val,
-        [param[:U1].val, param[:Uc].val, param[:U2].val],
-        [param[:Jc].val, param[:Jc].val, param[:J12].val]) |> maximum)
+    # println(5 .* zz_zero_point(param[:w1].val, param[:w2].val, param[:wc].val,
+    #     [param[:U1].val, param[:Uc].val, param[:U2].val],
+    #     [param[:Jc].val, param[:Jc].val, param[:J12].val]) |> maximum)
     for wc in param[:wc].val
         if isempty(comparison_states)
             push!(comparison_states, QuantumObject(tensor(basis(d, 0), basis(d, 0), basis(d, 0))))
