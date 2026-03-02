@@ -30,10 +30,10 @@ function initial_parameters()
     param[:H] = "Tunable Coupler"
     param[:J12] = ValueInfo(5, "5MHz")
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
-    ws = collect(range(3800, 4000, 200)) ./ param[:J12].val
+    ws = collect(range(3727, 4000, 100)) ./ param[:J12].val
     param[:w] = ValueInfo(ws, "(3.752-4)GHz")
-    wcs = collect(range(3000, 4000, 1000)) ./ param[:J12].val
-    param[:wcs] = ValueInfo(wcs, "(3-4)GHz")
+    param[:wc_min] = ValueInfo(3000 / param[:J12].val, "3GHz")
+    param[:wc_max] = ValueInfo(4000 / param[:J12].val, "4GHz")
     param[:w2] = ValueInfo(4000 / param[:J12].val, "4GHz")
     param[:U] = ValueInfo(275 / param[:J12].val, "275MHz")
     t = 8
@@ -61,12 +61,16 @@ function f()
     e_ops = [QuantumObject(n3[id])]
 
     n3s = []
+    wcs = []
     for w in param[:w].val
-        U = [param[:U].val, param[:U].val, param[:U].val, param[:U].val, param[:U].val]
-        g = [param[:Jc].val, param[:Jc].val, param[:Jc].val, param[:Jc].val, param[:J12].val]
-        wc = minimum(zz_zero_point(w, param[:w2].val, param[:wcs].val, U, g))
+        U = [param[:U].val, param[:U].val, param[:U].val]
+        g = [param[:Jc].val, param[:Jc].val, param[:J12].val]
+        wc = zz_0_with_roots(w, param[:w2].val, param[:wc_min].val, param[:wc_max].val, U, g)[1]
+        push!(wcs, wc)
         w = [w, wc, param[:w2].val, wc, w]
 
+        U = [param[:U].val, param[:U].val, U...]
+        g = [param[:Jc].val, param[:Jc].val, g...]
         H = tunnel_tunable_coupler_paper(d, w, U, g); H = project_to_subspace(H)
         H = QuantumObject(H[id])
 
@@ -80,6 +84,7 @@ function f()
     
     heatmap(x, t, n3s, xlabel = "w1 = w3 (MHz)", ylabel = "t (μs)", colorbar_title = "<n3>")
     savefig(joinpath(@__DIR__, "heatmap.png"))
+    plot(param[:w].val .* 5, wcs .* 5; xlabel = "w1 = w3 (MHz)", ylabel = "wc (MHz)", label = "wc")
 end
 
 
