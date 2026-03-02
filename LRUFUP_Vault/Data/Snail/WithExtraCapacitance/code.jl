@@ -85,13 +85,11 @@ function initial_parameters()
     param[:t_points] = 1000
     param[:d] = 3
     param[:L] = 2
-    N = 1
-    state = QuantumObject(tensor(basis(param[:d], N), basis(param[:d], 0)))
-    param[:state] = ValueInfo(state, "|$(N)0>")
+
     param[:alg] = "toolbox"
     param[:H] = "snail"
 
-    Ejs = 30
+    Ejs = 20
     param[:Ejs] = ValueInfo(1, "$(Ejs)GHz")
     param[:Units] = ValueInfo(Ejs, "Ejs")
 
@@ -106,7 +104,7 @@ function initial_parameters()
     param[:phi1] = -0.089
     param[:phi2] = 0.011
 
-    t = 1
+    t = 10
     param[:t] = ValueInfo(t * 2 * π * param[:Units].val, "$(t)ns")
     # param[:diss_rate] = 0.01
     return param
@@ -118,12 +116,12 @@ function f()
     # -----------
     lines = []
     d = param[:d]; L = param[:L]
-    state = param[:state].val
+    
 
     n1 = qt_single_site_op(d, L, num(d), 1)
     n2 = qt_single_site_op(d, L, num(d), 2)
     anh1 = qt_single_site_op(d, L, qt_anh_op(d), 1)
-    e_ops = [n1, qt_anh_all(d, L), qt_n_all(d, L), n2, anh1]
+    e_ops = [n2]
     
     # c_ops = [sqrt(param[:diss_rate]) * qt_single_site_op(d, L, destroy(d), L)]
 
@@ -133,11 +131,14 @@ function f()
     H = two_transmon_snail_with_k(d, param[:K2], param[:K3], E_c, E_j, phi)
 
     t_list = LinRange(0, param[:t].val, param[:t_points])
+
+    state = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 0)))
     out = mesolve(H, state, t_list, e_ops = e_ops; abstol = 1e-14, reltol = 1e-8, maxiters = 10^7)
-    # push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "n1"))
-    # push!(lines, LineInfo(t_list, real(out.expect[5, :]), 1, "anh"))
-    # push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "n_all"))
-    push!(lines, LineInfo(t_list, real(out.expect[4, :]), 1, "n2"))
+    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "|10>, n2"))
+
+    # state = QuantumObject(tensor(basis(param[:d], 2), basis(param[:d], 0)))
+    # out = mesolve(H, state, t_list, e_ops = e_ops; abstol = 1e-14, reltol = 1e-8, maxiters = 10^7)
+    # push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "|20>, n2"))
 
     path = joinpath(@__DIR__)
     makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)

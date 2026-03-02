@@ -91,7 +91,7 @@ function initial_parameters()
     param[:alg] = "toolbox"
     param[:H] = "snail"
 
-    Ejs = 30
+    Ejs = 20
     param[:Ejs] = ValueInfo(1, "$(Ejs)GHz")
     param[:Units] = ValueInfo(Ejs, "Ejs")
 
