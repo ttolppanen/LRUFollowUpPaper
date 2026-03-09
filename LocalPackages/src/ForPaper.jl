@@ -161,7 +161,7 @@ end
 using Roots
 function zz_0_with_roots(w1, w2, min_wc, max_wc, Us, gs)
     d = 3
-    function calc_zz(wc, comparison_states, w1, w2, Us, gs)
+    function calc_zz(wc, comparison_states, w1, w2, Us, gs, results_cache)
         if isempty(comparison_states)
             push!(comparison_states, QuantumObject(tensor(basis(d, 0), basis(d, 0), basis(d, 0))))
             push!(comparison_states, QuantumObject(tensor(basis(d, 1), basis(d, 0), basis(d, 0))))
@@ -176,16 +176,19 @@ function zz_0_with_roots(w1, w2, min_wc, max_wc, Us, gs)
         E, psi, Uni = eigenstates(H)
         dressed_states_i = logical_state_index(comparison_states, psi, d)
         comparison_states = psi[collect(dressed_states_i)]
-        return real(zz_coupling_strength(dressed_states_i, E, d))
+        zz_val = real(zz_coupling_strength(dressed_states_i, E, d))
+        results_cache[wc] = zz_val
+        return zz_val
     end
     comparison_states = []
-    f(x) = calc_zz(x, comparison_states, w1, w2, Us, gs)
+    results_cache = Dict{Float64, Float64}()
+    f(x) = calc_zz(x, comparison_states, w1, w2, Us, gs, results_cache)
     # min_spot = optimize(x->f(first(x)), [min_wc], [max_wc], [min_wc])
     wc_zeros = find_zeros(f, min_wc, max_wc)
     if length(wc_zeros) < 2        
         error("No ZZ zero points found")
     end
-    return wc_zeros
+    return wc_zeros, [results_cache[wc] for wc in wc_zeros]
 end
 function calc_zz(wc, comparison_states, w1, w2, Us, gs; d = 3)
     if isempty(comparison_states)

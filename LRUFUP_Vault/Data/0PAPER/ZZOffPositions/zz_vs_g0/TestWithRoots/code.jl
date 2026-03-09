@@ -48,16 +48,18 @@ function f()
     zzs = [zz_0_with_roots(param[:w1].val, w2, param[:min_wc].val, param[:max_wc].val,
         [param[:U1].val, param[:Uc].val, param[:U2].val],
         [param[:Jc].val, param[:Jc].val, param[:J12].val]) for w2 in param[:w2].val]
-    zz_min = [zz[1] for zz in zzs]
-    zz_max = [zz[2] for zz in zzs]
+    zz_min = [zz[1][1] for zz in zzs]
+    zz_max = [zz[1][2] for zz in zzs]
+    zz_min_values = [zz[2][1] for zz in zzs]
+    zz_max_values = [zz[2][2] for zz in zzs]
     # g0s = [w_off_position(param[:w1].val, w2, param[:Jc].val, param[:Jc].val, param[:J12].val; is_above = false) for w2 in param[:w2].val]
     push!(lines, LineInfo(param[:w2].val .* 5, zz_min .* 5, 1, "zz min"))
     # push!(lines, LineInfo(param[:w2].val .* 5, zz_max .* 5, 1, "zz max"))
     # push!(lines, LineInfo(param[:w2].val .* 5, g0s .* 5, 1, "g0"))
 
-    comparison_states = []
-    zz_min_values = [calc_zz(zz_min[i], comparison_states, param[:w1].val, param[:w2].val[i], [param[:U1].val, param[:Uc].val, param[:U2].val], [param[:Jc].val, param[:Jc].val, param[:J12].val]) for i in eachindex(zz_min)]
-    zz_max_values = [calc_zz(zz_max[i], comparison_states, param[:w1].val, param[:w2].val[i], [param[:U1].val, param[:Uc].val, param[:U2].val], [param[:Jc].val, param[:Jc].val, param[:J12].val]) for i in eachindex(zz_max)]
+    # comparison_states = []
+    # zz_min_values = [calc_zz(zz_min[i], comparison_states, param[:w1].val, param[:w2].val[i], [param[:U1].val, param[:Uc].val, param[:U2].val], [param[:Jc].val, param[:Jc].val, param[:J12].val]) for i in eachindex(zz_min)]
+    # zz_max_values = [calc_zz(zz_max[i], comparison_states, param[:w1].val, param[:w2].val[i], [param[:U1].val, param[:Uc].val, param[:U2].val], [param[:Jc].val, param[:Jc].val, param[:J12].val]) for i in eachindex(zz_max)]
     pl = plot()
     plot!(pl, param[:w2].val .* 5, zz_min_values; label = "zz at min")
     plot!(pl, param[:w2].val .* 5, zz_max_values; label = "zz at max")
