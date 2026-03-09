@@ -10,7 +10,6 @@ using LocalPackages
 using QuantumToolbox
 using QuantumTimes
 using OrdinaryDiffEq
-using Colors
 
 function traj_mean(result)
     out = zeros(size(result[1]))
@@ -31,12 +30,12 @@ function initial_parameters()
     param[:H] = "Tunable Coupler"
     param[:J12] = ValueInfo(5, "5MHz")
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
-    ws = collect(range(3802, 4000, 10)) ./ param[:J12].val
-    param[:w] = ValueInfo(ws, "(3.752-4)GHz")
-    param[:wc_min] = ValueInfo(3000 / param[:J12].val, "3GHz")
+    ws = collect(range(3702, 4000, 5)) ./ param[:J12].val
+    param[:w] = ValueInfo(ws, "(3.702-4)GHz")
+    param[:wc_min] = ValueInfo(2500 / param[:J12].val, "3GHz")
     param[:wc_max] = ValueInfo(4000 / param[:J12].val, "4GHz")
     param[:w2] = ValueInfo(4000 / param[:J12].val, "4GHz")
-    Us = collect(range(200, 300, 2)) ./ param[:J12].val
+    Us = collect(range(200, 300, 5)) ./ param[:J12].val
     param[:U] = ValueInfo(Us, "200-300MHz")
     t = 10
     param[:t] = ValueInfo(t * 2 * π * param[:J12].val, "$(t)μs")
@@ -62,9 +61,11 @@ function f()
     n3 = singlesite_n(d, L, 5); n3 = project_to_subspace(n3)
     e_ops = [QuantumObject(n3[id])]
 
-    max_amps_time = []
-    for w in param[:w].val
-        U_list = []
+    max_amps = []
+    times = []
+    for w3 in param[:w].val
+        U_max_amps = []
+        U_times = []
         for U_val in param[:U].val
             U = [U_val, U_val, U_val]
             g = [param[:Jc].val, param[:Jc].val, param[:J12].val]
@@ -72,24 +73,28 @@ function f()
             wc_val = NaN
 
             try
-                wcs, wc_vals = zz_0_with_roots(w, param[:w2].val, param[:wc_min].val, param[:wc_max].val, U, g)
+                wcs, wc_vals = zz_0_with_roots(w3, param[:w2].val, param[:wc_min].val, param[:wc_max].val, U, g)
                 wc_below = wcs[1]
                 wc_val = wc_vals[1]
             catch
+                println("No ZZ zero point found for w = $(w3 * 5)MHz and U = $(U_val * 5)MHz")
                 time = 10 * param[:t].val
                 max_amplitude = 0
-                push!(U_list, (max_amplitude, time))
+                push!(U_max_amps, max_amplitude)
+                push!(U_times, time)
                 continue
             end
 
-            if wc_val > 1e-10
+            if abs(wc_val) > 1e-10
+                println("ZZ zero point found for w = $(w3 * 5)MHz and U = $(U_val * 5)MHz, but ZZ is not close to zero (ZZ = $(wc_val))")
                 time = 10 * param[:t].val
                 max_amplitude = 0
-                push!(U_list, (max_amplitude, time))
+                push!(U_max_amps, max_amplitude)
+                push!(U_times, time)
                 continue
             end
 
-            w = [w, wc_below, param[:w2].val, wc_below, w]
+            w = [w3, wc_below, param[:w2].val, wc_below, w3]
             U = [U_val, U_val, U...]
             g = [param[:Jc].val, param[:Jc].val, g...]
             
@@ -101,33 +106,22 @@ function f()
             max_amplitude = maximum(real.(out.expect[1, :]))
             max_i = findfirst(x -> x >= max_amplitude, real.(out.expect[1, :]))
             time = out.times[max_i]
-            push!(U_list, (max_amplitude, time))
+            push!(U_max_amps, max_amplitude)
+            push!(U_times, time)
         end
-        push!(max_amps_time, U_list)
+        push!(max_amps, U_max_amps)
+        push!(times, U_times)
     end
-    max_amps_time = hcat(max_amps_time...)
+    max_amps = hcat(max_amps...)
+    times = hcat(times...)
     x = param[:w].val .* 5
     y = param[:U].val .* 5
     # t = t_list ./ (2 * π * 5)
-
-    cmap = cgrad(:RdYlGn)
-    colors = similar(max_amps_time, RGB{Float64})
-
-    for y_i in axes(max_amps_time, 1), x_i in axes(max_amps_time, 2)
-        amp = max_amps_time[y_i, x_i][1]
-        time = max_amps_time[y_i, x_i][2]
-        println(amp)
-        println(time)
-        c = cmap[time / param[:t].val] 
-        norm_amp = amp / 2
-        c = RGB(norm_amp * c.r, norm_amp * c.g, norm_amp * c.b)
-        colors[y_i, x_i] = c
-    end
-
-    display(colors)
     
-    heatmap(x, y, color = colors, xlabel = "w1 = w3 (MHz)", ylabel = "U (MHz)", colorbar_title = "<t (μs)>")
-    savefig(joinpath(@__DIR__, "heatmap.png"))
+    heatmap(x, y, max_amps, xlabel = "w1 = w3 (MHz)", ylabel = "U (MHz)", colorbar_title = "<max(n3)>")
+    savefig(joinpath(@__DIR__, "heatmap_max_amps.png"))
+    heatmap(x, y, times ./ (2 * π * 5), clim = (0, 10), color = cgrad(:tofino),xlabel = "w1 = w3 (MHz)", ylabel = "U (MHz)", colorbar_title = "t (μs)")
+    savefig(joinpath(@__DIR__, "heatmap_times.png"))
 end
 
 
