@@ -30,12 +30,12 @@ function initial_parameters()
     param[:H] = "Tunable Coupler"
     param[:J12] = ValueInfo(5, "5MHz")
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
-    ws = collect(range(3702, 4000, 5)) ./ param[:J12].val
+    ws = collect(range(3702, 4000, 10)) ./ param[:J12].val
     param[:w] = ValueInfo(ws, "(3.702-4)GHz")
     param[:wc_min] = ValueInfo(2500 / param[:J12].val, "3GHz")
     param[:wc_max] = ValueInfo(4000 / param[:J12].val, "4GHz")
     param[:w2] = ValueInfo(4000 / param[:J12].val, "4GHz")
-    Us = collect(range(200, 300, 5)) ./ param[:J12].val
+    Us = collect(range(200, 300, 10)) ./ param[:J12].val
     param[:U] = ValueInfo(Us, "200-300MHz")
     t = 10
     param[:t] = ValueInfo(t * 2 * π * param[:J12].val, "$(t)μs")
@@ -120,7 +120,7 @@ function f()
     
     heatmap(x, y, max_amps, xlabel = "w1 = w3 (MHz)", ylabel = "U (MHz)", colorbar_title = "<max(n3)>")
     savefig(joinpath(@__DIR__, "heatmap_max_amps.png"))
-    heatmap(x, y, times ./ (2 * π * 5), clim = (0, 10), color = cgrad(:tofino),xlabel = "w1 = w3 (MHz)", ylabel = "U (MHz)", colorbar_title = "t (μs)")
+    heatmap(x, y, times ./ (2 * π * 5), clim = (0, 10), color = cgrad(:thermal, rev=true),xlabel = "w1 = w3 (MHz)", ylabel = "U (MHz)", colorbar_title = "t (μs)")
     savefig(joinpath(@__DIR__, "heatmap_times.png"))
 end
 
