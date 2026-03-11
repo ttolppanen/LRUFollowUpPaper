@@ -10,6 +10,7 @@ using LocalPackages
 using QuantumToolbox
 using QuantumTimes
 using OrdinaryDiffEq
+using JLD2
 
 function traj_mean(result)
     out = zeros(size(result[1]))
@@ -117,11 +118,21 @@ function f()
     y = param[:U].val .* 5
     # t = t_list ./ (2 * π * 5)
     
+    @save joinpath(@__DIR__, "max_amps_data.jld2") x y max_amps
+    @save joinpath(@__DIR__, "times_data.jld2") x y times
+end
+
+function make_heatmap()
+    @load joinpath(@__DIR__, "max_amps_data.jld2") x y max_amps 
     heatmap(x, y, max_amps, xlabel = "w1 = w3 (MHz)", ylabel = "U (MHz)", colorbar_title = "<max(n3)>")
     savefig(joinpath(@__DIR__, "heatmap_max_amps.png"))
+
+    @load joinpath(@__DIR__, "times_data.jld2") x y times
     heatmap(x, y, times ./ (2 * π * 5), clim = (0, 10), color = cgrad(:thermal, rev=true),xlabel = "w1 = w3 (MHz)", ylabel = "U (MHz)", colorbar_title = "t (μs)")
     savefig(joinpath(@__DIR__, "heatmap_times.png"))
 end
 
 
-@time f()
+# @time f()
+
+make_heatmap()
