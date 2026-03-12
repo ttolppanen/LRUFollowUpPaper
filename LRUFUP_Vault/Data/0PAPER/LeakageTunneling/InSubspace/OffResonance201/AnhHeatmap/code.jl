@@ -133,6 +133,5 @@ function make_heatmap()
 end
 
 
-# @time f()
-
+@time f()
 make_heatmap()
