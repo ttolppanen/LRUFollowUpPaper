@@ -30,12 +30,14 @@ function initial_parameters()
     param[:H] = "Tunable Coupler"
     param[:J12] = ValueInfo(5, "5MHz")
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
-    ws = collect(range(3702, 4000, 100)) ./ param[:J12].val
-    param[:w] = ValueInfo(ws, "(3.702-4)GHz")
-    param[:w2] = ValueInfo(3720 / param[:J12].val, "3720GHz")
+    ws = collect(range(3700, 3998, 100)) ./ param[:J12].val
+    param[:w] = ValueInfo(ws, "(3.71-3.73)GHz")
+    param[:w2] = ValueInfo(3700 / param[:J12].val, "4GHz")
+    param[:wc_min] = ValueInfo(2000 / param[:J12].val, "3GHz")
+    param[:wc_max] = ValueInfo(3500 / param[:J12].val, "4GHz")
 
     param[:U] = ValueInfo(300 / param[:J12].val, "300MHz")
-    t = 4
+    t = 8
     param[:t] = ValueInfo(t * 2 * π * param[:J12].val, "$(t)μs")
 
     # U = [param[:U].val, param[:U].val, param[:U].val]
@@ -66,8 +68,17 @@ function f()
     e_ops = [QuantumObject(n3[id])]
 
     n3s = []
+    zz_vals = []
+    used_wcs = []
     for w in param[:w].val
-        wc = zz_0_with_w_4GHZ(w * 5) / 5
+        U = [param[:U].val, param[:U].val, param[:U].val]
+        g = [param[:Jc].val, param[:Jc].val, param[:J12].val]
+        wcs, wc_vals = zz_0_with_roots(w, param[:w2].val, param[:wc_min].val, param[:wc_max].val, U, g)
+        wc = wcs[1]
+        push!(used_wcs, wc)
+        if abs(wc_vals[1]) > 1e-10
+            @warn "zz zero point not found for w=$(w*5)MHz, U=$(param[:U].val*5)MHz, with zz value $(wc_vals[1])MHz. Using wc = $(wc * 5)MHz."
+        end
         w = [w, wc, param[:w2].val, wc, w]
         U = [param[:U].val, param[:U].val, param[:U].val, param[:U].val, param[:U].val]
         g = [param[:Jc].val, param[:Jc].val, param[:Jc].val, param[:Jc].val, param[:J12].val]
@@ -85,6 +96,7 @@ function f()
     
     heatmap(x, t, n3s, xlabel = "w1 = w3 (MHz)", ylabel = "t (μs)", colorbar_title = "<n3>")
     savefig(joinpath(@__DIR__, "heatmap.png"))
+    plot(x, used_wcs .* 5, zz_vals, xlabel = "w1 = w3 (MHz)", ylabel = "ZZ (MHz)", title = "Used wc values")
 end
 
 
