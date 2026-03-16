@@ -133,7 +133,7 @@ function f()
     for i in 1:length(param[:Ec].val)
         Ec = param[:Ec].val[i]
 
-        E_c = [param[:Eca].val, param[:Ecb].val, Ec]
+        E_c = [param[:Eca].val, param[:Ecb].val, -Ec]
         H = junction_readout_H(d, E_j, E_c, zpf)
 
         out = mesolve(H, state, t_list, e_ops = e_ops; abstol = 1e-14, reltol = 1e-8, maxiters = 10^7, progress_bar = false)
