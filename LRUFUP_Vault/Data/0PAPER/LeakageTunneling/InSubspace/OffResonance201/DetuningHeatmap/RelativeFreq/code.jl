@@ -34,8 +34,8 @@ function initial_parameters()
     ws = collect(range(3802, 4000, 100)) ./ param[:J12].val
     param[:w] = ValueInfo(ws, "(3.802-4)GHz")
     offset_N = 50
-    w_offsets = vcat(collect(range(-50, 0, offset_N)), collect(range(0, 50, offset_N)))
-    param[:w_offset] = ValueInfo(w_offsets ./ param[:J12].val, "(-50-50)MHz")
+    w_offsets = vcat(collect(range(-0.5, 0, offset_N)), collect(range(0, 0.5, offset_N)))
+    param[:w_offset] = ValueInfo(w_offsets ./ param[:J12].val, "(-0.5-0.5)MHz")
     param[:wc_min] = ValueInfo(2500 / param[:J12].val, "3GHz")
     param[:wc_max] = ValueInfo(4000 / param[:J12].val, "4GHz")
     param[:w2] = ValueInfo(4000 / param[:J12].val, "4GHz")

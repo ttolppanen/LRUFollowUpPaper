@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=211_lkg_tnl_W                    # Job name
+#SBATCH --job-name=201_lkg_tnl_W                    # Job name
 #SBATCH --mail-type=ALL                         # Mail events (NONE, BEGIN, END, FAIL, ALL)
 #SBATCH --mail-user=heikki.tolppanen@oulu.fi    # Where to send mail	
 #SBATCH --nodes=1                               # Run all processes on a single node	
@@ -9,7 +9,7 @@
 #SBATCH --time=5:00:00                         # Time limit hrs:min:sec
 #SBATCH --output=jobs/logs/%x_%j_log.txt        # Standard output and error log
 
-file_to_run="LRUFUP_Vault/Data/0PAPER/LeakageTunneling/InSubspace/OffResonance211/DetuningHeatmap/code.jl"
+file_to_run="LRUFUP_Vault/Data/0PAPER/LeakageTunneling/InSubspace/OffResonance201/DetuningHeatmap/RelativeFreq/code.jl"
 
 echo "$file_to_run"; hostname; date; echo
 
