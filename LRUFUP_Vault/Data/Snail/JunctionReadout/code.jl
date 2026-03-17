@@ -9,6 +9,7 @@ using SparseArrays
 using LocalPackages
 using QuantumToolbox
 using QuantumTimes
+using OrdinaryDiffEq
 
 function traj_mean(result)
     out = zeros(size(result[1]))
@@ -26,8 +27,8 @@ function junction_readout_H(d, E_j, E_c, zpf; D = 15)
 
     Eja = E_j[1]; Ejb = E_j[2]; Ej = E_j[3]
     Eca = E_c[1]; Ecb = E_c[2]; Ec = E_c[3]
-
     phi_zpf_a = zpf[1]; phi_zpf_b = zpf[2]
+
     n_zpf_a = 1 / (2 * phi_zpf_a); n_zpf_b = 1 / (2 * phi_zpf_b)
     
     c_op = create(D)
@@ -36,25 +37,29 @@ function junction_readout_H(d, E_j, E_c, zpf; D = 15)
     n_a = -1im * n_zpf_a * (d_op - c_op)
     phi_a = phi_zpf_a * (d_op + c_op)
 
-    Ha = 4 * Eca * n_a^2 - Eja * cos(phi_a)
+    Ha = 4 * Eca * n_a^2 - Eja * cos(phi_a) - Ej * cos(phi_a)
     λ, psi, U1 = eigenstates(Ha)
     Ua = QuantumObject(U1, dims = D)
     # println(λ[1:3])
-    # println((λ[1:3] .- λ[1]))
-    # a1 = λ[3] - λ[1]
+    println("transmon")
+    println((λ[1:3] .- λ[1]))
+    a1 = λ[3] - λ[1]
     
     n_b = -1im * n_zpf_b * (d_op - c_op)
     phi_b = phi_zpf_b * (d_op + c_op)
-    Hb = 4 * Ecb * n_b^2 - Ejb / 2 * phi_b^2
+    Hb = 4 * Ecb * n_b^2 + Ejb / 2 * phi_b^2 - Ej * cos(phi_b)
     λ, psi, U2 = eigenstates(Hb)
     Ub = QuantumObject(U2, dims = D)
     # println(λ[1:3])
-    # println((λ[1:3] .- λ[1]))
-    # a2 = λ[2] - λ[1]
-    # println("Resonance: $(a1 - a2)")
+    println("resonator")
+    println((λ[1:3] .- λ[1]))
+    normalized_E = λ[1:3] .- λ[1]
+    println(normalized_E[3] / normalized_E[2])
+    a2 = λ[3] - λ[1]
+    println("Resonance: $(a1 - a2)")
 
     U = tensor(Ua, Ub)
-    coupling = 8 * Ec * tensor(n_a, n_b) - Ej * (tensor(sin(phi_a), sin(phi_b)) + tensor(cos(phi_a), cos(phi_b)))
+    coupling = 8 * Ec * tensor(n_a, n_b) - Ej * (tensor(sin(phi_a), sin(phi_b)) + tensor(cos(phi_a), cos(phi_b)) - tensor(cos(phi_a), qeye(D)) - tensor(qeye(D), cos(phi_b)))
     H = U' * (tensor(Ha, qeye(D)) + tensor(qeye(D), Hb) + coupling) * U
     
     H_row = []
@@ -97,17 +102,17 @@ function initial_parameters()
     param[:Units] = ValueInfo(Ej, "Ej")
 
     param[:Eja] = ValueInfo(20 / param[:Units].val, "20GHz")
-    param[:Ejb] = ValueInfo(100 / param[:Units].val, "100GHz")
+    param[:Ejb] = ValueInfo(100.46 / param[:Units].val, "100GHz")
     param[:Eca] = ValueInfo(0.2 / param[:Units].val, "200MHz")
     param[:Ecb] = ValueInfo(0.037 / param[:Units].val, "37MHz")
-    param[:Ec] = ValueInfo(0.0017 / param[:Units].val, "1.7MHz")
+    param[:Ec] = ValueInfo(0.00178 / param[:Units].val, "1.7MHz")
 
     param[:phi_zpf_a] = 0.378
     param[:phi_zpf_b] = 0.165
 
-    t = 10
+    t = 1000
     param[:t] = ValueInfo(t * 2 * π * param[:Units].val, "$(t)ns")
-    # param[:diss_rate] = 0.01
+    param[:diss_rate] = 0.02 / param[:Units].val
     return param
 end
 
@@ -122,9 +127,10 @@ function f()
     n1 = qt_single_site_op(d, L, num(d), 1)
     n2 = qt_single_site_op(d, L, num(d), 2)
     anh1 = qt_single_site_op(d, L, qt_anh_op(d), 1)
-    e_ops = [n2]
+    anh2 = qt_single_site_op(d, L, qt_anh_op(d), 2)
+    e_ops = [n1, n2]
     
-    # c_ops = [sqrt(param[:diss_rate]) * qt_single_site_op(d, L, destroy(d), L)]
+    c_ops = [sqrt(param[:diss_rate]) * qt_single_site_op(d, L, destroy(d), L)]
 
     E_j = [param[:Eja].val, param[:Ejb].val, param[:Ej].val]
     E_c = [param[:Eca].val, param[:Ecb].val, param[:Ec].val]
@@ -133,13 +139,15 @@ function f()
 
     t_list = LinRange(0, param[:t].val, param[:t_points])
 
-    state = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 0)))
-    out = mesolve(H, state, t_list, e_ops = e_ops; abstol = 1e-14, reltol = 1e-8, maxiters = 10^7)
-    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "|10>, n2"))
+    # state = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 0)))
+    # out = mesolve(H, state, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = 1e-14, reltol = 1e-8, maxiters = 10^7)
+    # push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "|10>, n1"))
+    # push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "|10>, anh1"))
 
-    state = QuantumObject(tensor(basis(param[:d], 2), basis(param[:d], 0)))
-    out = mesolve(H, state, t_list, e_ops = e_ops; abstol = 1e-14, reltol = 1e-8, maxiters = 10^7)
-    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "|20>, n2"))
+    state = QuantumObject(tensor(basis(param[:d], 0), basis(param[:d], 0)))
+    out = mesolve(H, state, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = 1e-14, reltol = 1e-8, maxiters = 10^7)
+    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "|00>, n1"))
+    push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "|00>, n2"))
 
     path = joinpath(@__DIR__)
     makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
