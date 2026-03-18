@@ -1,8 +1,9 @@
 {
 	"nodes":[
 		{"id":"5ebe9ab526326003","type":"group","x":-1640,"y":4120,"width":5480,"height":720,"color":"3","label":"ZZ = 0"},
-		{"id":"ae7706182cb5dd6e","type":"group","x":-380,"y":2780,"width":2140,"height":594,"color":"3","label":"Middle transmon higher in frequency"},
 		{"id":"633722981cddb536","type":"group","x":-1080,"y":1180,"width":2240,"height":692,"color":"3","label":"Leakage Tunneling"},
+		{"id":"ae7706182cb5dd6e","type":"group","x":-380,"y":2780,"width":2140,"height":594,"color":"3","label":"Middle transmon higher in frequency"},
+		{"id":"f609fc728ff075d9","x":1015,"y":6260,"width":1245,"height":627,"color":"3","type":"group","label":"Tunneling Figure"},
 		{"id":"60bd5f11aad7a9d6","type":"group","x":860,"y":60,"width":1314,"height":948,"color":"3","label":"21 -> 12 transition"},
 		{"id":"a93e7e7792ef3656","type":"text","text":"In the previous results the middle transmon is lower in frequency than the edge ones, what if the middle one is higher?","x":320,"y":2440,"width":240,"height":160,"color":"1"},
 		{"id":"c4861a13c307b7ee","type":"text","text":"Tunneling is not a relevant for leakage mobility in tunable coupler setups.","x":-96,"y":2120,"width":250,"height":120,"color":"4"},
@@ -56,8 +57,6 @@
 		{"id":"d8bf903eccc506c8","type":"file","file":"Data/0PAPER/LeakageTunneling/InSubspace/OffResonance210/Heatmap/U250/U250.png","x":2180,"y":4249,"width":119,"height":79},
 		{"id":"e3a6b1905ccfb4f4","type":"file","file":"Data/0PAPER/LeakageTunneling/210.png","x":1380,"y":4157,"width":400,"height":267,"color":"3"},
 		{"id":"975ce2ad701e6b9d","type":"file","file":"Data/0PAPER/LeakageTunneling/211.png","x":1380,"y":4480,"width":400,"height":267,"color":"3"},
-		{"id":"b5fed025347d1f31","type":"file","file":"Data/0PAPER/LeakageTunneling/InSubspace/OffResonance200/DetuningHeatmap/RelativeFreq/heatmap_max_amps.png","x":573,"y":4165,"width":400,"height":267},
-		{"id":"ff60fed3a772c690","type":"file","file":"Data/0PAPER/LeakageTunneling/InSubspace/OffResonance201/DetuningHeatmap/RelativeFreq/heatmap_max_amps.png","x":573,"y":4482,"width":400,"height":267},
 		{"id":"2827daf5a227e513","type":"file","file":"Data/0PAPER/LeakageTunneling/InSubspace/OffResonance210/Heatmap/U200/U200.png","x":2180,"y":4345,"width":119,"height":79},
 		{"id":"a5a077a06f342cbd","type":"file","file":"Data/0PAPER/LeakageTunneling/InSubspace/OffResonance211/Heatmap/zoom.png","x":2180,"y":4467,"width":220,"height":147},
 		{"id":"9bda7e5095682b84","type":"file","file":"Data/0PAPER/LeakageTunneling/InSubspace/OffResonance200/Heatmap/wide.png","x":-774,"y":4144,"width":401,"height":267},
@@ -74,7 +73,21 @@
 		{"id":"c6e814372e6e18e5","type":"file","file":"Data/LRU/CLRU/5Transmons/EdgeTransmonsLower/020.png","x":858,"y":2800,"width":400,"height":267,"color":"3"},
 		{"id":"930be7a52bece1ee","type":"file","file":"Data/LRU/CLRU/5Transmons/EdgeTransmonsLower/220.png","x":1320,"y":2800,"width":400,"height":267},
 		{"id":"a9c074782b1f3ef2","type":"file","file":"Data/LRU/CLRU/5Transmons/EdgeTransmonsLower/200.png","x":-49,"y":2800,"width":400,"height":267,"color":"3"},
-		{"id":"51e09f47f7c1986c","x":920,"y":5600,"width":326,"height":60,"type":"text","text":"What to show about this in paper?"}
+		{"id":"51e09f47f7c1986c","type":"text","text":"What to show about this in paper?","x":920,"y":5600,"width":326,"height":60},
+		{"id":"263608551de321e0","x":931,"y":5820,"width":304,"height":108,"type":"text","text":"Show the cases where there is leakage tunneling, mention in text where there is none."},
+		{"id":"b5fed025347d1f31","type":"file","file":"Data/0PAPER/LeakageTunneling/InSubspace/OffResonance200/DetuningHeatmap/RelativeFreq/heatmap_max_amps.png","x":580,"y":4155,"width":400,"height":267},
+		{"id":"ff60fed3a772c690","type":"file","file":"Data/0PAPER/LeakageTunneling/InSubspace/OffResonance201/DetuningHeatmap/RelativeFreq/heatmap_max_amps.png","x":580,"y":4465,"width":400,"height":267},
+		{"id":"b52e609bd8a356d4","type":"file","file":"Data/0PAPER/LeakageTunneling/201.png","x":1035,"y":6280,"width":400,"height":267,"color":"3"},
+		{"id":"4404e969c3958db7","type":"file","file":"Data/0PAPER/LeakageTunneling/InSubspace/OffResonance201/Heatmap/wide.png","x":1435,"y":6280,"width":400,"height":267,"color":"3"},
+		{"id":"8c822ce8458a85db","type":"file","file":"Data/0PAPER/LeakageTunneling/InSubspace/OffResonance201/DetuningHeatmap/RelativeFreq/heatmap_max_amps.png","x":1840,"y":6280,"width":400,"height":267,"color":"3"},
+		{"id":"93ad23615eb2090a","type":"file","file":"Data/0PAPER/LeakageTunneling/211.png","x":1035,"y":6600,"width":400,"height":267,"color":"3"},
+		{"id":"ec09f3d896874fb2","type":"file","file":"Data/0PAPER/LeakageTunneling/InSubspace/OffResonance211/Heatmap/wide.png","x":1440,"y":6600,"width":400,"height":267,"color":"3"},
+		{"id":"1e666c5ade9f5bd9","type":"file","file":"Data/0PAPER/LeakageTunneling/InSubspace/OffResonance211/DetuningHeatmap/RelativeFreq/heatmap_max_amps.png","x":1840,"y":6600,"width":400,"height":267,"color":"3"},
+		{"id":"dbb1377467468095","x":1510,"y":6080,"width":250,"height":60,"type":"text","text":"Show the cases with one excitation in the target."},
+		{"id":"3cff21e62161c004","x":1035,"y":7120,"width":250,"height":109,"type":"text","text":"The anharmonicity is assumed to be 300 here, does it matter?"},
+		{"id":"1655170d646ab38d","x":1035,"y":7309,"width":250,"height":60,"type":"text","text":"Show in appendix it doesn't matter."},
+		{"id":"0d6bdc8dcc0c9ef8","x":1513,"y":7120,"width":244,"height":85,"type":"text","text":"It is assumed that the couplings are the same here, does it matter?"},
+		{"id":"5c8b6adac63cc52a","x":1501,"y":7309,"width":269,"height":185,"type":"text","text":"The couplings can change the off-position for the zz coupling, for the couplers. This then changes their frequency obviously, causing more detuning. It can matter?"}
 	],
 	"edges":[
 		{"id":"bb76e426901aa39b","fromNode":"4cfcf615913b67ca","fromSide":"right","toNode":"7e626a360c431a9c","toSide":"left"},
@@ -89,6 +102,13 @@
 		{"id":"294bdd3d245d90d8","fromNode":"a93e7e7792ef3656","fromSide":"bottom","toNode":"ae7706182cb5dd6e","toSide":"top"},
 		{"id":"0e0e497f6c441d00","fromNode":"ae7706182cb5dd6e","fromSide":"bottom","toNode":"c665b5e2339f9527","toSide":"top"},
 		{"id":"38d208f8146345bf","fromNode":"c665b5e2339f9527","fromSide":"bottom","toNode":"5ebe9ab526326003","toSide":"top"},
-		{"id":"09a8f4e3f957f904","fromNode":"5ebe9ab526326003","fromSide":"bottom","toNode":"51e09f47f7c1986c","toSide":"top"}
+		{"id":"09a8f4e3f957f904","fromNode":"5ebe9ab526326003","fromSide":"bottom","toNode":"51e09f47f7c1986c","toSide":"top"},
+		{"id":"957f6e9df1d013fb","fromNode":"51e09f47f7c1986c","fromSide":"bottom","toNode":"263608551de321e0","toSide":"top"},
+		{"id":"1a3c91c98b3bc4f1","fromNode":"263608551de321e0","fromSide":"bottom","toNode":"dbb1377467468095","toSide":"top"},
+		{"id":"44a61bf18f71e6b6","fromNode":"dbb1377467468095","fromSide":"bottom","toNode":"f609fc728ff075d9","toSide":"top"},
+		{"id":"8efc1c17dff0826d","fromNode":"f609fc728ff075d9","fromSide":"bottom","toNode":"3cff21e62161c004","toSide":"top"},
+		{"id":"8e9b77cb5bc25f92","fromNode":"3cff21e62161c004","fromSide":"bottom","toNode":"1655170d646ab38d","toSide":"top"},
+		{"id":"666ab7d50542faf6","fromNode":"f609fc728ff075d9","fromSide":"bottom","toNode":"0d6bdc8dcc0c9ef8","toSide":"top"},
+		{"id":"4bb09a1794982219","fromNode":"0d6bdc8dcc0c9ef8","fromSide":"bottom","toNode":"5c8b6adac63cc52a","toSide":"top"}
 	]
 }

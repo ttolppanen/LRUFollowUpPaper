@@ -90,7 +90,7 @@ function f()
     push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "s_0 = |$label_s>, <n3>"))
     push!(lines, LineInfo(t_list, real(out.expect[4, :]), 1, "s_0 = |$label_s>, <nc1>"))
     push!(lines, LineInfo(t_list, real(out.expect[5, :]), 1, "s_0 = |$label_s>, <nc2>"))
-    push!(lines, LineInfo(t_list, real(out.expect[6, :]), 1, "s_0 = |$label_s>, <n tot>"))
+    # push!(lines, LineInfo(t_list, real(out.expect[6, :]), 1, "s_0 = |$label_s>, <n tot>"))
 
     # state = state20
     # out = mesolve(H_below, tate, t_list, e_ops = e_ops, maxiters = 10^7)
