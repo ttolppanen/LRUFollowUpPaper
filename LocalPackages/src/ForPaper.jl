@@ -1,4 +1,4 @@
-export tunable_coupler_paper, qt_tunable_coupler_paper
+export tunable_coupler_paper, qt_tunable_coupler_paper, qt_tunable_coupler_paper_param
 export tunable_coupler_paper_positive, qt_tunable_coupler_paper_positive
 export tunnel_tunable_coupler_paper, qt_tunnel_tunable_coupler_paper
 export four_qubit_coupler_paper, qt_four_qubit_coupler_paper
@@ -20,6 +20,29 @@ function tunable_coupler_paper(d, w, U, g)
 end
 function qt_tunable_coupler_paper(d, w, U, g)
     return QuantumObject(tunable_coupler_paper(d, w, U, g), dims = (d, d, d))
+end
+function qt_tunable_coupler_paper_param(d, U, g)
+    w1_f(p, t) = p[1]
+    wc_f(p, t) = p[2]
+    w2_f(p, t) = p[3]
+
+    a1 = tensor(destroy(d), qeye(d), qeye(d))
+    ac = tensor(qeye(d), destroy(d), qeye(d))
+    a2 = tensor(qeye(d), qeye(d), destroy(d))
+
+    n1 = a1' * a1
+    nc = ac' * ac
+    n2 = a2' * a2
+
+    h1 = QobjEvo(n1, w1_f)
+    hc = QobjEvo(nc, wc_f)
+    h2 = QobjEvo(n2, w2_f)
+
+    anh1 = 0.5 * U[1] * n1 * (n1 - 1)
+    anhc = 0.5 * U[2] * nc * (nc - 1)
+    anh2 = 0.5 * U[3] * n2 * (n2 - 1)
+
+    return h1 + hc + h2 + anh1 + anhc + anh2 + g[1] * (a1' * ac + ac' * a1) - g[2] * (ac' * a2 + a2' * ac) + g[3] * (a1' * a2 + a2' * a1)
 end
 
 function tunable_coupler_paper_positive(d, w, U, g)

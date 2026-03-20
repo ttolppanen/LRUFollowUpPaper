@@ -42,8 +42,6 @@ function initial_parameters()
     param[:Uc] = ValueInfo(Uc / param[:J12].val, "$(Uc)MHz")
     t_below = 0.05
     param[:t_below] = ValueInfo(t_below * 2 * π * param[:J12].val, "$(t_below)μs")
-    t_above = 15
-    param[:t_above] = ValueInfo(t_above * 2 * π * param[:J12].val, "$(t_above)μs")
 
     param[:J12] = ValueInfo(1, param[:J12].str_val)
     return param
@@ -57,7 +55,6 @@ function f()
     lines = []
     d = param[:d]; L = param[:L]
     t_list_below = LinRange(0, param[:t_below].val, param[:t_points])
-    t_list_above = LinRange(0, param[:t_above].val, param[:t_points])
 
     n1 = qt_single_site_op(d, L, num(d), 1)
     nc = qt_single_site_op(d, L, num(d), 2)
