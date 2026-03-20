@@ -29,13 +29,13 @@ function initial_parameters()
     param[:alg] = "toolbox Vern9"
     param[:H] = "Tunable Coupler"
     param[:J12] = ValueInfo(5, "5MHz")
-    param[:Jc] = ValueInfo(0 * 50 / param[:J12].val, "50MHz")
+    param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
     param[:w1] = ValueInfo(4000 / param[:J12].val, "4GHz")
     
-    N = 10
-    w2s = collect(range(3700, 4000, length=N)) ./ param[:J12].val
+    N = 100
+    w2s = collect(range(3690, 3720, length=N)) ./ param[:J12].val
     param[:w2] = ValueInfo(w2s, "(3.702-3.750)GHz")
-    wc_range = collect(range(3300, 3500, length=N)) ./ param[:J12].val
+    wc_range = collect(range(3150, 3250, length=N)) ./ param[:J12].val
     param[:wc] = ValueInfo(wc_range, "(3.600-3.800)GHz")
 
     U = 300
@@ -69,19 +69,24 @@ function f()
 
     state = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 0), basis(param[:d], 0)))
 
+    x_N = length(param[:w2].val)
+    y_N = length(param[:wc].val)
+    max_amps = zeros(y_N, x_N)
+    for I in CartesianIndices(max_amps)
+        y, x = Tuple(I)
+        wc = param[:wc].val[y]
+        w2 = param[:w2].val[x]
 
-    U = [param[:U1].val, param[:Uc].val, param[:U2].val]
-    g = [param[:Jc].val, param[:Jc].val, param[:J12].val]
+        w = [param[:w1].val, wc, w2]
+        U = [param[:U1].val, param[:Uc].val, param[:U2].val]
+        g = [param[:Jc].val, param[:Jc].val, param[:J12].val]
 
-    H = qt_tunable_coupler_paper_param(d, U, g)
-    w1 = [param[:w1].val]
-    wc = param[:wc].val
-    w2 = param[:w2].val
+        H = qt_tunable_coupler_paper(d, w, U, g)
 
-    out = mesolve_map(H, state, t_list_below; params = (w1, wc, w2), e_ops = e_ops, progress_bar= false, abstol = param[:abstol], reltol = param[:reltol], alg = Vern9())
-    
-    max_amps = maximum(real(out.expect[1, :]))
-
+        state = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 0), basis(param[:d], 0)))
+        out = mesolve(H, state, t_list_below, e_ops = e_ops, progress_bar= false; abstol = param[:abstol], reltol = param[:reltol], alg = Vern9())
+        max_amps[y, x] = maximum(real(out.expect[1, :]))
+    end
     x = param[:w2].val .* 5
     y = param[:wc].val .* 5
     

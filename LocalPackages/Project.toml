@@ -14,5 +14,4 @@ Roots = "f2b01f46-fcfa-551c-844a-d8ac1e96c665"
 [compat]
 PlotAndSave = "0.2.18"
 QuantumOperators = "0.1.33"
-QuantumToolbox = "0.35.0"
 Roots = "2.2.13"
