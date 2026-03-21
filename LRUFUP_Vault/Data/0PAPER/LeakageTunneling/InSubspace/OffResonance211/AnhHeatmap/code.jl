@@ -1,16 +1,20 @@
-using Plots
-using LinearAlgebra
-using QuantumStates
-using QuantumOperators
-using PlotAndSave
-using QuantumTimeEvolution
-using OrderedCollections
-using SparseArrays
-using LocalPackages
-using QuantumToolbox
-using QuantumTimes
-using OrdinaryDiffEq
-using JLD2
+using Distributed
+
+@everywhere begin
+    using Plots
+    using LinearAlgebra
+    using QuantumStates
+    using QuantumOperators
+    using PlotAndSave
+    using QuantumTimeEvolution
+    using OrderedCollections
+    using SparseArrays
+    using LocalPackages
+    using QuantumToolbox
+    using QuantumTimes
+    using OrdinaryDiffEq
+    using JLD2
+end
 
 function traj_mean(result)
     out = zeros(size(result[1]))
@@ -20,7 +24,7 @@ function traj_mean(result)
     return out ./ length(result)
 end
 
-function initial_parameters()
+@everywhere function initial_parameters()
     param = OrderedDict()
     param[:t_points] = 1000
     param[:d] = 5
@@ -31,12 +35,13 @@ function initial_parameters()
     param[:H] = "Tunable Coupler"
     param[:J12] = ValueInfo(5, "5MHz")
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
-    ws = collect(range(3702, 4000, 100)) ./ param[:J12].val
+    data_N = 100
+    ws = collect(range(3702, 4000, data_N)) ./ param[:J12].val
     param[:w] = ValueInfo(ws, "(3.702-4)GHz")
     param[:wc_min] = ValueInfo(2500 / param[:J12].val, "3GHz")
     param[:wc_max] = ValueInfo(4000 / param[:J12].val, "4GHz")
     param[:w2] = ValueInfo(4000 / param[:J12].val, "4GHz")
-    Us = collect(range(200, 300, 100)) ./ param[:J12].val
+    Us = collect(range(200, 300, data_N)) ./ param[:J12].val
     param[:U] = ValueInfo(Us, "200-300MHz")
     t = 10
     param[:t] = ValueInfo(t * 2 * π * param[:J12].val, "$(t)μs")
@@ -45,7 +50,48 @@ function initial_parameters()
     return param
 end
 
-function f()
+@everywhere function calc_max_amps_times(w3, U_val, param, state, i_id, t_list, e_ops, project_to_subspace)
+    d = param[:d]
+    U = [U_val, U_val, U_val]
+    g = [param[:Jc].val, param[:Jc].val, param[:J12].val]
+    wc_below = NaN
+    wc_val = NaN
+
+    try
+        wcs, wc_vals = zz_0_with_roots(w3, param[:w2].val, param[:wc_min].val, param[:wc_max].val, U, g)
+        wc_below = wcs[1]
+        wc_val = wc_vals[1]
+    catch
+        # println("No ZZ zero point found for w = $(w3 * 5)MHz and U = $(U_val * 5)MHz")
+        time = 10 * param[:t].val
+        max_amplitude = 0
+        return max_amplitude, time
+    end
+
+    if abs(wc_val) > 1e-10
+        # println("ZZ zero point found for w = $(w3 * 5)MHz and U = $(U_val * 5)MHz, but ZZ is not close to zero (ZZ = $(wc_val))")
+        time = 10 * param[:t].val
+        max_amplitude = 0
+        return max_amplitude, time
+    end
+
+    w = [w3, wc_below, param[:w2].val, wc_below, w3]
+    U = [U_val, U_val, U...]
+    g = [param[:Jc].val, param[:Jc].val, g...]
+    
+    H = tunnel_tunable_coupler_paper(d, w, U, g); H = project_to_subspace(H)
+    H = QuantumObject(H[i_id])
+
+    qt_state = QuantumObject(state[i_id])
+    out = mesolve(H, qt_state, t_list, e_ops = e_ops, progress_bar= false; abstol = param[:abstol], reltol = param[:reltol], alg = Vern9(), maxiters = 10^7)
+    max_amplitude = maximum(real.(out.expect[1, :]))
+    max_i = findfirst(x -> x >= max_amplitude, real.(out.expect[1, :]))
+    time = out.times[max_i]
+    
+    return max_amplitude, time
+end
+
+@everywhere function f()
     param = initial_parameters()
     # -----------
     # -----------
@@ -57,66 +103,20 @@ function f()
     indices = total_boson_number_subspace_indices(d, L)
     project_to_subspace(m) = subspace_split(m, indices)
 
-    state211 = productstate(d, [2, 0, 1, 0, 1]); id = find_subspace(state211, indices); state211 = project_to_subspace(state211)
+    state = productstate(d, [2, 0, 1, 0, 1]); id = find_subspace(state, indices); state = project_to_subspace(state)
     
     n3 = singlesite_n(d, L, 5); n3 = project_to_subspace(n3)
     e_ops = [QuantumObject(n3[id])]
 
-    max_amps = zeros(length(param[:U].val), length(param[:w].val))
-    times = zeros(length(param[:U].val), length(param[:w].val))
-    Base.Threads.@threads for I in CartesianIndices((length(param[:U].val), length(param[:w].val)))
-        i, j = Tuple(I)
-        w3 = param[:w].val[j]
-        U_val = param[:U].val[i]
+    param_sweep = [(w, U) for w in param[:w].val for U in param[:U].val]
+    result = pmap(p -> calc_max_amps_times(p[1], p[2], param, state, id, t_list, e_ops, project_to_subspace), param_sweep)
 
-        U_val = param[:U].val[i]
+    result = reshape(result, length(param[:U].val), length(param[:w].val))
+    max_amps = [t[1] for t in result]
+    times = [t[2] for t in result]
 
-        U = [U_val, U_val, U_val]
-        g = [param[:Jc].val, param[:Jc].val, param[:J12].val]
-        wc_below = NaN
-        wc_val = NaN
-
-        try
-            wcs, wc_vals = zz_0_with_roots(w3, param[:w2].val, param[:wc_min].val, param[:wc_max].val, U, g)
-            wc_below = wcs[1]
-            wc_val = wc_vals[1]
-        catch
-            # println("No ZZ zero point found for w = $(w3 * 5)MHz and U = $(U_val * 5)MHz")
-            time = 10 * param[:t].val
-            max_amplitude = 0
-            max_amps[i, j] = max_amplitude
-            times[i, j] = time
-            continue
-        end
-
-        if abs(wc_val) > 1e-10
-            # println("ZZ zero point found for w = $(w3 * 5)MHz and U = $(U_val * 5)MHz, but ZZ is not close to zero (ZZ = $(wc_val))")
-            time = 10 * param[:t].val
-            max_amplitude = 0
-            max_amps[i, j] = max_amplitude
-            times[i, j] = time
-            continue
-        end
-
-        w = [w3, wc_below, param[:w2].val, wc_below, w3]
-        U = [U_val, U_val, U...]
-        g = [param[:Jc].val, param[:Jc].val, g...]
-        
-        H = tunnel_tunable_coupler_paper(d, w, U, g); H = project_to_subspace(H)
-        H = QuantumObject(H[id])
-
-        state = QuantumObject(state211[id])
-        out = mesolve(H, state, t_list, e_ops = e_ops, progress_bar= false; abstol = param[:abstol], reltol = param[:reltol], alg = Vern9(), maxiters = 10^7)
-        max_amplitude = maximum(real.(out.expect[1, :]))
-        max_i = findfirst(x -> x >= max_amplitude, real.(out.expect[1, :]))
-        time = out.times[max_i]
-        
-        max_amps[i, j] = max_amplitude
-        times[i, j] = time
-    end
     x = param[:w].val .* 5
     y = param[:U].val .* 5
-    # t = t_list ./ (2 * π * 5)
     
     @save joinpath(@__DIR__, "max_amps_data.jld2") x y max_amps
     @save joinpath(@__DIR__, "times_data.jld2") x y times
