@@ -71,6 +71,7 @@ function f()
     n2s = []
     for w2 in param[:w2].val
         wc = w_off_position(param[:w1].val, w2, param[:Jc].val, param[:Jc].val, param[:J12].val; is_above = false)
+        println(wc * 5)
         w = [param[:w1].val, wc, w2]
         U = [param[:U1].val, param[:Uc].val, param[:U2].val]
         g = [param[:Jc].val, param[:Jc].val, param[:J12].val]

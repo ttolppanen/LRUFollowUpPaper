@@ -38,10 +38,10 @@ end
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
     param[:w1] = ValueInfo(4000 / param[:J12].val, "4GHz")
     
-    N = 100
-    w2s = collect(range(3900, 4100, length=N)) ./ param[:J12].val
+    N = 20
+    w2s = collect(range(3700, 3800, length=N)) ./ param[:J12].val
     param[:w2] = ValueInfo(w2s, "(3.702-3.750)GHz")
-    wc_range = collect(range(3400, 3800, length=N)) ./ param[:J12].val
+    wc_range = collect(range(3100, 3400, length=N)) ./ param[:J12].val
     param[:wc] = ValueInfo(wc_range, "(3.600-3.800)GHz")
 
     U = 300
@@ -50,7 +50,7 @@ end
     param[:U2] = ValueInfo(U2 / param[:J12].val, "$(U2)MHz")
     Uc = U
     param[:Uc] = ValueInfo(Uc / param[:J12].val, "$(Uc)MHz")
-    t_below = 0.15
+    t_below = 0.3
     param[:t_below] = ValueInfo(t_below * 2 * π * param[:J12].val, "$(t_below)μs")
 
     param[:J12] = ValueInfo(1, param[:J12].str_val)
