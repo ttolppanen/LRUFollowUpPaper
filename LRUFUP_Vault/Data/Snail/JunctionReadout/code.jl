@@ -110,7 +110,7 @@ function initial_parameters()
     param[:phi_zpf_a] = 0.378
     param[:phi_zpf_b] = 0.165
 
-    t = 1000
+    t = 10000
     param[:t] = ValueInfo(t * 2 * π * param[:Units].val, "$(t)ns")
     param[:diss_rate] = 0.02 / param[:Units].val
     return param
@@ -144,10 +144,10 @@ function f()
     # push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "|10>, n1"))
     # push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "|10>, anh1"))
 
-    state = QuantumObject(tensor(basis(param[:d], 0), basis(param[:d], 0)))
+    state = QuantumObject(tensor(basis(param[:d], 2), basis(param[:d], 0)))
     out = mesolve(H, state, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = 1e-14, reltol = 1e-8, maxiters = 10^7)
-    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "|00>, n1"))
-    push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "|00>, n2"))
+    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "|20>, n1"))
+    push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "|20>, n2"))
 
     path = joinpath(@__DIR__)
     makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
