@@ -128,9 +128,10 @@ function f()
     n2 = qt_single_site_op(d, L, num(d), 2)
     anh1 = qt_single_site_op(d, L, qt_anh_op(d), 1)
     anh2 = qt_single_site_op(d, L, qt_anh_op(d), 2)
-    e_ops = [n1, n2]
+    e_ops = [n1, n2, anh1]
     
-    c_ops = [sqrt(param[:diss_rate]) * qt_single_site_op(d, L, destroy(d), L)]
+    c_ops_both = [sqrt(0.00000318) * qt_single_site_op(d, L, destroy(d), 1), sqrt(param[:diss_rate]) * qt_single_site_op(d, L, destroy(d), L)]
+    c_ops_T1 = [deepcopy(c_ops_both[1])]
 
     E_j = [param[:Eja].val, param[:Ejb].val, param[:Ej].val]
     E_c = [param[:Eca].val, param[:Ecb].val, param[:Ec].val]
@@ -144,10 +145,14 @@ function f()
     # push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "|10>, n1"))
     # push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "|10>, anh1"))
 
-    state = QuantumObject(tensor(basis(param[:d], 2), basis(param[:d], 0)))
-    out = mesolve(H, state, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = 1e-14, reltol = 1e-8, maxiters = 10^7)
-    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "|20>, n1"))
-    push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "|20>, n2"))
+    state = QuantumObject(tensor(basis(param[:d], 0), basis(param[:d], 0)))
+    out = mesolve(H, state, t_list, c_ops_T1, e_ops = e_ops; alg = Vern9(), abstol = 1e-14, reltol = 1e-8, maxiters = 10^7)
+    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "T1 only, |00>, n1"))
+    # push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "|20>, n2"))
+    # push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "|20>, anh1"))
+
+    out = mesolve(H, state, t_list, c_ops_both, e_ops = e_ops; alg = Vern9(), abstol = 1e-14, reltol = 1e-8, maxiters = 10^7)
+    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "T1 and LRU dissipation, |00>, n1"))
 
     path = joinpath(@__DIR__)
     makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
