@@ -22,7 +22,7 @@ end
 function initial_parameters()
     param = OrderedDict()
     param[:t_points] = 1000
-    param[:d] = 3
+    param[:d] = 4
     param[:L] = 3
     param[:alg] = "toolbox Vern9"
     param[:abstol] = 1e-14
@@ -32,7 +32,7 @@ function initial_parameters()
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
     param[:w1] = ValueInfo(4000 / param[:J12].val, "4GHz")
     param[:w2] = ValueInfo(4000/ param[:J12].val, "4GHz")
-    param[:wc_below] = ValueInfo(3505 / param[:J12].val, "3.505GHz")
+    param[:wc_below] = ValueInfo(3536.1 / param[:J12].val, "3.5361GHz")
     param[:wc_above] = ValueInfo(4495 / param[:J12].val, "4.495GHz")
     U = 300
     param[:U1] = ValueInfo(U / param[:J12].val, "$(U)MHz")
@@ -72,7 +72,7 @@ function f()
     g = [param[:Jc].val, param[:Jc].val, param[:J12].val]
 
 
-    H_below = qt_tunable_coupler_paper(d, w, U, g)
+    H_below = qt_duff_paper(d, w, U, g)
 
     t_list = LinRange(0, param[:t].val, param[:t_points])
     
@@ -80,7 +80,7 @@ function f()
     E, psi, Uni = eigenstates(H_below)
     state10 = psi[4]
 
-    state = state10
+    state = state10 = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 0), basis(param[:d], 0)))
     out = mesolve(H_below, state, t_list, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
     push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "below, s_0 = |10>, <nc+n1>"))
     # push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "below, s_0 = |10>, <N>"))

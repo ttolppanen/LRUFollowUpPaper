@@ -75,7 +75,7 @@ function f()
     I_op, Q_op = qt_drive_op(d, L; rwa = true)
     pulse = gaussian_pulse(param[:gate_time].val, π)
 
-    H = qt_tunable_coupler_below(w, U, g)
+    H = qt_tunable_coupler_paper(w, U, g)
 
     function pulse_func(t)
         t = mod(t, 2)
