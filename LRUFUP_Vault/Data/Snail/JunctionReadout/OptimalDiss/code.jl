@@ -141,7 +141,7 @@ function f()
 
     t_list = LinRange(0, param[:t].val, param[:t_points])
 
-    state = QuantumObject(tensor(basis(param[:d], 0), basis(param[:d], 0)))
+    state = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 0)))
     out = mesolve(H, state, t_list, c_ops_T1, e_ops = e_ops; alg = Vern9(), abstol = 1e-14, reltol = 1e-8, maxiters = 10^7)
     push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "T1 only, n1"))
     # push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "|20>, n2"))
