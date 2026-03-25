@@ -110,9 +110,10 @@ function initial_parameters()
     param[:phi_zpf_a] = 0.378
     param[:phi_zpf_b] = 0.165
 
-    t = 10000
+    t = 300
     param[:t] = ValueInfo(t * 2 * π * param[:Units].val, "$(t)ns")
     param[:diss_rate] = 0.02 / param[:Units].val
+    param[:t1] = 1 / (50 * 1e3 * 2 * pi * param[:Units].val)
     return param
 end
 
@@ -130,7 +131,7 @@ function f()
     anh2 = qt_single_site_op(d, L, qt_anh_op(d), 2)
     e_ops = [n1, n2, anh1]
     
-    c_ops_both = [sqrt(0.00000318) * qt_single_site_op(d, L, destroy(d), 1), sqrt(param[:diss_rate]) * qt_single_site_op(d, L, destroy(d), L)]
+    c_ops_both = [sqrt(param[:t1]) * qt_single_site_op(d, L, destroy(d), 1), sqrt(param[:diss_rate]) * qt_single_site_op(d, L, destroy(d), L)]
     c_ops_T1 = [deepcopy(c_ops_both[1])]
 
     E_j = [param[:Eja].val, param[:Ejb].val, param[:Ej].val]
@@ -140,19 +141,15 @@ function f()
 
     t_list = LinRange(0, param[:t].val, param[:t_points])
 
-    # state = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 0)))
-    # out = mesolve(H, state, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = 1e-14, reltol = 1e-8, maxiters = 10^7)
-    # push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "|10>, n1"))
-    # push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "|10>, anh1"))
-
-    state = QuantumObject(tensor(basis(param[:d], 0), basis(param[:d], 0)))
-    out = mesolve(H, state, t_list, c_ops_T1, e_ops = e_ops; alg = Vern9(), abstol = 1e-14, reltol = 1e-8, maxiters = 10^7)
-    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "T1 only, |00>, n1"))
+    state = QuantumObject(tensor(basis(param[:d], 2), basis(param[:d], 0)))
+    # out = mesolve(H, state, t_list, c_ops_T1, e_ops = e_ops; alg = Vern9(), abstol = 1e-14, reltol = 1e-8, maxiters = 10^7)
+    # push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "T1 only, n1"))
     # push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "|20>, n2"))
     # push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "|20>, anh1"))
 
     out = mesolve(H, state, t_list, c_ops_both, e_ops = e_ops; alg = Vern9(), abstol = 1e-14, reltol = 1e-8, maxiters = 10^7)
-    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "T1 and LRU dissipation, |00>, n1"))
+    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "T1 and LRU dissipation, n1"))
+    push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "|20>, anh1"))
 
     path = joinpath(@__DIR__)
     makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
