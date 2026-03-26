@@ -67,7 +67,7 @@ function leakage_qubit_comparison()
     d_10 = plotinfo.lines["|10>, n1"]
     plotinfo = loaddata(joinpath(@__DIR__, "DirectWithCoupler", "result_10_1mus"))
     dc_10 = plotinfo.lines["|100>, n1+nc"]
-    plotinfo = loaddata(joinpath(@__DIR__, "Coupler200", "result_10_1mus"))
+    plotinfo = loaddata(joinpath(@__DIR__, "Coupler200", "result_10_20"))
     c200_10 = plotinfo.lines["|100>, n1+nc"]
     plotinfo = loaddata(joinpath(@__DIR__, "Pumped201", "result_10_1mus"))
     pumped_10 = plotinfo.lines["|100>, n1+nc"]
@@ -76,7 +76,7 @@ function leakage_qubit_comparison()
     d_20 = plotinfo.lines["|20>, n1"]
     plotinfo = loaddata(joinpath(@__DIR__, "DirectWithCoupler", "result_20"))
     dc_20 = plotinfo.lines["|200>, n1+nc"]
-    plotinfo = loaddata(joinpath(@__DIR__, "Coupler200", "result_20"))
+    plotinfo = loaddata(joinpath(@__DIR__, "Coupler200", "result_20_longer"))
     c200_20 = plotinfo.lines["|200>, n1+nc"]
     plotinfo = loaddata(joinpath(@__DIR__, "Pumped201", "result_20"))
     pumped_20 = plotinfo.lines["|200>, n1+nc"]

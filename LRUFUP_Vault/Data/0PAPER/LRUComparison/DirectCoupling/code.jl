@@ -62,12 +62,12 @@ function f()
     H = qt_bosehubbard(d, L; w = w, U = U, J = param[:J].val)
     Ht = H
 
-    # state = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 0)))
-    # out = mesolve(Ht, state, t_10_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
-    # push!(lines, LineInfo(t_10_list, real(out.expect[1, :]), 1, "|10>, n1"))
+    state = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 0)))
+    out = mesolve(Ht, state, t_10_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
+    push!(lines, LineInfo(t_10_list, real(out.expect[1, :]), 1, "|10>, n1"))
 
-    # path = joinpath(@__DIR__, "result_10")
-    # makeplot(path, lines...; xlabel = "t[μs]", ylabel = "", copy_code = false, param...)
+    path = joinpath(@__DIR__, "result_10")
+    makeplot(path, lines...; xlabel = "t[μs]", ylabel = "", copy_code = false, param...)
 
     state = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 0)))
     out = mesolve(Ht, state, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
@@ -76,13 +76,13 @@ function f()
     path = joinpath(@__DIR__, "result_10_1mus")
     makeplot(path, lines...; xlabel = "t[μs]", ylabel = "", copy_code = false, param...)
 
-    # lines = []
-    # state = QuantumObject(tensor(basis(param[:d], 2), basis(param[:d], 0)))
-    # out = mesolve(Ht, state, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
-    # push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "|20>, n1"))
+    lines = []
+    state = QuantumObject(tensor(basis(param[:d], 2), basis(param[:d], 0)))
+    out = mesolve(Ht, state, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
+    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "|20>, n1"))
 
-    # path = joinpath(@__DIR__, "result_20")
-    # makeplot(path, lines...; xlabel = "t[μs]", ylabel = "", copy_code = false, param...)
+    path = joinpath(@__DIR__, "result_20")
+    makeplot(path, lines...; xlabel = "t[μs]", ylabel = "", copy_code = false, param...)
 end
 
 # function t_time_from_n(out)
