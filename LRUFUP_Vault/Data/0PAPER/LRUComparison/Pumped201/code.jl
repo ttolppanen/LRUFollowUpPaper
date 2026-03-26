@@ -9,6 +9,7 @@ using SparseArrays
 using LocalPackages
 using QuantumToolbox
 using QuantumTimes
+using OrdinaryDiffEq
 
 function traj_mean(result)
     out = zeros(size(result[1]))
@@ -43,10 +44,12 @@ function initial_parameters()
     t_10 = 30
     param[:t_10] = ValueInfo(t_10 * 2 * π * param[:J12].val, "$(t_10)μs")
 
-    param[:diss_rate] = 1
+    param[:diss_rate] = 1.8
 
     param[:wd] = ValueInfo(4007 / param[:J12].val, "4.007GHz")
     param[:gate_time] = ValueInfo(14 * 10^(-3) * 2 * π * param[:J12].val, "14ns")
+    pause_time = 4
+    param[:gate_pause_time] = ValueInfo(pause_time * 10^(-3) * 2 * π * param[:J12].val, "$(pause_time)ns")
     # param[:gate_repeat_time] = ValueInfo(4 * 10^(-3) * 2 * π * param[:J12].val, "4ns")
 
     param[:J12] = ValueInfo(1, param[:J12].str_val)
@@ -75,10 +78,10 @@ function f()
     I_op, Q_op = qt_drive_op(d, L; rwa = true)
     pulse = gaussian_pulse(param[:gate_time].val, π)
 
-    H = qt_tunable_coupler_paper(w, U, g)
+    H = qt_tunable_coupler_paper(d, w, U, g)
 
     function pulse_func(t)
-        t = mod(t, 2)
+        t = mod(t, param[:gate_time].val + param[:gate_pause_time].val)
         return pulse(t)
     end
     H += qt_x_gate_to_QobjEvo(0.0, I_op, Q_op, pulse_func)
@@ -88,27 +91,43 @@ function f()
 
     state20 = QuantumObject(tensor(basis(param[:d], 0), basis(param[:d], 0), basis(param[:d], 2)))
     state010 = QuantumObject(tensor(basis(param[:d], 0), basis(param[:d], 1), basis(param[:d], 0)))
+    state110 = QuantumObject(tensor(basis(param[:d], 0), basis(param[:d], 1), basis(param[:d], 1)))
     state10 = QuantumObject(tensor(basis(param[:d], 0), basis(param[:d], 0), basis(param[:d], 1)))
     
-    out = mesolve(H, state10, t_10_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
-    push!(lines, LineInfo(t_10_list, real(out.expect[1, :]), 1, "|100>, n1+nc"))
+    # out = mesolve(H, state10, t_10_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
+    # push!(lines, LineInfo(t_10_list, real(out.expect[1, :]), 1, "|100>, n1+nc"))
     
-    path = joinpath(@__DIR__, "result_10")
+    # path = joinpath(@__DIR__, "result_10")
+    # makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
+
+    out = mesolve(H, state10, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
+    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "|100>, n1+nc"))
+    
+    path = joinpath(@__DIR__, "result_10_1mus")
     makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
 
-    lines = []
-    out = mesolve(H, state20, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
-    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "|200>, n1+nc"))
+    # lines = []
+    # out = mesolve(H, state20, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
+    # push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "|200>, n1+nc"))
+    # # push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "|200>, n2"))
     
-    path = joinpath(@__DIR__, "result_20")
-    makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
+    # path = joinpath(@__DIR__, "result_20")
+    # makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
 
-    lines = []
-    out = mesolve(H, state010, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
-    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "|010>, n1+nc"))
+    # lines = []
+    # out = mesolve(H, state010, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
+    # push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "|010>, n1+nc"))
     
-    path = joinpath(@__DIR__, "result_010")
-    makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
+    # path = joinpath(@__DIR__, "result_010")
+    # makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
+
+    # out = mesolve(H, state110, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
+    # push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "|110>, n1"))
+    # push!(lines, LineInfo(t_list, real(out.expect[4, :]), 1, "|110>, nc"))
+    # push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "|110>, n2"))
+    
+    # path = joinpath(@__DIR__, "result_110")
+    # makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
 end
 
 @time f()

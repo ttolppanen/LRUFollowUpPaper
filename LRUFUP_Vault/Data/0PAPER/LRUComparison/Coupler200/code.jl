@@ -90,20 +90,28 @@ function f()
     makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
 
     lines = []
-    state = state20
+    state = state10 = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 0), basis(param[:d], 0)))
     out = mesolve(H_below, state, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
-    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "|200>, n1+nc"))
+    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "|100>, n1+nc"))
 
-    path = joinpath(@__DIR__, "result_20")
+    path = joinpath(@__DIR__, "result_10_1mus")
     makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
 
-    lines = []
-    state = QuantumObject(tensor(basis(param[:d], 0), basis(param[:d], 1), basis(param[:d], 0)))
-    out = mesolve(H_below, state, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
-    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "|010>, n1+nc"))
+    # lines = []
+    # state = state20
+    # out = mesolve(H_below, state, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
+    # push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "|200>, n1+nc"))
 
-    path = joinpath(@__DIR__, "result_010")
-    makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
+    # path = joinpath(@__DIR__, "result_20")
+    # makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
+
+    # lines = []
+    # state = QuantumObject(tensor(basis(param[:d], 0), basis(param[:d], 1), basis(param[:d], 0)))
+    # out = mesolve(H_below, state, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
+    # push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "|010>, n1+nc"))
+
+    # path = joinpath(@__DIR__, "result_010")
+    # makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
 end
 
 @time f()
