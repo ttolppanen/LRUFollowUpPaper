@@ -1,19 +1,9 @@
 {
 	"nodes":[
 		{"id":"23560e08915dce89","type":"group","x":-1680,"y":-5520,"width":1343,"height":1550,"label":"If IQM Resonance works"},
-		{"id":"a25c7ba5d67ebc36","type":"text","text":"What are the different populations? They are of course logical 0 and 1 for the qubits. These are the only populations the qubits are idling at.","x":-2325,"y":366,"width":290,"height":145},
-		{"id":"2dddf8faabe2aeff","type":"text","text":"### Leakage mobility in tunable coupler setups","x":-1740,"y":23,"width":320,"height":140,"color":"3"},
 		{"id":"a8b4aed24fd9db82","type":"text","text":"When idling for CZ gates, there is no leakage mobility.","x":-1722,"y":239,"width":284,"height":71,"color":"4"},
 		{"id":"e62047bd8aab2958","type":"text","text":"There can be leakage tunneling","x":-1705,"y":376,"width":250,"height":60,"color":"4"},
 		{"id":"f8e7f94b33677aae","type":"text","text":"Or single pulse then detuning second transmon to lock leakage.","x":-115,"y":439,"width":242,"height":98},
-		{"id":"76b95f230daaa9ce","type":"text","text":"I think even if we can't show it as an experiment, it is still interesting as a theoretical idea, and it would be interesting to just show the simulations.","x":-1660,"y":-4140,"width":347,"height":120,"color":"3"},
-		{"id":"e4236888ff65fc2b","type":"text","text":"With tunable anharmonicity, leakage mobility can be vastly increased while not compromising qubit decoupling, which enables \"total\" leakage removal.","x":-2293,"y":-4443,"width":292,"height":180,"color":"4"},
-		{"id":"098107e34b4e4e19","type":"text","text":"If we can show this, then we can show in a simulation that the leakage mobility is not sensitive to the frequency of the coupler as long as |2> is matched.","x":-1128,"y":-4140,"width":292,"height":150,"color":"3"},
-		{"id":"21c3fb3766712014","type":"text","text":"Are the frequencies, anharmonicities and coupling strengths available?","x":-1128,"y":-4420,"width":250,"height":133,"color":"1"},
-		{"id":"7b100f17beccdbf9","type":"text","text":"### What rate of passive removal is enough/best?","x":339,"y":9,"width":320,"height":140,"color":"3"},
-		{"id":"c6799a6f2f0f741a","type":"text","text":"Since two qubit gates generate the leakage, the removal rate should be so that in between two qubit gates the leakage is removed.","x":354,"y":400,"width":290,"height":176,"color":"5"},
-		{"id":"26f1cc8304f1118c","type":"text","text":"Can do RB and check from that?","x":374,"y":249,"width":250,"height":60,"color":"5"},
-		{"id":"e67ccfb18caf6f5c","type":"text","text":"On the other hand, the main source is not single qubit gates...","x":759,"y":226,"width":272,"height":105},
 		{"id":"1e106c4cb42360ca","type":"text","text":"Continuous pulse on the second transmon to populate it with dissipation.","x":-501,"y":300,"width":278,"height":92},
 		{"id":"5db109f14f136000","type":"text","text":"This could remove leakage from the coupler?","x":-501,"y":611,"width":250,"height":60},
 		{"id":"57abf11fd641a7b9","type":"text","text":"Very fast","x":-501,"y":709,"width":250,"height":60},
@@ -38,7 +28,17 @@
 		{"id":"d93f96e27f0650e4","type":"text","text":"How does this change with different populations in the qubits/coupler?","x":-2648,"y":371,"width":242,"height":86,"color":"4"},
 		{"id":"bc1efb663ee61b7f","type":"text","text":"Leakage removal with qubits on resonance, empty second site.","x":-906,"y":223,"width":265,"height":86,"color":"4"},
 		{"id":"36f25d2ef788276c","type":"text","text":"Leakage removal with single excitations on the second transmon","x":-906,"y":371,"width":260,"height":91,"color":"4"},
-		{"id":"ac142c7b24a2d095","type":"text","text":"# Idle Leakage Dynamics and Readily Available Leakage Removal in Tunable Coupler QPUs","x":-1160,"y":-560,"width":508,"height":155,"color":"6"}
+		{"id":"ac142c7b24a2d095","type":"text","text":"# Idle Leakage Dynamics and Readily Available Leakage Removal in Tunable Coupler QPUs","x":-1160,"y":-560,"width":508,"height":155,"color":"6"},
+		{"id":"a25c7ba5d67ebc36","type":"text","text":"What are the different populations? They are of course logical 0 and 1 for the qubits. These are the only populations the qubits are idling at.","x":-2325,"y":366,"width":290,"height":145},
+		{"id":"2dddf8faabe2aeff","type":"text","text":"### Leakage mobility in tunable coupler setups","x":-1740,"y":23,"width":320,"height":140,"color":"3"},
+		{"id":"76b95f230daaa9ce","type":"text","text":"I think even if we can't show it as an experiment, it is still interesting as a theoretical idea, and it would be interesting to just show the simulations.","x":-1660,"y":-4140,"width":347,"height":120,"color":"3"},
+		{"id":"e4236888ff65fc2b","type":"text","text":"With tunable anharmonicity, leakage mobility can be vastly increased while not compromising qubit decoupling, which enables \"total\" leakage removal.","x":-2293,"y":-4443,"width":292,"height":180,"color":"4"},
+		{"id":"098107e34b4e4e19","type":"text","text":"If we can show this, then we can show in a simulation that the leakage mobility is not sensitive to the frequency of the coupler as long as |2> is matched.","x":-1128,"y":-4140,"width":292,"height":150,"color":"3"},
+		{"id":"21c3fb3766712014","type":"text","text":"Are the frequencies, anharmonicities and coupling strengths available?","x":-1128,"y":-4420,"width":250,"height":133,"color":"1"},
+		{"id":"7b100f17beccdbf9","type":"text","text":"### What rate of passive removal is enough/best?","x":339,"y":9,"width":320,"height":140,"color":"3"},
+		{"id":"c6799a6f2f0f741a","type":"text","text":"Since two qubit gates generate the leakage, the removal rate should be so that in between two qubit gates the leakage is removed.","x":354,"y":400,"width":290,"height":176,"color":"5"},
+		{"id":"26f1cc8304f1118c","type":"text","text":"Can do RB and check from that?","x":374,"y":249,"width":250,"height":60,"color":"5"},
+		{"id":"e67ccfb18caf6f5c","type":"text","text":"On the other hand, the main source is not single qubit gates...","x":759,"y":226,"width":272,"height":105}
 	],
 	"edges":[
 		{"id":"24875fe1ece629ab","fromNode":"0dd84b2579ccd89d","fromSide":"right","toNode":"408421efd06043ef","toSide":"left"},
