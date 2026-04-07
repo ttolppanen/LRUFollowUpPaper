@@ -88,9 +88,9 @@ function f()
     out = mesolve(H_below, state, t_list, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
     push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "below, s_0 = |110>, <nc>"))
 
-    state = QuantumObject(tensor(basis(param[:d], 2), basis(param[:d], 1), basis(param[:d], 0)))
+    state = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 1), basis(param[:d], 1)))
     out = mesolve(H_below, state, t_list, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
-    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "below, s_0 = |210>, <nc>"))
+    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "below, s_0 = |111>, <nc>"))
 
     path = joinpath(@__DIR__)
     makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
