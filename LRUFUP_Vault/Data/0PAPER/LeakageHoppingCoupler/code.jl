@@ -63,7 +63,7 @@ function f()
     n1 = qt_single_site_op(d, L, num(d), 1)
     nc = qt_single_site_op(d, L, num(d), 2)
     n2 = qt_single_site_op(d, L, num(d), 3)
-    e_ops = [nc]
+    e_ops = [n2]
     
     # c_ops = [sqrt(param[:diss_rate]) * qt_single_site_op(d, L, destroy(d), L)]
 
@@ -82,15 +82,15 @@ function f()
 
     state = QuantumObject(tensor(basis(param[:d], 0), basis(param[:d], 1), basis(param[:d], 0)))
     out = mesolve(H_below, state, t_list, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
-    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "below, s_0 = |010>, <nc>"))
+    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "below, s_0 = |010>, <n2>"))
 
     state = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 1), basis(param[:d], 0)))
     out = mesolve(H_below, state, t_list, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
-    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "below, s_0 = |110>, <nc>"))
+    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "below, s_0 = |110>, <n2>"))
 
     state = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 1), basis(param[:d], 1)))
     out = mesolve(H_below, state, t_list, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
-    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "below, s_0 = |111>, <nc>"))
+    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "below, s_0 = |111>, <n2>"))
 
     path = joinpath(@__DIR__)
     makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
