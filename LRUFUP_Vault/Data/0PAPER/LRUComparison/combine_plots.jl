@@ -126,7 +126,7 @@ function qubit_comparison_10mus()
     t_units = 2 * π * 5
     xtick_pos = [10^-3, 10^-2, 10^-1, 10^0, 10^1]
     xtick_labels = ["0.001", "0.01", "0.1", "1", "10"]
-    pl = plot(xlims = (10^-3, 10^1), ylims = (0.69, 1.01), xaxis = :log10, xticks = (xtick_pos, xtick_labels), size = (1200, 400))
+    pl = plot(xlims = (10^-3, 10^1), ylims = (0.99, 1.01), xaxis = :log10, xticks = (xtick_pos, xtick_labels), size = (1200, 400))
     plot!(pl, d_10.x / t_units, d_10.y, label = "Direct Coupling", xlabel = "t (μs)", ylabel = "<n1>")
     plot!(pl, dc_10.x / t_units, dc_10.y, label = "Direct with Coupler", xlabel = "t (μs)", ylabel = "<n1+nc>")
     plot!(pl, c200_10.x / t_units, c200_10.y, label = "Coupler200", xlabel = "t (μs)", ylabel = "<n1+nc>")

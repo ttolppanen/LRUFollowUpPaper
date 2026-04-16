@@ -74,20 +74,24 @@ function f()
     
     c_ops = [sqrt(param[:diss_rate]) * qt_single_site_op(d, L, destroy(d), 1)]
 
-    w = [param[:w1].val, param[:wc].val, param[:w2].val] .- param[:wd].val
+    w = [param[:w1].val, param[:wc].val, param[:w2].val]
     U = [param[:U1].val, param[:Uc].val, param[:U2].val]
     g = [param[:Jc].val, param[:Jc].val, param[:J12].val]
+
+    H = qt_tunable_coupler_paper(d, w, U, g)
+    E, psi, Uni = eigenstates(H)
+    state10 = psi[3]
+    display(expect(n1, state10))
+    display(expect(nc, state10))
+    display(expect(n2, state10))
+    display(expect(n1 + nc, state10))
+
+    w .-= param[:wd].val
 
     I_op, Q_op = qt_drive_op(d, L; rwa = true)
     pulse = gaussian_pulse(param[:gate_time].val, π)
 
     H = qt_tunable_coupler_paper(d, w, U, g)
-
-    E, psi, Uni = eigenstates(H)
-    state10 = psi[26]
-    display(expect(n1, state10))
-    display(expect(nc, state10))
-    display(expect(n2, state10))
 
     function pulse_func(t)
         t = mod(t, param[:gate_time].val + param[:gate_pause_time].val)
@@ -124,13 +128,13 @@ function f()
     # path = joinpath(@__DIR__, "result_20")
     # makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
 
-    lines = []
-    out = mesolve(H, state010, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
-    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "|010>, n1+nc"))
-    push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "|010>, nc"))
+    # lines = []
+    # out = mesolve(H, state010, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
+    # push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "|010>, n1+nc"))
+    # push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "|010>, nc"))
     
-    path = joinpath(@__DIR__, "result_010")
-    makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
+    # path = joinpath(@__DIR__, "result_010")
+    # makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
 
     # out = mesolve(H, state110, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
     # push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "|110>, n1"))
@@ -140,21 +144,21 @@ function f()
     # path = joinpath(@__DIR__, "result_110")
     # makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
 
-    # t_10mus_list = exp.(LinRange(log(0.001 * 2 * π * 5), log(param[:t_10mus].val), param[:t_points]))
+    t_10mus_list = exp.(LinRange(log(0.001 * 2 * π * 5), log(param[:t_10mus].val), param[:t_points]))
 
-    # lines = []
-    # out = mesolve(H, state10, t_10mus_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
-    # push!(lines, LineInfo(t_10mus_list, real(out.expect[1, :]), 1, "|100>, n1+nc"))
+    lines = []
+    out = mesolve(H, state10, t_10mus_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
+    push!(lines, LineInfo(t_10mus_list, real(out.expect[1, :]), 1, "|100>, n1+nc"))
     
-    # path = joinpath(@__DIR__, "result_10_10mus")
-    # makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
+    path = joinpath(@__DIR__, "result_10_10mus")
+    makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
 
-    # lines = []
-    # out = mesolve(H, state20, t_10mus_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
-    # push!(lines, LineInfo(t_10mus_list, real(out.expect[1, :]), 1, "|200>, n1+nc"))
+    lines = []
+    out = mesolve(H, state20, t_10mus_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
+    push!(lines, LineInfo(t_10mus_list, real(out.expect[1, :]), 1, "|200>, n1+nc"))
     
-    # path = joinpath(@__DIR__, "result_20_10mus")
-    # makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
+    path = joinpath(@__DIR__, "result_20_10mus")
+    makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
 end
 
 @time f();
