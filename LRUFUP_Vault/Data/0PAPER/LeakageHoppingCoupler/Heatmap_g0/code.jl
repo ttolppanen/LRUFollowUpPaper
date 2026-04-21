@@ -31,7 +31,7 @@ function initial_parameters()
     param[:J12] = ValueInfo(5, "5MHz")
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
     param[:w1] = ValueInfo(4000 / param[:J12].val, "4GHz")
-    w2s = vcat(collect(range(3700, 4000, length=150)), collect(range(4000, 4300, length=150))) ./ param[:J12].val
+    w2s = collect(range(3600, 4000, length=150)) ./ param[:J12].val
     param[:w2] = ValueInfo(w2s, "(3.8-4.2)GHz")
 
     U = 300
@@ -40,7 +40,7 @@ function initial_parameters()
     param[:U2] = ValueInfo(U2 / param[:J12].val, "$(U2)MHz")
     Uc = U
     param[:Uc] = ValueInfo(Uc / param[:J12].val, "$(Uc)MHz")
-    t_below = 0.1
+    t_below = 0.05
     param[:t_below] = ValueInfo(t_below * 2 * π * param[:J12].val, "$(t_below)μs")
 
     param[:J12] = ValueInfo(1, param[:J12].str_val)
@@ -63,11 +63,13 @@ function f()
     
     # c_ops = [sqrt(param[:diss_rate]) * qt_single_site_op(d, L, destroy(d), L)]
 
-    state201 = QuantumObject(tensor(basis(param[:d], 0), basis(param[:d], 1), basis(param[:d], 0)))
+    state201 = QuantumObject(tensor(basis(param[:d], 2), basis(param[:d], 0), basis(param[:d], 0)))
 
     n2s = []
+    wcs = []
     for w2 in param[:w2].val
         wc = w_off_position(param[:w1].val, w2, param[:Jc].val, param[:Jc].val, param[:J12].val; is_above = false)
+        push!(wcs, wc)
         w = [param[:w1].val, wc, w2]
         U = [param[:U1].val, param[:Uc].val, param[:U2].val]
         g = [param[:Jc].val, param[:Jc].val, param[:J12].val]
@@ -79,10 +81,10 @@ function f()
         push!(n2s, real(out.expect[2, :]))
     end
     n2s = hcat(n2s...)
-    x = param[:w2].val .* 5
+    x = wcs .* 5
     t = t_list_below ./ (2 * π * 5)
     
-    heatmap(x, t, n2s, xlabel = "w2 (MHz)", ylabel = "t (μs)", colorbar_title = "<n2 - I>")
+    heatmap(x, t, n2s, xlabel = "wc (MHz)", ylabel = "t (μs)", colorbar_title = "<nc>")
     savefig(joinpath(@__DIR__, "heatmap.png"))
 end
 
