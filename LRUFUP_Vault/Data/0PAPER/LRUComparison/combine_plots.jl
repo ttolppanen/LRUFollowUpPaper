@@ -172,10 +172,65 @@ function leakage_comparison_10mus()
     savefig(joinpath(@__DIR__, "leakage_comparison_10mus.png"))
 end
 
+function qubit_coupler_comparison_10mus()
+    plotinfo = loaddata(joinpath(@__DIR__, "Coupler200", "result_110_10mus"))
+    c200_10_n1 = plotinfo.lines["|110>, n1"]
+    c200_10_nc = plotinfo.lines["|110>, nc"]
+    plotinfo = loaddata(joinpath(@__DIR__, "Pumped201", "result_110_10mus"))
+    pumped_10_n1 = plotinfo.lines["|110>, n1"]
+    pumped_10_nc = plotinfo.lines["|110>, nc"]
+
+    t_units = 2 * π * 5
+    xtick_pos = [10^-3, 10^-2, 10^-1, 10^0, 10^1]
+    xtick_labels = ["0.001", "0.01", "0.1", "1", "10"]
+    pl = plot(xlims = (10^-3, 10^1), ylims = (0, 1.5), xaxis = :log10, xticks = (xtick_pos, xtick_labels), size = (1200, 400))
+    plot!(pl, c200_10_n1.x / t_units, c200_10_n1.y, label = "Coupler200 |110> n1", xlabel = "t (μs)", ylabel = "<n1>", color = 1)
+    plot!(pl, c200_10_nc.x / t_units, c200_10_nc.y, label = "Coupler200 |110> nc", xlabel = "t (μs)", ylabel = "<nc>", linestyle = :dash, color = 1)
+    plot!(pl, pumped_10_n1.x / t_units, pumped_10_n1.y, label = "Pumped201 |110> n1", xlabel = "t (μs)", ylabel = "<n1>", color = 2)
+    plot!(pl, pumped_10_nc.x / t_units, pumped_10_nc.y, label = "Pumped201 |110> nc", xlabel = "t (μs)", ylabel = "<nc>", linestyle = :dash, color = 2)
+    savefig(joinpath(@__DIR__, "qubit_coupler_comparison_10mus.png"))
+    return pl
+end
+
+function leakage_coupler_comparison_10mus()
+    plotinfo = loaddata(joinpath(@__DIR__, "Coupler200", "result_010_10mus"))
+    c200_20 = plotinfo.lines["|010>, nc"]
+    plotinfo = loaddata(joinpath(@__DIR__, "Pumped201", "result_010_10mus"))
+    pumped_20 = plotinfo.lines["|010>, nc"]
+
+    t_units = 2 * π * 5
+    xtick_pos = [10^-3, 10^-2, 10^-1, 10^0, 10^1]
+    xtick_labels = ["0.001", "0.01", "0.1", "1", "10"]
+    pl = plot(ylims = (0, 2), xlims = (10^-3, 10^1), xaxis = :log10, xticks = (xtick_pos, xtick_labels), size = (1200, 400))
+
+    plot!(c200_20.x / t_units, c200_20.y, label = "Coupler200 |010> nc", color = 1)
+    plot!(pumped_20.x / t_units, pumped_20.y, label = "Pumped201 |010> nc", color = 2)
+
+    # plotinfo = loaddata(joinpath(@__DIR__, "DirectWithCoupler", "result_010"))
+    # dc_010 = plotinfo.lines["|010>, n1+nc"]
+    # plotinfo = loaddata(joinpath(@__DIR__, "Coupler200", "result_010"))
+    # c200_010 = plotinfo.lines["|010>, n1+nc"]
+    # plotinfo = loaddata(joinpath(@__DIR__, "Pumped201", "result_010"))
+    # pumped_010 = plotinfo.lines["|010>, n1+nc"]
+
+    # plot!(dc_010.x / t_units, dc_010.y, label = "Direct with Coupler", linestyle = :dash, color = 2, alpha = 0.66)
+    # plot!(c200_010.x / t_units, c200_010.y, label = "Coupler200", linestyle = :dash, color = 3, alpha = 0.66)
+    # plot!(pumped_010.x / t_units, pumped_010.y, label = "Pumped201", linestyle = :dash, color = 4, alpha = 0.66)
+
+    xlabel!("t (μs)")
+    ylabel!("<nc>")
+
+    savefig(joinpath(@__DIR__, "leakage_coupler_comparison_10mus.png"))
+end
+
+
 # qubit_comparison()
 # qubit_comparison_short()
 # leakage_comparison()
 # leakage_qubit_comparison()
 
-qubit_comparison_10mus()
-leakage_comparison_10mus()
+# qubit_comparison_10mus()
+# leakage_comparison_10mus()
+
+leakage_coupler_comparison_10mus()
+qubit_coupler_comparison_10mus()

@@ -67,7 +67,7 @@ function f()
     n1 = qt_single_site_op(d, L, num(d), 1)
     nc = qt_single_site_op(d, L, num(d), 2)
     # n2 = qt_single_site_op(d, L, num(d), 3)
-    e_ops = [n1 + nc, n1, qt_n_all(d, L)]
+    e_ops = [n1 + nc, n1, qt_n_all(d, L), nc]
     
     c_ops = [sqrt(param[:diss_rate]) * qt_single_site_op(d, L, destroy(d), L)]
 
@@ -135,23 +135,41 @@ function f()
     # path = joinpath(@__DIR__, "result_010")
     # makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
 
+    # -------------------
 
     t_10mus_list = exp.(LinRange(log(0.001 * 2 * π * 5), log(param[:t_10mus].val), param[:t_points]))
 
-    lines = []
-    state = state10
-    out = mesolve(H_below, state, t_10mus_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
-    push!(lines, LineInfo(t_10mus_list, real(out.expect[1, :]), 1, "|100>, n1+nc"))
+    # lines = []
+    # state = state10
+    # out = mesolve(H_below, state, t_10mus_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
+    # push!(lines, LineInfo(t_10mus_list, real(out.expect[1, :]), 1, "|100>, n1+nc"))
 
-    path = joinpath(@__DIR__, "result_10_10mus")
+    # path = joinpath(@__DIR__, "result_10_10mus")
+    # makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
+
+    # lines = []
+    # state = state20
+    # out = mesolve(H_below, state, t_10mus_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
+    # push!(lines, LineInfo(t_10mus_list, real(out.expect[1, :]), 1, "|200>, n1+nc"))
+
+    # path = joinpath(@__DIR__, "result_20_10mus")
+    # makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
+
+    lines = []
+    state = QuantumObject(tensor(basis(param[:d], 0), basis(param[:d], 1), basis(param[:d], 0)))
+    out = mesolve(H_below, state, t_10mus_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
+    push!(lines, LineInfo(t_10mus_list, real(out.expect[4, :]), 1, "|010>, nc"))
+
+    path = joinpath(@__DIR__, "result_010_10mus")
     makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
 
     lines = []
-    state = state20
+    state = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 1), basis(param[:d], 0)))
     out = mesolve(H_below, state, t_10mus_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
-    push!(lines, LineInfo(t_10mus_list, real(out.expect[1, :]), 1, "|200>, n1+nc"))
+    push!(lines, LineInfo(t_10mus_list, real(out.expect[2, :]), 1, "|110>, n1"))
+    push!(lines, LineInfo(t_10mus_list, real(out.expect[4, :]), 1, "|110>, nc"))
 
-    path = joinpath(@__DIR__, "result_20_10mus")
+    path = joinpath(@__DIR__, "result_110_10mus")
     makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
 end
 
