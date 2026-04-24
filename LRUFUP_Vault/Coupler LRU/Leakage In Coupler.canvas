@@ -18,8 +18,8 @@
 		{"id":"f2b81d4d753c20a0","type":"file","file":"Data/0PAPER/LeakageHoppingCoupler/Heatmap_zz/011_n1.png","x":461,"y":1380,"width":200,"height":133},
 		{"id":"2e6935a4e775b44e","type":"file","file":"Data/0PAPER/LeakageHoppingCoupler/Heatmap_zz/110_n1.png","x":50,"y":1380,"width":200,"height":133},
 		{"id":"21d76b726c04adb7","type":"file","file":"Data/0PAPER/LeakageHoppingCoupler/Heatmap_zz/110_n2.png","x":250,"y":1380,"width":200,"height":133},
-		{"id":"f34a044121f7f377","x":474,"y":322,"width":250,"height":98,"type":"text","text":"Does population in coupler compromise qubit protection?"},
-		{"id":"5f872af6bc29ef1e","x":474,"y":460,"width":250,"height":60,"type":"text","text":"Does leakage in coupler not get removed?"}
+		{"id":"f34a044121f7f377","type":"text","text":"Does population in coupler compromise qubit protection?","x":474,"y":322,"width":250,"height":98},
+		{"id":"5f872af6bc29ef1e","type":"text","text":"Does leakage in coupler not get removed?","x":474,"y":460,"width":250,"height":60}
 	],
 	"edges":[]
 }
