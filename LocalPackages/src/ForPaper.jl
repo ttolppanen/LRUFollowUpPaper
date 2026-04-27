@@ -9,6 +9,7 @@ export logical_state_index, zz_coupling_strength, zz_zero_point
 export zz_0_with_w_4GHZ
 export zz_0_with_roots
 export calc_zz
+export g0_fourth_order, g0_wc_off_fourth_order
 
 
 # In Tunable Coupling Architecture for Fixed-Frequency Transmon Superconducting Qubits
@@ -229,4 +230,21 @@ function calc_zz(wc, comparison_states, w1, w2, Us, gs; d = 3)
     dressed_states_i = logical_state_index(comparison_states, psi, d)
     comparison_states = psi[collect(dressed_states_i)]
     return real(zz_coupling_strength(dressed_states_i, E, d))
+end
+
+function g0_fourth_order(w1, w2, wc, g1c, g2c, g12)
+    delta1c = w1 - wc
+    delta2c = w2 - wc
+    gamma2 = g12 + (g1c * g2c)/2 * (1/delta1c + 1/delta2c)
+    gamma4_1 = -0.5 * g12 * (g1c^2 / delta1c^2 + g2c^2 / delta2c^2)
+    gamma4_2 = -0.125 * g1c * g2c * ((g1c^2 / delta1c^2) * (1/delta1c + 7/delta2c) + (g2c^2 / delta2c^2) * (1/delta2c + 7/delta1c))
+    return gamma2 + gamma4_1 + gamma4_2
+end
+function g0_wc_off_fourth_order(w1, w2, g1c, g2c, g12, min_wc, max_wc)
+    f(x) = g0_fourth_order(w1, w2, x, g1c, g2c, g12)
+    wc_zeros = find_zeros(f, min_wc, max_wc)
+    if length(wc_zeros) < 1        
+        error("No g=0 zero points found")
+    end
+    return wc_zeros
 end

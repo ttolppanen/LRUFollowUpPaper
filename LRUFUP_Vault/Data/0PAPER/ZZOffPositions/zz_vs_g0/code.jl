@@ -97,8 +97,23 @@ function plot_difference()
     plot!(pl, zz_max_line.x, zz_max_line.x .- zz_max_line.y, label = zz_max_line.tag)
 end
 
+function plot_fourth_order()
+    param = initial_parameters()
+    data = loaddata(joinpath(@__DIR__))
+
+    g0_line = data.lines["g0"]
+    w2s = param[:w2].val
+    g0_4 = [minimum(g0_wc_off_fourth_order(param[:w1].val, w2, param[:Jc].val, -param[:Jc].val, param[:J12].val, 3000 / 5, 4000 / 5)) for w2 in w2s]
+    g0_4_line = LineInfo(w2s .* 5, g0_4 .* 5, 1, "g0 fourth order")
+    pl = plot()
+    plot!(pl, g0_line.x, g0_line.y .- g0_4_line.y, label = "g0 + 5Mhz - g0 fourth order")
+    # plot!(pl, g0_4_line.x, g0_4_line.y, label = g0_4_line.tag)
+end
+
 # add_g0_2()
 
 # @time f()
 
-plot_difference()
+# plot_difference()
+
+plot_fourth_order()
