@@ -21,7 +21,7 @@ end
 
 function initial_parameters()
     param = OrderedDict()
-    param[:t_points] = 1000
+    param[:t_points] = 10000
     param[:d] = 3
     param[:L] = 3
     param[:alg] = "toolbox Vern9"
@@ -40,7 +40,7 @@ function initial_parameters()
     param[:U2] = ValueInfo(U2 / param[:J12].val, "$(U2)MHz")
     Uc = U
     param[:Uc] = ValueInfo(Uc / param[:J12].val, "$(Uc)MHz")
-    t = 3
+    t = 2
     param[:t] = ValueInfo(t * 2 * π * param[:J12].val, "$(t)μs")
     # param[:diss_rate] = 0.0
 
@@ -80,9 +80,11 @@ function f()
     E, psi, Uni = eigenstates(H_below)
     state10 = psi[4]
 
+    state10 = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 0), basis(param[:d], 0)))
+
     state = state10
     out = mesolve(H_below, state, t_list, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
-    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "below, s_0 = |10>, <nc+n1>"))
+    push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "below, s_0 = |100>, <n1>"))
     # push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "below, s_0 = |10>, <N>"))
 
     state = state20
@@ -135,5 +137,5 @@ end
 
 @time f()
 
-plot_with_analytical()
+# plot_with_analytical()
 

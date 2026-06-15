@@ -21,7 +21,7 @@ end
 
 function initial_parameters()
     param = OrderedDict()
-    param[:t_points] = 1000
+    param[:t_points] = 10000
     param[:d] = 4
     param[:L] = 3
     param[:abstol] = 1e-14
@@ -36,7 +36,7 @@ function initial_parameters()
     param[:U1] = ValueInfo(U / param[:J12].val, "$(U)MHz")
     Uc = U
     param[:Uc] = ValueInfo(Uc / param[:J12].val, "$(Uc)MHz")
-    U2s = collect(range(250, 350, length=150)) ./ param[:J12].val
+    U2s = collect(range(250, 350, length=400)) ./ param[:J12].val
     param[:U2] = ValueInfo(U2s, "(250-350)MHz")
 
     t = 0.1
@@ -82,6 +82,10 @@ function f()
     
     heatmap(x, t, n2s, xlabel = "U2 (MHz)", ylabel = "t (μs)", colorbar_title = "<n2-I>")
     savefig(joinpath(@__DIR__, "heatmap.png"))
+    y = t
+    z = n2s
+    p = param
+    @save joinpath(@__DIR__, "data.jld2") x y z p
 end
 
 

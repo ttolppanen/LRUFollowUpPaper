@@ -10,6 +10,7 @@ using LocalPackages
 using QuantumToolbox
 using QuantumTimes
 using OrdinaryDiffEq
+using JLD2
 
 function traj_mean(result)
     out = zeros(size(result[1]))
@@ -21,7 +22,7 @@ end
 
 function initial_parameters()
     param = OrderedDict()
-    param[:t_points] = 1000
+    param[:t_points] = 10000
     param[:d] = 3
     param[:L] = 3
     param[:abstol] = 1e-14
@@ -31,8 +32,8 @@ function initial_parameters()
     param[:J12] = ValueInfo(5, "5MHz")
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
     param[:w1] = ValueInfo(4000 / param[:J12].val, "4GHz")
-    w2s = vcat(collect(range(3995, 4000, length=150)), collect(range(4000, 4005, length=150))) ./ param[:J12].val
-    param[:w2] = ValueInfo(w2s, "(3.995-4.005)GHz")
+    w2s = vcat(collect(range(3990, 4000, length=200)), collect(range(4000, 4010, length=200))) ./ param[:J12].val
+    param[:w2] = ValueInfo(w2s, "(3.990-4.010)GHz")
 
     U = 300
     param[:U1] = ValueInfo(U / param[:J12].val, "$(U)MHz")
@@ -87,6 +88,10 @@ function f()
     
     heatmap(x, t, n2s, xlabel = "w2 (MHz)", ylabel = "t (μs)", colorbar_title = "<n2 / 2>")
     savefig(joinpath(@__DIR__, "heatmap.png"))
+    y = t
+    z = n2s
+    p = param
+    @save joinpath(@__DIR__, "data.jld2") x y z p
 end
 
 
