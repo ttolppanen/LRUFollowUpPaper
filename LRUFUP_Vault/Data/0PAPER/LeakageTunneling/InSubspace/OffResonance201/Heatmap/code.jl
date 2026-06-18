@@ -10,6 +10,7 @@ using LocalPackages
 using QuantumToolbox
 using QuantumTimes
 using OrdinaryDiffEq
+using JLD2
 
 function traj_mean(result)
     out = zeros(size(result[1]))
@@ -21,7 +22,7 @@ end
 
 function initial_parameters()
     param = OrderedDict()
-    param[:t_points] = 1000
+    param[:t_points] = 3000
     param[:d] = 5
     param[:L] = 5
     param[:alg] = "toolbox Vern9"
@@ -30,11 +31,11 @@ function initial_parameters()
     param[:H] = "Tunable Coupler"
     param[:J12] = ValueInfo(5, "5MHz")
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
-    ws = collect(range(3702, 4000, 100)) ./ param[:J12].val
-    param[:w] = ValueInfo(ws, "(3.702-4)GHz")
+    ws = collect(range(3702, 4298, 300)) ./ param[:J12].val
+    param[:w] = ValueInfo(ws, "(3.702-4.298)GHz")
     param[:w2] = ValueInfo(4000 / param[:J12].val, "4GHz")
 
-    param[:U] = ValueInfo(250 / param[:J12].val, "250MHz")
+    param[:U] = ValueInfo(300 / param[:J12].val, "300MHz")
     t = 8
     param[:t] = ValueInfo(t * 2 * π * param[:J12].val, "$(t)μs")
 
@@ -85,6 +86,11 @@ function f()
     
     heatmap(x, t, n3s, xlabel = "w1 = w3 (MHz)", ylabel = "t (μs)", colorbar_title = "<n3>")
     savefig(joinpath(@__DIR__, "heatmap.png"))
+
+    y = t
+    z = n3s
+    p = param
+    @save joinpath(@__DIR__, "data.jld2") x y z p
 end
 
 

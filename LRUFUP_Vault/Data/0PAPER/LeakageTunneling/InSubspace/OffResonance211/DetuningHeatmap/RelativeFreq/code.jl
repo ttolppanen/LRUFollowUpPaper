@@ -31,12 +31,12 @@ function initial_parameters()
     param[:H] = "Tunable Coupler"
     param[:J12] = ValueInfo(5, "5MHz")
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
-    ws = collect(range(3802, 4000, 100)) ./ param[:J12].val
-    param[:w] = ValueInfo(ws, "(3.802-4)GHz")
-    offset_N = 50
+    ws = collect(range(3802, 4298, 300)) ./ param[:J12].val
+    param[:w] = ValueInfo(ws, "(3.802-4.298)GHz")
+    offset_N = 150
     w_offsets = vcat(collect(range(-0.5, 0, offset_N)), collect(range(0, 0.5, offset_N)))
     param[:w_offset] = ValueInfo(w_offsets ./ param[:J12].val, "(-0.5-0.5)MHz")
-    param[:wc_min] = ValueInfo(2500 / param[:J12].val, "3GHz")
+    param[:wc_min] = ValueInfo(2500 / param[:J12].val, "2.5GHz")
     param[:wc_max] = ValueInfo(4000 / param[:J12].val, "4GHz")
     param[:w2] = ValueInfo(4000 / param[:J12].val, "4GHz")
     param[:U] = ValueInfo(300 / param[:J12].val, "300MHz")
@@ -118,13 +118,15 @@ function f()
     x = param[:w].val .* 5
     y = param[:w_offset].val .* 5
     # t = t_list ./ (2 * π * 5)
-    
-    @save joinpath(@__DIR__, "max_amps_data.jld2") x y max_amps
+    z = max_amps
+    p = param
+
+    @save joinpath(@__DIR__, "max_amps_data.jld2") x y z p
 end
 
 function make_heatmap()
-    @load joinpath(@__DIR__, "max_amps_data.jld2") x y max_amps
-    heatmap(x, y, max_amps, xlabel = "w1 (MHz)", ylabel = "w3 - w1 (MHz)", colorbar_title = "<max(n3)>")
+    @load joinpath(@__DIR__, "max_amps_data.jld2") x y z
+    heatmap(x, y, z, xlabel = "w1 (MHz)", ylabel = "w3 - w1 (MHz)", colorbar_title = "<max(n3)>")
     savefig(joinpath(@__DIR__, "heatmap_max_amps.png"))
 end
 

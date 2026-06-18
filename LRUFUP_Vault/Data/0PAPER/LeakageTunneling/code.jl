@@ -21,7 +21,7 @@ end
 
 function initial_parameters()
     param = OrderedDict()
-    param[:t_points] = 1000
+    param[:t_points] = 10000
     param[:d] = 5
     param[:L] = 5
     param[:alg] = "toolbox Vern9"
@@ -36,7 +36,7 @@ function initial_parameters()
     param[:wc1] = ValueInfo(3162.762 / param[:J12].val, "3.162762GHz")
     param[:wc2] = ValueInfo(3162.762 / param[:J12].val, "3.162762GHz")
     param[:U] = ValueInfo(300 / param[:J12].val, "300MHz")
-    t = 2
+    t = 8
     param[:t] = ValueInfo(t * 2 * π * param[:J12].val, "$(t)μs")
 
     # U = [param[:U].val, param[:U].val, param[:U].val]
