@@ -151,20 +151,29 @@ function f()
 
     t_10mus_list = exp.(LinRange(log(0.001 * 2 * π * 5), log(param[:t_10mus].val), param[:t_points]))
 
-    lines = []
-    out = mesolve(H, state10, t_10mus_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
-    push!(lines, LineInfo(t_10mus_list, real(out.expect[1, :]), 1, "|100>, n1+nc"))
-    push!(lines, LineInfo(t_10mus_list, real(out.expect[5, :]), 1, "|100>, n_all"))
+    # lines = []
+    # out = mesolve(H, state10, t_10mus_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
+    # push!(lines, LineInfo(t_10mus_list, real(out.expect[1, :]), 1, "|100>, n1+nc"))
+    # push!(lines, LineInfo(t_10mus_list, real(out.expect[5, :]), 1, "|100>, n_all"))
     
-    path = joinpath(@__DIR__, "result_10_10mus")
-    makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
+    # path = joinpath(@__DIR__, "result_10_10mus")
+    # makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
 
     lines = []
     out = mesolve(H, state20, t_10mus_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
     push!(lines, LineInfo(t_10mus_list, real(out.expect[1, :]), 1, "|200>, n1+nc"))
     push!(lines, LineInfo(t_10mus_list, real(out.expect[5, :]), 1, "|200>, n_all"))
+    push!(lines, LineInfo(t_10mus_list, real(out.expect[4, :]), 1, "|200>, n_1"))
 
     path = joinpath(@__DIR__, "result_20_10mus")
+    makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
+
+    lines = []
+    state = QuantumObject(tensor(basis(param[:d], 0), basis(param[:d], 0), basis(param[:d], 1)))
+    out = mesolve(H, state, t_10mus_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
+    push!(lines, LineInfo(t_10mus_list, real(out.expect[4, :]), 1, "|100>, n1"))
+    
+    path = joinpath(@__DIR__, "result_100_10mus")
     makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
 
     # lines = []
