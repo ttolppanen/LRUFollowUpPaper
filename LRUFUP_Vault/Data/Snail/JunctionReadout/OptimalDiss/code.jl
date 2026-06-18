@@ -110,7 +110,7 @@ function initial_parameters()
     param[:phi_zpf_a] = 0.378
     param[:phi_zpf_b] = 0.165
 
-    t = 10000
+    t = 50000
     param[:t] = ValueInfo(t * 2 * π * param[:Units].val, "$(t)ns")
     param[:diss_rate] = 0.0034 / param[:Units].val
     param[:t1] = 1 / (50 * 1e3 * 2 * pi * param[:Units].val)
@@ -141,7 +141,7 @@ function f()
 
     t_list = LinRange(0, param[:t].val, param[:t_points])
 
-    state = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 0)))
+    state = QuantumObject(tensor(basis(param[:d], 0), basis(param[:d], 0)))
     out = mesolve(H, state, t_list, c_ops_T1, e_ops = e_ops; alg = Vern9(), abstol = 1e-14, reltol = 1e-8, maxiters = 10^7)
     push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "T1 only, n1"))
     # push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "|20>, n2"))
