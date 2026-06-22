@@ -31,8 +31,8 @@ function initial_parameters()
     param[:H] = "Tunable Coupler"
     param[:J12] = ValueInfo(5, "5MHz")
     param[:Jc] = ValueInfo(50 / param[:J12].val, "50MHz")
-    ws = collect(range(3802, 4298, 300)) ./ param[:J12].val
-    param[:w] = ValueInfo(ws, "(3.802-4.298)GHz")
+    ws = collect(range(3702, 4298, 300)) ./ param[:J12].val
+    param[:w] = ValueInfo(ws, "(3.702-4.298)GHz")
     offset_N = 150
     w_offsets = vcat(collect(range(-0.5, 0, offset_N)), collect(range(0, 0.5, offset_N)))
     param[:w_offset] = ValueInfo(w_offsets ./ param[:J12].val, "(-0.5-0.5)MHz")
