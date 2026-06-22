@@ -61,7 +61,21 @@ function make_h5()
 
         # Panel (b) ------------------------------------------------------
         g = create_group(file, "b")
-        attrs(g)["Description"] = "Data for panel (b) of Fig. 4, qubit decay for the three schemes $(scheme_200), $(scheme_pumped) and $(scheme_direct). The x-axis shows the time in microseconds. The time-steps are separeted so that on a log scale they have even distribution. The y-axis shows the population of the first transmon <n1>, starting from a leaked initial state |100> (|10> for $(scheme_direct)."
+        attrs(g)["Description"] = "Data for panel (b) of Fig. 4, leakage removal from the coupler for the two coupled enabled schemes $(scheme_200) and $(scheme_pumped). The x-axis shows the time in microseconds. The time-steps are separeted so that on a log scale they have even distribution. The y-axis shows the population of the coupler <nc>, starting from a leaked initial state |010>."
+
+        sg = create_group(g, scheme_200)
+        attrs(sg)["Description"] = "Data for the leakage removal scheme $(scheme_200)"
+        write(sg, "x", t_to_mus(collect(c200_010.x)))
+        write(sg, "y", c200_010.y)
+
+        sg = create_group(g, scheme_pumped)
+        attrs(sg)["Description"] = "Data for the leakage removal scheme $(scheme_pumped)"
+        write(sg, "x", t_to_mus(collect(pumped_010.x)))
+        write(sg, "y", pumped_010.y)
+
+        # Panel (c) ------------------------------------------------------
+        g = create_group(file, "c")
+        attrs(g)["Description"] = "Data for panel (c) of Fig. 4, qubit decay for the three schemes $(scheme_200), $(scheme_pumped) and $(scheme_direct). The x-axis shows the time in microseconds. The time-steps are separeted so that on a log scale they have even distribution. The y-axis shows the population of the first transmon <n1>, starting from a leaked initial state |100> (|10> for $(scheme_direct)."
 
         sg = create_group(g, scheme_200)
         attrs(sg)["Description"] = "Data for the leakage removal scheme $(scheme_200)"
@@ -77,20 +91,6 @@ function make_h5()
         attrs(sg)["Description"] = "Data for the leakage removal scheme $(scheme_direct)"
         write(sg, "x", t_to_mus(collect(d_10.x)))
         write(sg, "y", d_10.y)
-
-        # Panel (c) ------------------------------------------------------
-        g = create_group(file, "c")
-        attrs(g)["Description"] = "Data for panel (c) of Fig. 4, leakage removal from the coupler for the two coupled enabled schemes $(scheme_200) and $(scheme_pumped). The x-axis shows the time in microseconds. The time-steps are separeted so that on a log scale they have even distribution. The y-axis shows the population of the coupler <nc>, starting from a leaked initial state |010>."
-
-        sg = create_group(g, scheme_200)
-        attrs(sg)["Description"] = "Data for the leakage removal scheme $(scheme_200)"
-        write(sg, "x", t_to_mus(collect(c200_010.x)))
-        write(sg, "y", c200_010.y)
-
-        sg = create_group(g, scheme_pumped)
-        attrs(sg)["Description"] = "Data for the leakage removal scheme $(scheme_pumped)"
-        write(sg, "x", t_to_mus(collect(pumped_010.x)))
-        write(sg, "y", pumped_010.y)
 
         # Panel (d) ------------------------------------------------------
         g = create_group(file, "d")

@@ -18,7 +18,7 @@ function make_fig()
         xtick_pos = [10^-3, 10^-2, 10^-1, 10^0, 10^1]
         xtick_labels = ["0.001", "0.01", "0.1", "1", "10"]
         # Panel (a) ------------------------------------------------------
-        plot_a = plot(ylims = (-0.0, 2.02), xaxis = :log10, xticks = (xtick_pos, xtick_labels),xlabel = L"t~\textrm{(\mu s)}", ylabel = L"\left\langle n_1 \right\rangle")
+        plot_a = plot(ylims = (-0.0, 2.02), xaxis = :log10, xticks = (xtick_pos, xtick_labels), xlabel = L"t~" * "(μs)", ylabel = L"\left\langle \hat{n}_1 \right\rangle")
         plot!(plot_a, legend = :bottomleft)
         x_c200 = read(file["a"]["Coupler_200"], "x")
         y_c200 = read(file["a"]["Coupler_200"], "y")
@@ -36,22 +36,8 @@ function make_fig()
         annotate!(plot_a, (annotation_pos, text("(a)", annotation_font_size, "Computer Modern")))
         push!(plots, plot_a)
 
-        # Panel (c) ------------------------------------------------------
-        plot_c = plot(ylims = (-0.0, 2.02), xaxis = :log10, xticks = (xtick_pos, xtick_labels),xlabel = L"t~\textrm{(\mu s)}", ylabel = L"\left\langle n_c \right\rangle")
-        x_c200 = read(file["c"]["Coupler_200"], "x")
-        y_c200 = read(file["c"]["Coupler_200"], "y")
-        plot!(plot_c, x_c200, y_c200, label = scheme_200)
-
-        x_pumped = read(file["c"]["Pumped_201"], "x")
-        y_pumped = read(file["c"]["Pumped_201"], "y")
-        plot!(plot_c, x_pumped, y_pumped, label = scheme_pumped)
-
-        plot!(plot_c, leftmargin = 10mm)
-        annotate!(plot_c, (annotation_pos, text("(c)", annotation_font_size, "Computer Modern")))
-        push!(plots, plot_c)
-
         # Panel (b) ------------------------------------------------------
-        plot_b = plot(ylims = (-0.0, 2.02), xaxis = :log10, xticks = (xtick_pos, xtick_labels),xlabel = L"t~\textrm{(\mu s)}", ylabel = L"\left\langle n_1 \right\rangle")
+        plot_b = plot(ylims = (-0.0, 2.02), xaxis = :log10, xticks = (xtick_pos, xtick_labels), xlabel = L"t~" * "(μs)", ylabel = L"\left\langle \hat{n}_1 \right\rangle")
         x_c200 = read(file["b"]["Coupler_200"], "x")
         y_c200 = read(file["b"]["Coupler_200"], "y")
         plot!(plot_b, x_c200, y_c200, label = scheme_200)
@@ -60,16 +46,30 @@ function make_fig()
         y_pumped = read(file["b"]["Pumped_201"], "y")
         plot!(plot_b, x_pumped, y_pumped, label = scheme_pumped)
 
-        x_direct = read(file["b"]["Direct"], "x")
-        y_direct = read(file["b"]["Direct"], "y")
-        plot!(plot_b, x_direct, y_direct, label = scheme_direct)
-
         plot!(plot_b, leftmargin = 10mm)
         annotate!(plot_b, (annotation_pos, text("(b)", annotation_font_size, "Computer Modern")))
         push!(plots, plot_b)
 
+        # Panel (c) ------------------------------------------------------
+        plot_c = plot(ylims = (-0.0, 2.02), xaxis = :log10, xticks = (xtick_pos, xtick_labels), xlabel = L"t~" * "(μs)", ylabel = L"\left\langle \hat{n}_1 \right\rangle")
+        x_c200 = read(file["c"]["Coupler_200"], "x")
+        y_c200 = read(file["c"]["Coupler_200"], "y")
+        plot!(plot_c, x_c200, y_c200, label = scheme_200)
+
+        x_pumped = read(file["c"]["Pumped_201"], "x")
+        y_pumped = read(file["c"]["Pumped_201"], "y")
+        plot!(plot_c, x_pumped, y_pumped, label = scheme_pumped)
+
+        x_direct = read(file["c"]["Direct"], "x")
+        y_direct = read(file["c"]["Direct"], "y")
+        plot!(plot_c, x_direct, y_direct, label = scheme_direct)
+
+        plot!(plot_c, leftmargin = 10mm)
+        annotate!(plot_c, (annotation_pos, text("(c)", annotation_font_size, "Computer Modern")))
+        push!(plots, plot_c)
+
         # Panel (d) ------------------------------------------------------
-        plot_d = plot(ylims = (-0.0, 2.02), xaxis = :log10, xticks = (xtick_pos, xtick_labels),xlabel = L"t~\textrm{(\mu s)}", ylabel = L"\left\langle n_1 \right\rangle")
+        plot_d = plot(ylims = (-0.0, 2.02), xaxis = :log10, xticks = (xtick_pos, xtick_labels), xlabel = L"t~" * "(μs)", ylabel = L"\left\langle \hat{n}_1 \right\rangle")
         x_c200 = read(file["d"]["Coupler_200"], "x")
         y_c200 = read(file["d"]["Coupler_200"], "y")
         plot!(plot_d, x_c200, y_c200, label = scheme_200)

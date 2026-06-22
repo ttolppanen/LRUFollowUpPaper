@@ -20,9 +20,9 @@ function save_hdf5()
         write(g, "x", t_to_nanoseconds(collect(leakage.x)))
         write(g, "y", leakage.y)
 
-        # Panel (b) ------------------------------------------------------
-        g = create_group(file, "b")
-        attrs(g)["Description"] = "Data for panel (b) of Fig. 5, qubit decay with and withouth leakage removal on, for a qubit with T1 = 50mus. The x-axis shows the time in microseconds. The y-axis shows the population of the transmon <n1>."
+        # Panel (c) ------------------------------------------------------
+        g = create_group(file, "c")
+        attrs(g)["Description"] = "Data for panel (c) of Fig. 5, qubit decay with and withouth leakage removal on, for a qubit with T1 = 50mus. The x-axis shows the time in microseconds. The y-axis shows the population of the transmon <n1>."
 
         plotinfo = loaddata(@__DIR__, "qubit_data.jld2")
 
