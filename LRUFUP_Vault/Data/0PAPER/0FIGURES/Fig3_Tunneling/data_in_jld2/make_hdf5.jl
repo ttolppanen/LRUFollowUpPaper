@@ -60,11 +60,11 @@ function save_hdf5()
         g = create_group(file, "c")
         attrs(g)["Description"] = "Data for panel (c) of Fig. 3, leakage tunneling with off-resonant initial (first) and target (third) sites for initial state 201. The x-axis shows the frequency of the first transmon in megahertz. The y-axis shows the detuning of the first and third transmons w3 - w1 in megahertz. The color of the plot indicates the maximal population of the third transmon <n3> over a period of 10 microseconds, for which the values here are under the z-label."
 
-        @load joinpath(@__DIR__, "201_relative_freq_data.jld2") x y z p
+        @load joinpath(@__DIR__, "201_relative_freq_data.jld2") x y max_amps
 
         write(g, "x", collect(x))
         write(g, "y", collect(y))
-        write(g, "z", collect(z))
+        write(g, "z", collect(max_amps))
 
         # Panel (d) ------------------------------------------------------
         g = create_group(file, "d")
