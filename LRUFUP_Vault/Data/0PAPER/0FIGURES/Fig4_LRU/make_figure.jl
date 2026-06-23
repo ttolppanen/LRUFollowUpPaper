@@ -85,7 +85,7 @@ function make_fig()
     layout = @layout [a c; b d]
     pl = plot(plots..., layout = layout, size = 3 .* (400, 300), margin = 0mm, bottommargin = 2mm, topmargin = 14mm, guidefont = 18, tickfont = 13, legendfont = 13)
     display(pl)
-    savefig(pl, joinpath(@__DIR__, "Fig4.pdf"))
+    savefig(pl, joinpath(@__DIR__, "Fig4_without_inset.pdf"))
 end
 
 function make_b_zoom()

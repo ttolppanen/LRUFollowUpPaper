@@ -44,7 +44,7 @@ function make_fig()
         push!(plots, plot_b)
 
         # Panel (d) ------------------------------------------------------
-        plot_d = plot(ylims = (-0.0, 0.082), xlabel = L"t~" * "(μs)", ylabel = L"\left\langle \hat{n}_1 \right\rangle")
+        plot_d = plot(ylims = (-0.001, 0.082), xlabel = L"t~" * "(μs)", ylabel = L"\left\langle \hat{n}_1 \right\rangle")
         
         x_lru_00 = read(file["d"]["T1 and LRU"], "x")
         y_lru_00 = read(file["d"]["T1 and LRU"], "y")
@@ -60,7 +60,7 @@ function make_fig()
     layout = @layout [a c; b d]
     pl = plot(plots..., layout = layout, size = 3 .* (400, 300), margin = 0mm, bottommargin = 2mm, topmargin = 14mm, guidefont = 18, tickfont = 13, legendfont = 13)
     display(pl)
-    savefig(pl, joinpath(@__DIR__, "Fig5.pdf"))
+    savefig(pl, joinpath(@__DIR__, "Fig5_without_circuit.pdf"))
 end
 
 make_fig()

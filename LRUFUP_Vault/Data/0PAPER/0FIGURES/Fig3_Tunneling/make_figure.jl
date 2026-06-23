@@ -9,7 +9,7 @@ function make_fig()
     annotation_font_size = 28
     # colorbar_lims_201 = (1, 2)
     # colorbar_lims_211 = (1, 2)
-    annotation_pos = (-0.1, 1.07)
+    annotation_pos = (-0.12, 1.15)
     h5open(filename, "r") do file
         # Panel (a) ------------------------------------------------------
         plot_a = plot(ylims = (-0.02, 2.02), xlabel = L"t~" * "(μs)")
@@ -33,7 +33,7 @@ function make_fig()
         # y_nc2 = read(file["a"]["nc2"], "y")
         # plot!(plot_a, x_nc2, y_nc2, label = L"|n_{c_2}>")
 
-        plot!(plot_a, leftmargin = 10mm, legend = :bottomright)
+        plot!(plot_a, leftmargin = 15mm, legend = :bottomright)
         annotate!(plot_a, (annotation_pos, text("(a)", annotation_font_size, "Computer Modern")))
         push!(plots, plot_a)
 
@@ -102,7 +102,7 @@ function make_fig()
         push!(plots, plot_f)
     end
     layout = @layout [a b{0.37w} c{0.37w}; d e f]
-    pl = plot(plots..., layout = layout, size = 3 .* (3 * 400, 2 * 300), margin = 16mm, bottommargin = 18mm, topmargin = 18mm, guidefont = 28, tickfont = 22, legendfont = 24, colorbar_titlefontsize = 28)
+    pl = plot(plots..., layout = layout, size = 2 .* (3 * 400, 2 * 300), margin = 12mm, bottommargin = 18mm, topmargin = 18mm, guidefont = 28, tickfont = 22, legendfont = 24, colorbar_titlefontsize = 28)
     display(pl)
     savefig(pl, joinpath(@__DIR__, "Fig3.pdf"))
 end
