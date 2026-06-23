@@ -21,7 +21,7 @@ end
 
 function initial_parameters()
     param = OrderedDict()
-    param[:t_points] = 1000
+    param[:t_points] = 3000
     param[:d] = 4
     param[:L] = 3
 
@@ -43,7 +43,7 @@ function initial_parameters()
     param[:U2] = ValueInfo(U2 / param[:J12].val, "$(U2)MHz")
     Uc = U
     param[:Uc] = ValueInfo(Uc / param[:J12].val, "$(Uc)MHz")
-    t_below = 3
+    t_below = 0.3
     param[:t_below] = ValueInfo(t_below * 2 * π * param[:J12].val, "$(t_below)μs")
 
     param[:J12] = ValueInfo(1, param[:J12].str_val)
@@ -61,7 +61,7 @@ function f()
 
     n1 = qt_single_site_op(d, L, num(d), 1)
     nc = qt_single_site_op(d, L, num(d), 2)
-    n2 = qt_single_site_op(d, L, num(d), 3) - tensor(qeye(d), qeye(d), qeye(d))
+    n2 = qt_single_site_op(d, L, num(d), 3)
     e_ops = [n2]
 
     state201 = QuantumObject(tensor(basis(param[:d], 2), basis(param[:d], 0), basis(param[:d], 1)))
@@ -79,7 +79,7 @@ function f()
         out = mesolve(H, state, t_list_below, e_ops = e_ops, progress_bar= false; abstol = param[:abstol], reltol = param[:reltol], alg = Vern9(), maxiters = 10^7)
         push!(max_amplitude_below, maximum(real(out.expect[1, :])))
     end
-    push!(lines, LineInfo(param[:w2].val .* 5, max_amplitude_below, 1, "g = 0, max(<n2 - I>)"))
+    push!(lines, LineInfo(param[:w2].val .* 5, max_amplitude_below, 1, "g = 0, max(<n2>)"))
 
     # max_amplitude_above = []
     # for w2 in param[:w2].val
@@ -110,7 +110,7 @@ function f()
         out = mesolve(H, state, t_list_below, e_ops = e_ops, progress_bar= false; abstol = param[:abstol], reltol = param[:reltol], alg = Vern9(), maxiters = 10^7)
         push!(max_amplitude_zz_off, maximum(real(out.expect[1, :])))
     end
-    push!(lines, LineInfo(param[:w2].val .* 5, max_amplitude_zz_off, 1, "zz = 0 (min), max(<n2 - I>)"))
+    push!(lines, LineInfo(param[:w2].val .* 5, max_amplitude_zz_off, 1, "zz = 0 (min), max(<n2>)"))
     
     path = joinpath(@__DIR__)
     makeplot(path, lines...; xlabel = "MHz", ylabel = "", copy_code = false, param...)

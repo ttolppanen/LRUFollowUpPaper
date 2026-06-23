@@ -74,7 +74,7 @@ function f()
 
     n1 = qt_single_site_op(d, L, num(d), 1)
     nc = qt_single_site_op(d, L, num(d), 2)
-    n2 = qt_single_site_op(d, L, num(d), 3) / 2
+    n2 = qt_single_site_op(d, L, num(d), 3)
     e_ops = [n2]
     
     # c_ops = [sqrt(param[:diss_rate]) * qt_single_site_op(d, L, destroy(d), L)]
@@ -94,7 +94,7 @@ function f()
         out = mesolve(H, state, t_list_below, e_ops = e_ops, progress_bar= false; abstol = param[:abstol], reltol = param[:reltol], alg = Vern9(), maxiters = 10^7)
         push!(max_amplitude_below, maximum(real(out.expect[1, :])))
     end
-    push!(lines, LineInfo(param[:w2].val .* 5, max_amplitude_below, 1, "g = 0, max(<n2 / 2>)"))
+    push!(lines, LineInfo(param[:w2].val .* 5, max_amplitude_below, 1, "g = 0, max(<n2>)"))
 
     # max_amplitude_above = []
     # for w2 in param[:w2].val
@@ -125,7 +125,7 @@ function f()
         out = mesolve(H, state, t_list_below, e_ops = e_ops, progress_bar= false; abstol = param[:abstol], reltol = param[:reltol], alg = Vern9(), maxiters = 10^7)
         push!(max_amplitude_zz_off, maximum(real(out.expect[1, :])))
     end
-    push!(lines, LineInfo(param[:w2].val .* 5, max_amplitude_zz_off, 1, "zz = 0 (min), max(<n2 / 2>)"))
+    push!(lines, LineInfo(param[:w2].val .* 5, max_amplitude_zz_off, 1, "zz = 0 (min), max(<n2>)"))
     
     path = joinpath(@__DIR__)
     makeplot(path, lines...; xlabel = "MHz", ylabel = "", copy_code = false, param...)

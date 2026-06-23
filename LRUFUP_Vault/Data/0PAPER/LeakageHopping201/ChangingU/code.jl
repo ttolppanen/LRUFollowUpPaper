@@ -57,7 +57,7 @@ function f()
 
     n1 = qt_single_site_op(d, L, num(d), 1)
     nc = qt_single_site_op(d, L, num(d), 2)
-    n2 = qt_single_site_op(d, L, num(d), 3) - tensor(qeye(d), qeye(d), qeye(d))
+    n2 = qt_single_site_op(d, L, num(d), 3)
     e_ops = [n1 + nc, n1, n2]
 
     state201 = QuantumObject(tensor(basis(param[:d], 2), basis(param[:d], 0), basis(param[:d], 1)))
@@ -80,7 +80,7 @@ function f()
     x = param[:U2].val .* 5
     t = t_list ./ (2 * π * 5)
     
-    heatmap(x, t, n2s, xlabel = "U2 (MHz)", ylabel = "t (μs)", colorbar_title = "<n2-I>")
+    heatmap(x, t, n2s, xlabel = "U2 (MHz)", ylabel = "t (μs)", colorbar_title = "<n2>")
     savefig(joinpath(@__DIR__, "heatmap.png"))
     y = t
     z = n2s
