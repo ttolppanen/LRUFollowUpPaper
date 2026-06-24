@@ -37,7 +37,7 @@ function make_fig()
         push!(plots, plot_a)
 
         # Panel (b) ------------------------------------------------------
-        plot_b = plot(ylims = (-0.0, 2.02), xaxis = :log10, xticks = (xtick_pos, xtick_labels), xlabel = L"t~" * "(μs)", ylabel = L"\left\langle \hat{n}_1 \right\rangle")
+        plot_b = plot(ylims = (-0.0, 2.02), xaxis = :log10, xticks = (xtick_pos, xtick_labels), xlabel = L"t~" * "(μs)", ylabel = L"\left\langle \hat{n}_c \right\rangle")
         x_c200 = read(file["b"]["Coupler_200"], "x")
         y_c200 = read(file["b"]["Coupler_200"], "y")
         plot!(plot_b, x_c200, y_c200, label = scheme_200)
@@ -89,7 +89,7 @@ function make_fig()
 end
 
 function make_b_zoom()
-        filename = joinpath(@__DIR__, "Fig4_data.h5")
+    filename = joinpath(@__DIR__, "Fig4_data.h5")
     plots = []
     annotation_font_size = 17
 
@@ -106,24 +106,24 @@ function make_b_zoom()
         ytick_pos = [0.9, 0.95, 1]
         ytick_labels = ["0.90", "0.95", "1.00"]
 
-        # Panel (b) ------------------------------------------------------
-        plot_b = plot(ylims = (0.9, 1.01), xaxis = :log10, xticks = (xtick_pos, xtick_labels), yticks = (ytick_pos, ytick_labels), xlabel = L"t~\textrm{(\mu s)}", ylabel = L"\left\langle n_1 \right\rangle")
-        plot!(plot_b, legend = :none)
-        x_c200 = read(file["b"]["Coupler_200"], "x")
-        y_c200 = read(file["b"]["Coupler_200"], "y")
-        plot!(plot_b, x_c200, y_c200, label = scheme_200, linewidth = 0.5)
+        # Panel (c) ------------------------------------------------------
+        plot_c = plot(ylims = (0.9, 1.01), xaxis = :log10, xticks = (xtick_pos, xtick_labels), yticks = (ytick_pos, ytick_labels), xlabel =L"t~" * "(μs)", ylabel = L"\left\langle \hat{n}_1 \right\rangle")
+        plot!(plot_c, legend = :none)
+        x_c200 = read(file["c"]["Coupler_200"], "x")
+        y_c200 = read(file["c"]["Coupler_200"], "y")
+        plot!(plot_c, x_c200, y_c200, label = scheme_200, linewidth = 0.75)
 
-        x_pumped = read(file["b"]["Pumped_201"], "x")
-        y_pumped = read(file["b"]["Pumped_201"], "y")
-        plot!(plot_b, x_pumped, y_pumped, label = scheme_pumped, linewidth = 0.5)
+        x_pumped = read(file["c"]["Pumped_201"], "x")
+        y_pumped = read(file["c"]["Pumped_201"], "y")
+        plot!(plot_c, x_pumped, y_pumped, label = scheme_pumped, linewidth = 0.75)
 
-        x_direct = read(file["b"]["Direct"], "x")
-        y_direct = read(file["b"]["Direct"], "y")
-        plot!(plot_b, x_direct, y_direct, label = scheme_direct, linewidth = 0.5)
+        x_direct = read(file["c"]["Direct"], "x")
+        y_direct = read(file["c"]["Direct"], "y")
+        plot!(plot_c, x_direct, y_direct, label = scheme_direct, linewidth = 0.75)
 
-        plot!(plot_b, leftmargin = 0mm)
+        plot!(plot_c, leftmargin = 0mm)
         # annotate!(plot_b, (annotation_pos, text("(b.i)", annotation_font_size, "Computer Modern")))
-        push!(plots, plot_b)
+        push!(plots, plot_c)
     end
     pl = plot(plots..., size = 0.6 .* (400, 300), margin = 0mm, bottommargin = 0mm, topmargin = 0mm, guidefont = 18, tickfont = 13, legendfont = 13)
     display(pl)
