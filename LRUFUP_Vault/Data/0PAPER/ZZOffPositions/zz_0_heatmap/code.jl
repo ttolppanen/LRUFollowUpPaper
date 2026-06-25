@@ -8,6 +8,7 @@ using SparseArrays
 using LocalPackages
 using QuantumToolbox
 using JLD2
+using HDF5
 
 function initial_parameters()
     param = OrderedDict()
@@ -67,5 +68,18 @@ function make_heatmap()
     savefig(joinpath(@__DIR__, "heatmap.png"))
 end
 
+function data_to_h5()
+    filename = joinpath(@__DIR__, "data.h5")
+    h5open(filename, "w") do file
+        @load joinpath(@__DIR__, "data.jld2") x y z p
+
+        write(file, "x", collect(x))
+        write(file, "y", collect(y))
+        write(file, "z", collect(z))
+    end
+    println("Data saved!")
+end
+
 # @time f()
-make_heatmap()
+# make_heatmap()
+data_to_h5()
