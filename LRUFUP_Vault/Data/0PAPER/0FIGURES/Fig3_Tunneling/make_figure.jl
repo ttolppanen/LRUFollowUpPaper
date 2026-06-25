@@ -9,7 +9,8 @@ function make_fig()
     annotation_font_size = 28
     # colorbar_lims_201 = (1, 2)
     # colorbar_lims_211 = (1, 2)
-    annotation_pos = (-0.12, 1.15)
+    annotation_pos = (-0.13, 1.15)
+    annotation_pos_h = (-0.24, 1.15)
     h5open(filename, "r") do file
         # Panel (a) ------------------------------------------------------
         plot_a = plot(ylims = (-0.02, 2.02), xlabel = L"t~" * "(μs)")
@@ -33,7 +34,7 @@ function make_fig()
         # y_nc2 = read(file["a"]["nc2"], "y")
         # plot!(plot_a, x_nc2, y_nc2, label = L"|n_{c_2}>")
 
-        plot!(plot_a, leftmargin = 15mm, legend = :bottomright)
+        plot!(plot_a, leftmargin = 0mm, legend = :bottomright)
         annotate!(plot_a, (annotation_pos, text("(a)", annotation_font_size, "Computer Modern")))
         push!(plots, plot_a)
 
@@ -42,8 +43,12 @@ function make_fig()
         y = read(file["b"], "y")
         z = read(file["b"], "z")
 
-        plot_b = heatmap(x, y, z, xlabel = L"\omega_1 / 2\pi = \omega_3 / 2\pi~\textrm{(MHz)}", ylabel = L"t~" * "(μs)", colorbar_title = L"\left\langle \hat{n}_3 \right\rangle", clims = (0, 2))
-        annotate!(plot_b, (annotation_pos, text("(b)", annotation_font_size, "Computer Modern")))
+        plot_b = heatmap(x .- 4000, y, z, xlabel = L"\Delta_q / 2\pi~\textrm{(MHz)}", ylabel = L"t~" * "(μs)", colorbar_title = L"\left\langle \hat{n}_3 \right\rangle", clims = (0, 2))
+        xtick_pos = [-300, -150, 0, 150, 300]
+        xtick_labels = ["-300", "-150", "0", "150", "300"]
+        plot!(plot_b, xticks = (xtick_pos, xtick_labels))    
+        
+        annotate!(plot_b, (annotation_pos_h, text("(b)", annotation_font_size, "Computer Modern")))
         push!(plots, plot_b)
 
         # Panel (c) ------------------------------------------------------
@@ -51,9 +56,10 @@ function make_fig()
         y = read(file["c"], "y")
         z = read(file["c"], "z")
 
-        plot_c = heatmap(x, y, z, xlabel = L"\omega_1 / 2\pi~\textrm{(MHz)}", ylabel = L"\left( \omega_3 - \omega_1 \right) / 2\pi ~\textrm{(MHz)}", colorbar_title = L"\textrm{max}\left( \left\langle \hat{n}_3 \right\rangle \right)", clims = (1, 2))
+        plot_c = heatmap(x .- 4000, y, z, xlabel = L"\Delta_q / 2\pi~\textrm{(MHz)}", ylabel = L"\Delta_{31} / 2\pi ~\textrm{(MHz)}", colorbar_title = L"\textrm{max}\left( \left\langle \hat{n}_3 \right\rangle (t) \right)", clims = (1, 2))
         plot!(plot_c, rightmargin = 10mm)
-        annotate!(plot_c, (annotation_pos, text("(c)", annotation_font_size, "Computer Modern")))
+        plot!(plot_c, xticks = (xtick_pos, xtick_labels))
+        annotate!(plot_c, (annotation_pos_h, text("(c)", annotation_font_size, "Computer Modern")))
         push!(plots, plot_c)
 
         # Panel (d) ------------------------------------------------------
@@ -87,8 +93,9 @@ function make_fig()
         y = read(file["e"], "y")
         z = read(file["e"], "z")
 
-        plot_e = heatmap(x, y, z, xlabel = L"\omega_1 / 2\pi = \omega_3 / 2\pi~\textrm{(MHz)}", ylabel = L"t~" * "(μs)", colorbar_title = L"\left\langle \hat{n}_3 \right\rangle", clims = (0, 2))
-        annotate!(plot_e, (annotation_pos, text("(e)", annotation_font_size, "Computer Modern")))
+        plot_e = heatmap(x .- 4000, y, z, xlabel = L"\Delta_q / 2\pi~\textrm{(MHz)}", ylabel = L"t~" * "(μs)", colorbar_title = L"\left\langle \hat{n}_3 \right\rangle", clims = (0, 2))
+        plot!(plot_e, xticks = (xtick_pos, xtick_labels))   
+        annotate!(plot_e, (annotation_pos_h, text("(e)", annotation_font_size, "Computer Modern")))
         push!(plots, plot_e)
 
         # Panel (f) ------------------------------------------------------
@@ -96,13 +103,14 @@ function make_fig()
         y = read(file["f"], "y")
         z = read(file["f"], "z")
 
-        plot_f = heatmap(x, y, z, xlabel = L"\omega_1 / 2\pi~\textrm{(MHz)}", ylabel = L"\left( \omega_3 - \omega_1 \right) / 2\pi ~\textrm{(MHz)}", colorbar_title = L"\textrm{max}\left( \left\langle \hat{n}_3 \right\rangle \right)", clims = (1, 2))
+        plot_f = heatmap(x .- 4000, y, z, xlabel = L"\Delta_q / 2\pi~\textrm{(MHz)}", ylabel = L"\Delta_{31} / 2\pi ~\textrm{(MHz)}", colorbar_title = L"\textrm{max}\left( \left\langle \hat{n}_3 \right\rangle (t) \right)", clims = (1, 2))
         plot!(plot_f, rightmargin = 10mm)
-        annotate!(plot_f, (annotation_pos, text("(f)", annotation_font_size, "Computer Modern")))
+        plot!(plot_f, xticks = (xtick_pos, xtick_labels))
+        annotate!(plot_f, (annotation_pos_h, text("(f)", annotation_font_size, "Computer Modern")))
         push!(plots, plot_f)
     end
     layout = @layout [a b{0.37w} c{0.37w}; d e f]
-    pl = plot(plots..., layout = layout, size = 2 .* (3 * 400, 2 * 300), margin = 12mm, bottommargin = 18mm, topmargin = 18mm, guidefont = 28, tickfont = 22, legendfont = 24, colorbar_titlefontsize = 28)
+    pl = plot(plots..., layout = layout, size = 2 .* (3 * 400, 2 * 300), margin = 12mm, bottommargin = 13mm, topmargin = 18mm, guidefont = 28, tickfont = 22, legendfont = 24, colorbar_titlefontsize = 28)
     display(pl)
     savefig(pl, joinpath(@__DIR__, "Fig3.pdf"))
 end

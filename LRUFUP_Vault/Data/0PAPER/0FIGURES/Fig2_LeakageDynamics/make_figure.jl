@@ -7,6 +7,8 @@ function make_fig()
     filename = joinpath(@__DIR__, "Fig2_data.h5")
     plots = []
     annotation_font_size = 17
+    annotation_pos = (-0.36, 1.15)
+    annotation_pos_h = (-0.3, 1.15)
     h5open(filename, "r") do file
         # Panel (a) ------------------------------------------------------
         plot_a = plot(ylims = (0, 2.02), xlabel = L"t~" * "(μs)", ylabel = L"\left\langle \hat{n}_1 \right\rangle")
@@ -18,8 +20,8 @@ function make_fig()
         y_h200 = read(file["a"]["200"], "y")
         plot!(plot_a, x_h200, y_h200, label = "|20>")
 
-        plot!(plot_a, leftmargin = 10mm)
-        annotate!(plot_a, ((-0.3, 1.15), text("(a)", annotation_font_size, "Computer Modern")))
+        plot!(plot_a, leftmargin = 10mm, topmargin = 10mm)
+        annotate!(plot_a, (annotation_pos, text("(a)", annotation_font_size, "Computer Modern")))
         push!(plots, plot_a)
 
         # Panel (b) ------------------------------------------------------
@@ -29,11 +31,11 @@ function make_fig()
 
         plot_b = heatmap(x .- 4000, y, z, xlabel = L"\Delta_{12} / 2\pi~\textrm{(MHz)}", ylabel = L"t~" * "(μs)", colorbar_title = L"\left\langle \hat{n}_2 / 2 \right\rangle")
         plot!(plot_b, clims = (0, 2), colorbar = false)
-        annotate!(plot_b, ((-0.3, 1.15), text("(b)", annotation_font_size, "Computer Modern")))
+        annotate!(plot_b, (annotation_pos_h, text("(b)", annotation_font_size, "Computer Modern")))
         push!(plots, plot_b)
 
         # Panel (c) ------------------------------------------------------
-        plot_c = plot(xlabel = L"\Delta_{12} / 2\pi~\textrm{(MHz)}", ylabel = L"\max\left(\left\langle \hat{n}_2 (t) \right\rangle\right)", ylims = (0, 2))
+        plot_c = plot(xlabel = L"\Delta_{12} / 2\pi~\textrm{(MHz)}", ylabel = L"\max\left(\left\langle \hat{n}_2 (t) \right\rangle\right)", ylims = (-0.02, 2))
 
         x_g_0 = read(file["c"]["g_0"], "x")
         y_g_0 = read(file["c"]["g_0"], "y")
@@ -43,7 +45,7 @@ function make_fig()
         y_zz_0 = read(file["c"]["zz_0"], "y")
         plot!(plot_c, x_zz_0 .- 4000, y_zz_0, label = L"\zeta = 0")
 
-        annotate!(plot_c, ((-0.3, 1.15), text("(c)", annotation_font_size, "Computer Modern")))
+        annotate!(plot_c, (annotation_pos, text("(c)", annotation_font_size, "Computer Modern")))
         push!(plots, plot_c)
 
         # Panel (d) ------------------------------------------------------
@@ -53,11 +55,11 @@ function make_fig()
 
         plot_d = heatmap(x .- 300, y, z, xlabel = L"\Delta U_{12} / 2\pi~\textrm{(MHz)}", ylabel = L"t~"* "(μs)", colorbar_title = L"\left\langle \hat{n}_2 - 1 \right\rangle", clims = (0, 2))
         plot!(plot_d, colorbar = false, xlims = (-50, 50))
-        annotate!(plot_d, ((-0.3, 1.15), text("(d)", annotation_font_size, "Computer Modern")))
+        annotate!(plot_d, (annotation_pos_h, text("(d)", annotation_font_size, "Computer Modern")))
         push!(plots, plot_d)
 
         # Colorbar
-        limits = collect(range(0, 1, length = 100))
+        limits = collect(range(0, 2, length = 100))
         colorbar = heatmap([1], limits, [limits;;], colorbar=false, xaxis=false, ymirror=true, ylabel = L"\left\langle \hat{n}_2 \right\rangle")
         plot!(colorbar, rightmargin = 12mm)
         push!(plots, colorbar)
@@ -71,8 +73,9 @@ function make_fig()
         x_h201 = read(file["e"]["201"], "x")
         y_h201 = read(file["e"]["201"], "y")
         plot!(plot_e, x_h201, y_h201, label = "|21>")
+        plot!(plot_e, bottommargin = 8mm)
 
-        annotate!(plot_e, ((-0.3, 1.15), text("(e)", annotation_font_size, "Computer Modern")))
+        annotate!(plot_e, (annotation_pos, text("(e)", annotation_font_size, "Computer Modern")))
         push!(plots, plot_e)
 
         # Panel (f) ------------------------------------------------------
@@ -82,11 +85,11 @@ function make_fig()
 
         plot_f = heatmap(x .- 4000, y, z, xlabel = L"\Delta_{12} / 2\pi~\textrm{(MHz)}", ylabel = L"t~\textrm{(ns)}", colorbar_title = L"\left\langle \hat{n}_2 - 1 \right\rangle")
         plot!(plot_f, clims = (1, 2), colorbar = false)
-        annotate!(plot_f, ((-0.3, 1.15), text("(f)", annotation_font_size, "Computer Modern")))
+        annotate!(plot_f, (annotation_pos_h, text("(f)", annotation_font_size, "Computer Modern")))
         push!(plots, plot_f)
 
         # Panel (g) ------------------------------------------------------
-        plot_g = plot(xlabel = L"\Delta_{12} / 2\pi~\textrm{(MHz)}", ylabel = L"\max\left(\left\langle \hat{n}_2 (t) \right\rangle\right)", ylims = (1, 2))
+        plot_g = plot(xlabel = L"\Delta_{12} / 2\pi~\textrm{(MHz)}", ylabel = L"\max\left(\left\langle \hat{n}_2 (t) \right\rangle\right)", ylims = (0.99, 2))
 
         x_g_0 = read(file["g"]["g_0"], "x")
         y_g_0 = read(file["g"]["g_0"], "y")
@@ -96,7 +99,7 @@ function make_fig()
         y_zz_0 = read(file["g"]["zz_0"], "y")
         plot!(plot_g, x_zz_0 .- 4000, y_zz_0, label = L"\zeta = 0")
 
-        annotate!(plot_g, ((-0.3, 1.15), text("(g)", annotation_font_size, "Computer Modern")))
+        annotate!(plot_g, (annotation_pos, text("(g)", annotation_font_size, "Computer Modern")))
         push!(plots, plot_g)
 
         # Panel (h) ------------------------------------------------------
@@ -106,7 +109,7 @@ function make_fig()
 
         plot_h = heatmap(x .- 300, y, z, xlabel = L"\Delta U_{12} / 2\pi~\textrm{(MHz)}", ylabel = L"t~\textrm{(ns)}", colorbar_title = L"\left\langle \hat{n}_2 - 1 \right\rangle", clims = (1, 2))
         plot!(plot_h, colorbar = false, xlims = (-50, 50))
-        annotate!(plot_h, ((-0.3, 1.15), text("(h)", annotation_font_size, "Computer Modern")))
+        annotate!(plot_h, (annotation_pos_h, text("(h)", annotation_font_size, "Computer Modern")))
         push!(plots, plot_h)
 
         # Colorbar
@@ -116,7 +119,7 @@ function make_fig()
         push!(plots, colorbar)
     end
     layout = @layout [a b c d e{0.02w}; f g h i j{0.02w}]
-    pl = plot(plots..., layout = layout, size = 1 .* (4.5 * 400, 2 * 350), margin = 2mm, bottommargin = 12mm, topmargin = 10mm, guidefont = 18, tickfont = 13, legendfont = 13)
+    pl = plot(plots..., layout = layout, size = 1 .* (4 * 400, 2 * 300), margin = 4mm, guidefont = 18, tickfont = 13, legendfont = 13)
     display(pl)
     savefig(pl, joinpath(@__DIR__, "Fig2.pdf"))
 end

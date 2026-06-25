@@ -46,10 +46,10 @@ function make_fig()
 
     zz = [calc_zz(wc_i, [], 4000, 4000, [300, 300, 300], [50, 50, 5]) for wc_i in wc]
 
-    pl = plot(wc .- 4000, J_100, label = L"g_{\textrm{eff}}", xlabel = L"\Delta_{c1} / 2\pi~(\textrm{MHz})", ylabel = L"J / 2\pi")
+    pl = plot(wc .- 4000, J_100, label = L"g_{\textrm{eff}}", xlabel = L"\Delta_{c1} / 2\pi~(\textrm{MHz})", ylabel = L"J / 2\pi~(\textrm{MHz})")
     plot!(pl, wc .- 4000, J_200, label = L"J_{20}")
     plot!(pl, wc .- 4000, J_201, label = L"J_{21}")
-    plot!(twinx(), wc .- 4000, zz, label = L"\zeta", ylabel = L"\zeta / 2\pi", ylims = (-0.05, 0.0107), lc = 4, legend = :right)
+    plot!(twinx(), wc .- 4000, zz, label = L"\zeta", ylabel = L"\zeta / 2\pi~(\textrm{MHz})", ylims = (-0.05, 0.0107), lc = 4, legend = :right)
 
     vline!([-495], ls=:dash, lc=1, label="")
     # vline!([-750], ls=:dash, lc=2, label="")
@@ -73,7 +73,7 @@ function make_fig()
 
     close(file)
 
-    pl = plot(w1 .- 4000, J_201, label = L"J_{201}", xlabel = L"\Delta_{q} / 2\pi~(\textrm{MHz})", ylabel = L"J / 2\pi", ylims = (-0.1, 0.1))
+    pl = plot(w1 .- 4000, J_201, label = L"J_{201}", xlabel = L"\Delta_{q} / 2\pi~(\textrm{MHz})", ylabel = L"J / 2\pi~(\textrm{MHz})", ylims = (-0.1, 0.1))
     w1_start = w1[1:Int(round(w1_l / 2 - sl / 2))]
     w1_mid = w1[Int(round(w1_l / 2 - sl / 2)):Int(round(w1_l / 2 + sl / 2))]
     w1_end = w1[Int(round(w1_l / 2 + sl / 2)):end]
