@@ -7,8 +7,8 @@ using LocalPackages
 
 function make_fig()
     plots = []
-    annotation_font_size = 36
-    annotation_pos = (-0.31, 1.07)
+    annotation_font_size = 28
+    annotation_pos = (-0.27, 1.1)
 
     # ----------------------------------------------------
     plotinfo = loaddata(@__DIR__, "wc_off.jld2")
@@ -25,8 +25,8 @@ function make_fig()
     plot!(pl, g_x .- 4000, 4000 .- g_y, label = L"g_{\textrm{eff}} = 0")
     plot!(pl, zz_x .- 4000, 4000 .- zz_y, label = L"\zeta = 0")
 
-    annotate!(pl, (annotation_pos, text("(g)", annotation_font_size, "Computer Modern")))
-    plot!(pl, topmargin = 17mm)
+    annotate!(pl, ((-0.24, 1.1), text("(a)", annotation_font_size, "Computer Modern")))
+    plot!(pl, topmargin = 16mm, leftmargin = 16mm, bottommargin = 17mm)
 
     xtick_pos = [-300, -150, 0, 150, 300]
     xtick_labels = ["-300", "-150", "0", "150", "300"]
@@ -47,19 +47,21 @@ function make_fig()
 
     zz = [calc_zz(wc_i, [], 4000, 4000, [300, 300, 300], [50, 50, 5]) for wc_i in wc]
 
-    pl = plot(4000 .- wc, J_100, label = L"g_{\textrm{eff}}", xlabel = L"\Delta_{1c} / 2\pi~(\textrm{MHz})", ylabel = L"J / 2\pi~(\textrm{MHz})", legend = :right)
-    plot!(pl, [NaN], [NaN], label = L"\zeta")
-    plot!(pl, 4000 .- wc, J_200, label = L"J_{20}")
-    plot!(pl, 4000 .- wc, J_201, label = L"J_{21}")
+    pl = plot()
+    plot!(pl, 4000 .- wc, J_100, label = L"g_{\textrm{eff}}", xlabel = L"\Delta_{1c} / 2\pi~(\textrm{MHz})", ylabel = L"J / 2\pi~(\textrm{MHz})", legend = :right)
+    hline!(pl, [0], lc=:grey, lw=1, label="")
+    plot!(pl, [NaN], [NaN], label = L"\zeta", lc = 2)
+    plot!(pl, 4000 .- wc, J_200, label = L"J_{20}", lc = 3)
+    plot!(pl, 4000 .- wc, J_201, label = L"J_{21}", lc = 4)
     plot!(twinx(), 4000 .- wc, zz, label = "", ylabel = L"\zeta / 2\pi~(\textrm{MHz})", ylims = (-0.05, 0.0107), lc = 2, legend = :right)
 
     vline!([495], ls=:dash, lc=1, label="")
     # vline!([-750], ls=:dash, lc=2, label="")
-    vline!([795], ls=:dash, lc=4, label="")
-    vline!([755], ls=:dash, lc=2, label="")
+    vline!([793], ls=:dash, lc=4, label="")
+    vline!([754], ls=:dash, lc=2, label="")
 
-
-    annotate!(pl, (annotation_pos, text("(h)", annotation_font_size, "Computer Modern")))
+    plot!(pl, rightmargin = 20mm)
+    annotate!(pl, (annotation_pos, text("(b)", annotation_font_size, "Computer Modern")))
 
     push!(plots, pl)
 
@@ -75,7 +77,7 @@ function make_fig()
 
     close(file)
 
-    pl = plot(w1 .- 4000, J_201, label = L"J_{201}", xlabel = L"\Delta_{q} / 2\pi~(\textrm{MHz})", ylabel = L"J / 2\pi~(\textrm{MHz})", ylims = (-0.1, 0.1))
+    pl = plot( 4000 .- w1, J_201, label = L"J_{201}", xlabel = L"\Delta_{q} / 2\pi~(\textrm{MHz})", ylabel = L"J / 2\pi~(\textrm{MHz})", ylims = (-0.101, 0.101))
     w1_start = w1[1:Int(round(w1_l / 2 - sl / 2))]
     w1_mid = w1[Int(round(w1_l / 2 - sl / 2)):Int(round(w1_l / 2 + sl / 2))]
     w1_end = w1[Int(round(w1_l / 2 + sl / 2)):end]
@@ -86,22 +88,22 @@ function make_fig()
 
     mid_n = div(length(w1_mid), 2)
 
-    plot!(pl, w1_start .- 4000, J_211_start, label = "", lc = 2)
-    plot!(pl, w1_mid[1:(mid_n)] .- 4000, J_211_mid[1:(mid_n)], label = "", lc = 2, ls = :dash)
-    plot!(pl, w1_mid[(mid_n + 2):end] .- 4000, J_211_mid[(mid_n + 2):end], label = "", lc = 2, ls = :dash)
-    plot!(pl, w1_end .- 4000, J_211_end, label = L"J_{211}", lc = 2)
+    plot!(pl, 4000 .- w1_start, J_211_start, label = "", lc = 2)
+    plot!(pl, 4000 .- w1_mid[1:(mid_n)], J_211_mid[1:(mid_n)], label = "", lc = 2, ls = :dash)
+    plot!(pl, 4000 .- w1_mid[(mid_n + 2):end], J_211_mid[(mid_n + 2):end], label = "", lc = 2, ls = :dash)
+    plot!(pl, 4000 .- w1_end, J_211_end, label = L"J_{211}", lc = 2)
 
-    annotate!(pl, (annotation_pos, text("(j)", annotation_font_size, "Computer Modern")))
+    annotate!(pl, (annotation_pos, text("(c)", annotation_font_size, "Computer Modern")))
 
     plot!(pl, xticks = (xtick_pos, xtick_labels))
     push!(plots, pl)
 
     # ----------------------------------------------------
 
-    layout = @layout [a; b; c]
-    pl = plot(plots..., layout = layout, size = 1.5 .* (450, 3 * 300), leftmargin = 13mm, rightmargin = 13mm, margin = 0mm, guidefont = 24, tickfont = 20, legendfont = 20)
+    layout = @layout [a b c]
+    pl = plot(plots..., layout = layout, size = 2 .* (3 * 400, 300), margin = 15mm, guidefont = 24, tickfont = 20, legendfont = 20)
     display(pl)
-    savefig(pl, joinpath(@__DIR__, "Fig1_without_scheme.pdf"))
+    savefig(pl, joinpath(@__DIR__, "effective_coupling.pdf"))
 end
 
 make_fig()
