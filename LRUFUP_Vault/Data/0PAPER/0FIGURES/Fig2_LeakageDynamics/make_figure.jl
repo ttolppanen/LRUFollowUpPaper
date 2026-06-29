@@ -124,4 +124,28 @@ function make_fig()
     savefig(pl, joinpath(@__DIR__, "Fig2.pdf"))
 end
 
-make_fig()
+function compare_coupling()
+    filename = joinpath(@__DIR__, "Fig2_data.h5")
+    plots = []
+    h5open(filename, "r") do file
+        # Panel (c) ------------------------------------------------------
+        plot_c = plot(xlabel = L"\Delta_{12} / 2\pi~\textrm{(MHz)}", ylabel = L"\max\left(\left\langle \hat{n}_2 (t) \right\rangle\right)")
+        plot!(plot_c, ylims = (0, 2.1))
+
+        x_g_0 = read(file["c"]["g_0"], "x")
+        y_g_0 = read(file["c"]["g_0"], "y")
+        plot!(plot_c, x_g_0 .- 4000, 1.0138 * y_g_0, label = L"g_{\textrm{eff}} = 0")
+
+        x_zz_0 = read(file["c"]["zz_0"], "x")
+        y_zz_0 = read(file["c"]["zz_0"], "y")
+        # plot!(plot_c, x_zz_0 .- 4000, y_zz_0, label = L"\zeta = 0")
+
+        plot!(plot_c, x -> 2 / sqrt(1 + (x / 0.2)^2), label = "ref")
+
+        display(plot_c)
+    end
+end
+
+
+# make_fig()
+compare_coupling()

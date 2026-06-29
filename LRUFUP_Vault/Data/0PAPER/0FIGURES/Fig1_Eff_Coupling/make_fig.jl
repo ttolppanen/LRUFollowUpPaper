@@ -8,13 +8,13 @@ using LocalPackages
 function make_fig()
     plots = []
     annotation_font_size = 36
-    annotation_pos = (-0.25, 1.15)
+    annotation_pos = (-0.31, 1.07)
 
     # ----------------------------------------------------
     plotinfo = loaddata(@__DIR__, "wc_off.jld2")
     display(keys(plotinfo.lines))
 
-    pl = plot(xlabel = L"\Delta_{21} / 2\pi ~(\textrm{MHz})", ylabel = L"\Delta_{c1} / 2\pi~(\textrm{MHz})")
+    pl = plot(xlabel = L"\Delta_{12} / 2\pi ~(\textrm{MHz})", ylabel = L"\Delta_{1c} / 2\pi~(\textrm{MHz})")
 
     g_x = plotinfo.lines["g0"].x
     g_y = plotinfo.lines["g0"].y
@@ -22,8 +22,8 @@ function make_fig()
     zz_x = plotinfo.lines["zz min"].x
     zz_y = plotinfo.lines["zz min"].y
 
-    plot!(pl, g_x .- 4000, g_y .- 4000, label = L"g_{\textrm{eff}} = 0")
-    plot!(pl, zz_x .- 4000, zz_y .- 4000, label = L"\zeta = 0")
+    plot!(pl, g_x .- 4000, 4000 .- g_y, label = L"g_{\textrm{eff}} = 0")
+    plot!(pl, zz_x .- 4000, 4000 .- zz_y, label = L"\zeta = 0")
 
     annotate!(pl, (annotation_pos, text("(g)", annotation_font_size, "Computer Modern")))
     plot!(pl, topmargin = 17mm)
@@ -32,6 +32,7 @@ function make_fig()
     xtick_labels = ["-300", "-150", "0", "150", "300"]
 
     plot!(pl, xticks = (xtick_pos, xtick_labels))
+    # yflip!(pl)
     push!(plots, pl)
 
     # ----------------------------------------------------
@@ -46,15 +47,16 @@ function make_fig()
 
     zz = [calc_zz(wc_i, [], 4000, 4000, [300, 300, 300], [50, 50, 5]) for wc_i in wc]
 
-    pl = plot(wc .- 4000, J_100, label = L"g_{\textrm{eff}}", xlabel = L"\Delta_{c1} / 2\pi~(\textrm{MHz})", ylabel = L"J / 2\pi~(\textrm{MHz})")
-    plot!(pl, wc .- 4000, J_200, label = L"J_{20}")
-    plot!(pl, wc .- 4000, J_201, label = L"J_{21}")
-    plot!(twinx(), wc .- 4000, zz, label = L"\zeta", ylabel = L"\zeta / 2\pi~(\textrm{MHz})", ylims = (-0.05, 0.0107), lc = 4, legend = :right)
+    pl = plot(4000 .- wc, J_100, label = L"g_{\textrm{eff}}", xlabel = L"\Delta_{1c} / 2\pi~(\textrm{MHz})", ylabel = L"J / 2\pi~(\textrm{MHz})", legend = :right)
+    plot!(pl, [NaN], [NaN], label = L"\zeta")
+    plot!(pl, 4000 .- wc, J_200, label = L"J_{20}")
+    plot!(pl, 4000 .- wc, J_201, label = L"J_{21}")
+    plot!(twinx(), 4000 .- wc, zz, label = "", ylabel = L"\zeta / 2\pi~(\textrm{MHz})", ylims = (-0.05, 0.0107), lc = 2, legend = :right)
 
-    vline!([-495], ls=:dash, lc=1, label="")
+    vline!([495], ls=:dash, lc=1, label="")
     # vline!([-750], ls=:dash, lc=2, label="")
-    vline!([-795], ls=:dash, lc=3, label="")
-    vline!([-755], ls=:dash, lc=4, label="")
+    vline!([795], ls=:dash, lc=4, label="")
+    vline!([755], ls=:dash, lc=2, label="")
 
 
     annotate!(pl, (annotation_pos, text("(h)", annotation_font_size, "Computer Modern")))
@@ -97,7 +99,7 @@ function make_fig()
     # ----------------------------------------------------
 
     layout = @layout [a; b; c]
-    pl = plot(plots..., layout = layout, size = 1.5 .* (400, 3 * 300), leftmargin = 13mm, rightmargin = 13mm, margin = 2mm, guidefont = 20, tickfont = 16, legendfont = 16)
+    pl = plot(plots..., layout = layout, size = 1.5 .* (450, 3 * 300), leftmargin = 13mm, rightmargin = 13mm, margin = 0mm, guidefont = 24, tickfont = 20, legendfont = 20)
     display(pl)
     savefig(pl, joinpath(@__DIR__, "Fig1_without_scheme.pdf"))
 end
