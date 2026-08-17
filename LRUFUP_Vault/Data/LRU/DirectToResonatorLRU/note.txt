@@ -1,0 +1,12 @@
+You can connect a transmon directly to the resonator and get better detuning,
+because the resonator does not have anharmonicity. If you connect 20 -> 02, you get
+T* = 600ns I suppose, which is better than in our paper. The T1 is then 280mus.
+On the other hand, you can connect 20 -> 11, and have even larger detuning. The optimal
+removal rate is quite high, which then leads to fast leakage removal but also poor T1
+for the qubit. But, if you do not operate with the optimal removal rate, but instead
+something smaller, like 2x the optimal rate in the 20 -> 02 case, then the T1 is a lot
+better than in the 20 -> 02 case because of the larger detuning, and the T* is 
+comparable, if not faster.
+
+Already the 280mus T1 is not too bad, so I dont know if it would matter much to
+engineer the array LRU honestly.
