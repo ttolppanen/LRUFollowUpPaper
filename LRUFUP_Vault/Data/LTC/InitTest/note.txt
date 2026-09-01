@@ -1,0 +1,1 @@
+Here Jb = 25MHz actually, not 5MHz
