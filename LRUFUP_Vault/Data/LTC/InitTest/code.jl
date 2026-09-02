@@ -45,7 +45,7 @@ function initial_parameters()
     param[:Ub] = ValueInfo(0, "0MHz")
     t = 1
     param[:t] = ValueInfo(t * 2 * π * param[:J12].val, "$(t)μs")
-    param[:bus_diss_rate] = 2 / param[:J12].val
+    param[:bus_diss_rate] = 1 / param[:J12].val
 
     # param[:wd] = ValueInfo(4007 / param[:J12].val, "4.007GHz")
     # param[:gate_time] = ValueInfo(14 * 10^(-3) * 2 * π * param[:J12].val, "14ns")
@@ -88,10 +88,10 @@ function f()
     state10 = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 0), basis(param[:d], 0), basis(param[:d], 0)))
 
     state = state10
-    # out = mesolve(H, state, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
-    # push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "s_0 = |100>, <n1>"))
-    # push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "s_0 = |100>, <n2>"))
-    # push!(lines, LineInfo(t_list, real(out.expect[5, :]), 1, "s_0 = |100>, <n_all>"))
+    out = mesolve(H, state, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
+    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "s_0 = |100>, <n1>"))
+    push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "s_0 = |100>, <n2>"))
+    push!(lines, LineInfo(t_list, real(out.expect[5, :]), 1, "s_0 = |100>, <n_all>"))
 
     state = state010
     out = mesolve(H, state, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
