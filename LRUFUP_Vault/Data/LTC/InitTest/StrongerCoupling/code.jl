@@ -29,13 +29,14 @@ function initial_parameters()
     param[:reltol] = 1e-8
     param[:H] = "Tunable Coupler"
     param[:J12] = ValueInfo(5, "5MHz")
-    param[:Jb] = ValueInfo(40 / param[:J12].val, "40MHz")
+    Jb = 1
+    param[:Jb] = ValueInfo(Jb / param[:J12].val, "$(Jb)MHz")
     param[:Jc] = ValueInfo(70 / param[:J12].val, "70MHz")
     param[:w1] = ValueInfo(4000 / param[:J12].val, "4GHz")
     param[:w2] = ValueInfo(4000/ param[:J12].val, "4GHz")
     param[:wc_off] = ValueInfo(3024.4 / param[:J12].val, "3.0244GHz")
     param[:wc_on] = ValueInfo(3900 / param[:J12].val, "3.9GHz")
-    param[:wb] = ValueInfo(3024 / param[:J12].val, "3.024Hz")
+    param[:wb] = ValueInfo(3014.45 / param[:J12].val, "3.014.45Hz")
     U = 300
     param[:U1] = ValueInfo(U / param[:J12].val, "$(U)MHz")
     U2 = U
@@ -43,9 +44,9 @@ function initial_parameters()
     Uc = U
     param[:Uc] = ValueInfo(Uc / param[:J12].val, "$(Uc)MHz")
     param[:Ub] = ValueInfo(0, "0MHz")
-    t = 10
+    t = 1
     param[:t] = ValueInfo(t * 2 * π * param[:J12].val, "$(t)μs")
-    param[:bus_diss_rate] = 2 / param[:J12].val
+    param[:bus_diss_rate] = 4 / param[:J12].val
 
     # param[:wd] = ValueInfo(4007 / param[:J12].val, "4.007GHz")
     # param[:gate_time] = ValueInfo(14 * 10^(-3) * 2 * π * param[:J12].val, "14ns")
@@ -82,28 +83,44 @@ function f()
     
     state20 = QuantumObject(tensor(basis(param[:d], 2), basis(param[:d], 0), basis(param[:d], 0), basis(param[:d], 0)))
     state010 = QuantumObject(tensor(basis(param[:d], 0), basis(param[:d], 1), basis(param[:d], 0), basis(param[:d], 0)))
-    # E, psi, Uni = eigenstates(H_below)
-    # state10 = psi[4]
+    E, psi, Uni = eigenstates(H)
+    state10 = psi[5]
+    println(round(expect(n1, state10), digits = 3))
+    println(round(expect(nc, state10), digits = 3))
+    println(round(expect(n2, state10), digits = 3))
+    println(round(expect(nb, state10), digits = 3))
 
-    state10 = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 0), basis(param[:d], 0), basis(param[:d], 0)))
+    d_q1, d_q2 = dressed_states(H, n1, n2)
 
-    state = state10
+    # state10 = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 0), basis(param[:d], 0), basis(param[:d], 0)))
+
+    state = d_q1
     out = mesolve(H, state, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
     push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "s_0 = |100>, <n1>"))
-    # push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "s_0 = |100>, <n2>"))
+    push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "s_0 = |100>, <n2>"))
     push!(lines, LineInfo(t_list, real(out.expect[5, :]), 1, "s_0 = |100>, <n_all>"))
 
-    # state = state010
-    # out = mesolve(H, state, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
-    # push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "s_0 = |010>, <nc>"))
-    # push!(lines, LineInfo(t_list, real(out.expect[5, :]), 1, "s_0 = |010>, <n_all>"))
+    # # state = psi[3]
+    # # out = mesolve(H, state, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
+    # # push!(lines, LineInfo(t_list, real(out.expect[2, :]), 1, "s_0 = |010>, <nc>"))
+    # # push!(lines, LineInfo(t_list, real(out.expect[5, :]), 1, "s_0 = |010>, <n_all>"))
 
 
     path = joinpath(@__DIR__)
     makeplot(path, lines...; xlabel = "t", ylabel = "", copy_code = false, param...)
-    # addtrajectories(path, line)
+end
+
+function dressed_states(H, n1, n2)
+    E, psi, Uni = eigenstates(H)
+    q1 = psi[4]
+    q2 = psi[5]
+    n = n1 - n2
+    h = [q1' * n * q1 q2' * n * q2; q2' * n * q1 q2' * n * q2]
+    E, psi, Uni = eigenstates(QuantumObject(h))
+    d_q1 = psi[1][1] * q1 + psi[1][2] * q2
+    d_q2 = psi[2][1] * q1 + psi[2][2] * q2
+    return d_q1, d_q2
 end
 
 @time f()
-
 
