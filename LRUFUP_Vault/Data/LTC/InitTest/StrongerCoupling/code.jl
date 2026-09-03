@@ -90,14 +90,14 @@ function f()
     println(round(expect(n2, state10), digits = 3))
     println(round(expect(nb, state10), digits = 3))
 
-    d_q1, d_q2 = dressed_states(H, n1, n2)
+    # d_q1, d_q2 = dressed_states(H, n1, n2)
 
-    # state10 = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 0), basis(param[:d], 0), basis(param[:d], 0)))
+    state10 = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 0), basis(param[:d], 0), basis(param[:d], 0)))
 
-    state = d_q1
+    state = state10
     out = mesolve(H, state, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
     push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "s_0 = |100>, <n1>"))
-    push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "s_0 = |100>, <n2>"))
+    # push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "s_0 = |100>, <n2>"))
     push!(lines, LineInfo(t_list, real(out.expect[5, :]), 1, "s_0 = |100>, <n_all>"))
 
     # # state = psi[3]
