@@ -8,9 +8,9 @@ function make_fig()
     plots = []
     annotation_font_size = 17
 
-    scheme_200 = L"\textrm{Coupler}_{20}"
-    scheme_pumped = L"\textrm{Pumped}_{21}"
-    scheme_direct = L"\textrm{Direct}"
+    scheme_200 = "Coupler-LRU"
+    scheme_pumped = "CouplerX-LRU"
+    scheme_direct = "Direct-LRU"
 
     annotation_pos = ((-0.18, 1.15))
 
@@ -93,9 +93,9 @@ function make_b_zoom()
     plots = []
     annotation_font_size = 17
 
-    scheme_200 = L"\textrm{Coupler}_{20}"
-    scheme_pumped = L"\textrm{Pumped}_{21}"
-    scheme_direct = L"\textrm{Direct}"
+    scheme_200 = "Coupler-LRU"
+    scheme_pumped = "CouplerX-LRU"
+    scheme_direct = "Direct-LRU"
 
     annotation_pos = ((0.1, 1))
 
