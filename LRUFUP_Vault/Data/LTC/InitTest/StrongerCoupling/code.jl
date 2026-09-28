@@ -84,7 +84,7 @@ function f()
     state20 = QuantumObject(tensor(basis(param[:d], 2), basis(param[:d], 0), basis(param[:d], 0), basis(param[:d], 0)))
     state010 = QuantumObject(tensor(basis(param[:d], 0), basis(param[:d], 1), basis(param[:d], 0), basis(param[:d], 0)))
     E, psi, Uni = eigenstates(H)
-    state10 = psi[5]
+    state10 = psi[4]
     println(round(expect(n1, state10), digits = 3))
     println(round(expect(nc, state10), digits = 3))
     println(round(expect(n2, state10), digits = 3))
@@ -92,11 +92,11 @@ function f()
 
     # d_q1, d_q2 = dressed_states(H, n1, n2)
 
-    state10 = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 0), basis(param[:d], 0), basis(param[:d], 0)))
+    # state10 = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 0), basis(param[:d], 0), basis(param[:d], 0)))
 
     state = state10
     out = mesolve(H, state, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
-    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "s_0 = |100>, <n1>"))
+    # push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "s_0 = |100>, <n1>"))
     # push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "s_0 = |100>, <n2>"))
     push!(lines, LineInfo(t_list, real(out.expect[5, :]), 1, "s_0 = |100>, <n_all>"))
 
