@@ -72,7 +72,7 @@ function f()
     
     c_ops = [sqrt(param[:bus_diss_rate]) * qt_single_site_op(d, L, destroy(d), 4)]
 
-    w = [param[:w1].val, param[:wc_off].val, param[:w2].val, param[:wb].val]
+    w = [param[:w1].val, param[:wc_on].val, param[:w2].val, param[:wb].val]
     U = [param[:U1].val, param[:Uc].val, param[:U2].val, param[:Ub].val]
     g = [param[:Jc].val, param[:Jc].val, param[:J12].val, param[:Jb].val]
 
@@ -92,11 +92,11 @@ function f()
 
     # d_q1, d_q2 = dressed_states(H, n1, n2)
 
-    # state10 = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 0), basis(param[:d], 0), basis(param[:d], 0)))
+    state10 = QuantumObject(tensor(basis(param[:d], 1), basis(param[:d], 0), basis(param[:d], 0), basis(param[:d], 0)))
 
     state = state10
     out = mesolve(H, state, t_list, c_ops, e_ops = e_ops; alg = Vern9(), abstol = param[:abstol], reltol = param[:reltol], maxiters = 10^7)
-    # push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "s_0 = |100>, <n1>"))
+    push!(lines, LineInfo(t_list, real(out.expect[1, :]), 1, "s_0 = |100>, <n1>"))
     # push!(lines, LineInfo(t_list, real(out.expect[3, :]), 1, "s_0 = |100>, <n2>"))
     push!(lines, LineInfo(t_list, real(out.expect[5, :]), 1, "s_0 = |100>, <n_all>"))
 
