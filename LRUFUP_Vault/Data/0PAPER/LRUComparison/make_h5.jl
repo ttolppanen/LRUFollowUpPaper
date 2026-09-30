@@ -31,9 +31,9 @@ function make_h5()
     t_to_mus(times) = times ./ (2 * π * 5) # ASSUMING IN UNITS OF J = 5MHZ !!!!
     plots = []
 
-    scheme_200 = "Coupler_200"
-    scheme_pumped = "Pumped_201"
-    scheme_direct = "Direct"
+    scheme_200 = "Coupler-LRU"
+    scheme_pumped = "CouplerX-LRU"
+    scheme_direct = "Direct-LRU"
     
     filepath = joinpath(@__DIR__, "Fig4_data.h5")
     h5open(filepath, "w") do file

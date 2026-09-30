@@ -18,31 +18,31 @@ function save_hdf5()
         h200 = plotinfo.lines["below, s_0 = |200>, <n1>"]
         h100 = plotinfo.lines["below, s_0 = |100>, <n1>"]
 
-        sg = create_group(g, "100")
-        attrs(sg)["Description"] = "Data for initial state 100"
+        sg = create_group(g, "10")
+        attrs(sg)["Description"] = "Data for initial state |10>"
         write(sg, "x", collect(h100.x) / (2 * pi * J))
         write(sg, "y", h100.y)
 
-        sg = create_group(g, "200")
-        attrs(sg)["Description"] = "Data for initial state 200"
+        sg = create_group(g, "20")
+        attrs(sg)["Description"] = "Data for initial state |20>"
         write(sg, "x", collect(h200.x) / (2 * pi * J))
         write(sg, "y", h200.y)
 
         # Panel (b) ------------------------------------------------------
         g = create_group(file, "b")
         # attrs(g)["Description"] = "Data for panel (b) of Fig. 2, leakage propagation when the second transmon is detuned from the first one. The x-axis shows the frequency of the second transmon in megahertz. The y-axis shows the time in microseconds. The color of the plot indicates the population of the second transmon <n2 / 2> where we have divided by 2 to normalize the data, for which the values here are under the z-label."
-        attrs(g)["Description"] = "Data for panel (b) of Fig. 2, leakage propagation when the second transmon is detuned from the first one. The x-axis shows the frequency of the second transmon in megahertz. The y-axis shows the time in microseconds. The color of the plot indicates the population of the second transmon <n2>, for which the values here are under the z-label."
+        attrs(g)["Description"] = "Data for panel (b) of Fig. 2, leakage propagation when the second transmon is detuned from the first one. The x-axis shows the frequency difference between the first and the second transmon in megahertz. The y-axis shows the time in microseconds. The color of the plot indicates the population of the second transmon <n2>, for which the values here are under the z-label."
 
         @load joinpath(@__DIR__, "200_off_resonance_data.jld2") x y z p
 
-        write(g, "x", collect(x))
+        write(g, "x", collect(x) .- 4000)
         write(g, "y", collect(y))
         write(g, "z", collect(z))
 
         # Panel (c) ------------------------------------------------------
         g = create_group(file, "c")
         # attrs(g)["Description"] = "Data for panel (c) of Fig. 2, maximum leakage propagation for different detuning of the second transmon. We show the maximum leakage for the g_eff = 0 tuning, and the zz = 0 tuning of the coupler. The x-axis shows the frequency of the second transmon in megahertz. The y-axis shows the maximum population of the second transmon max(<n2 / 2>) during a time of 10 microseconds."
-        attrs(g)["Description"] = "Data for panel (c) of Fig. 2, maximum leakage propagation for different detuning of the second transmon. We show the maximum leakage for the g_eff = 0 tuning, and the zz = 0 tuning of the coupler. The x-axis shows the frequency of the second transmon in megahertz. The y-axis shows the maximum population of the second transmon max(<n2>(t)) over a time of 10 microseconds."
+        attrs(g)["Description"] = "Data for panel (c) of Fig. 2, maximum leakage propagation for different detuning of the second transmon. We show the maximum leakage for the g_eff = 0 tuning, and the zz = 0 tuning of the coupler. The x-axis shows the frequency difference between the first and the second transmon in megahertz. The y-axis shows the maximum population of the second transmon max(<n2>(t)) over a time of 10 microseconds."
 
         plotinfo = loaddata(@__DIR__, "200_off_resonance_max_data.jld2")
 
@@ -50,22 +50,22 @@ function save_hdf5()
         zz_0 = plotinfo.lines["zz = 0 (min), max(<n2>)"]
         sg = create_group(g, "g_0")
         attrs(sg)["Description"] = "Data for g_eff = 0 tuning"
-        write(sg, "x", g_0.x)
+        write(sg, "x", g_0.x .- 4000)
         write(sg, "y", Vector{Float64}(g_0.y))
 
         sg = create_group(g, "zz_0")
         attrs(sg)["Description"] = "Data for zz = 0 tuning"
-        write(sg, "x", zz_0.x)
+        write(sg, "x", zz_0.x .- 4000)
         write(sg, "y", Vector{Float64}(zz_0.y))
 
         # Panel (d) ------------------------------------------------------
         g = create_group(file, "d")
         # attrs(g)["Description"] = "Data for panel (d) of Fig. 2, leakage propagation when the second transmon does not have equal anharmonicity U as the first one. Even though the anharmonicities are different, the second transmon is tuned so that the second excited states of the first and second transmon have equal energy. The x-axis shows the anharmonicity of the second transmon in megahertz. The y-axis shows the time in microseconds. The color of the plot indicates the population of the second transmon <n2 / 2> where we have divided by 2 to normalize the data, for which the values here are under the z-label."
-        attrs(g)["Description"] = "Data for panel (d) of Fig. 2, leakage propagation when the second transmon does not have equal anharmonicity U as the first one. Even though the anharmonicities are different, the second transmon is tuned so that the second excited states of the first and second transmon have equal energy. The x-axis shows the anharmonicity of the second transmon in megahertz. The y-axis shows the time in microseconds. The color of the plot indicates the population of the second transmon <n2>, for which the values here are under the z-label."
+        attrs(g)["Description"] = "Data for panel (d) of Fig. 2, leakage propagation when the second transmon does not have equal anharmonicity U as the first one. Even though the anharmonicities are different, the second transmon is tuned so that the second excited states of the first and second transmon have equal energy. The x-axis shows the anharmonicity difference between the first and the second transmon in megahertz. The y-axis shows the time in microseconds. The color of the plot indicates the population of the second transmon <n2>, for which the values here are under the z-label."
 
         @load joinpath(@__DIR__, "200_U_data.jld2") x y z p
 
-        write(g, "x", collect(x))
+        write(g, "x", collect(x) .- 300)
         write(g, "y", collect(y))
         write(g, "z", collect(z))
 
@@ -79,53 +79,53 @@ function save_hdf5()
         h201 = plotinfo.lines["below, s_0 = |201>, <n1>"]
         h100 = plotinfo.lines["below, s_0 = |100>, <n1>"]
 
-        sg = create_group(g, "100")
-        attrs(sg)["Description"] = "Data for initial state 100"
+        sg = create_group(g, "10")
+        attrs(sg)["Description"] = "Data for initial state |10>"
         write(sg, "x", collect(h100.x) / (2 * pi * J) * 1e3)
         write(sg, "y", h100.y)
 
-        sg = create_group(g, "201")
-        attrs(sg)["Description"] = "Data for initial state 201"
+        sg = create_group(g, "21")
+        attrs(sg)["Description"] = "Data for initial state |21>"
         write(sg, "x", collect(h201.x) / (2 * pi * J) * 1e3)
         write(sg, "y", h201.y)
 
         # Panel (f) ------------------------------------------------------
         g = create_group(file, "f")
         # attrs(g)["Description"] = "Data for panel (f) of Fig. 2, leakage propagation when the second transmon is detuned from the first one while the second transmon is excited. The x-axis shows the frequency of the second transmon in megahertz. The y-axis shows the time in nanoseconds. The color of the plot indicates the population of the second transmon <n2 - I> where we have used n2 - I to normalize the data between 0 and 1, for which the values here are under the z-label."
-        attrs(g)["Description"] = "Data for panel (f) of Fig. 2, leakage propagation when the second transmon is detuned from the first one while the second transmon is excited. The x-axis shows the frequency of the second transmon in megahertz. The y-axis shows the time in nanoseconds. The color of the plot indicates the population of the second transmon <n2>, for which the values here are under the z-label."
+        attrs(g)["Description"] = "Data for panel (f) of Fig. 2, leakage propagation when the second transmon is detuned from the first one while the second transmon is excited. The x-axis shows the frequency difference between the first and the second transmon in megahertz. The y-axis shows the time in nanoseconds. The color of the plot indicates the population of the second transmon <n2>, for which the values here are under the z-label."
 
         @load joinpath(@__DIR__, "201_off_resonance_data.jld2") x y z p
 
-        write(g, "x", collect(x))
+        write(g, "x", collect(x) .- 4000)
         write(g, "y", collect(y) .* 1e3)
         write(g, "z", collect(z))
 
         # Panel (g) ------------------------------------------------------
         g = create_group(file, "g")
         # attrs(g)["Description"] = "Data for panel (g) of Fig. 2, maximum leakage propagation for different detuning of the second transmon. We show the maximum leakage for the g_eff = 0 tuning, and the zz = 0 tuning of the coupler. The x-axis shows the frequency of the second transmon in megahertz. The y-axis shows the maximum population of the second transmon max(<n2 - I>) during a time of 3 microseconds."
-        attrs(g)["Description"] = "Data for panel (g) of Fig. 2, maximum leakage propagation for different detuning of the second transmon. We show the maximum leakage for the g_eff = 0 tuning, and the zz = 0 tuning of the coupler. The x-axis shows the frequency of the second transmon in megahertz. The y-axis shows the maximum population of the second transmon max(<n2>(t)) over a time of 300 nanoseconds."
+        attrs(g)["Description"] = "Data for panel (g) of Fig. 2, maximum leakage propagation for different detuning of the second transmon. We show the maximum leakage for the g_eff = 0 tuning, and the zz = 0 tuning of the coupler. The x-axis shows the frequency difference between the first and the second transmon in megahertz. The y-axis shows the maximum population of the second transmon max(<n2>(t)) over a time of 300 nanoseconds."
         plotinfo = loaddata(@__DIR__, "201_off_resonance_max_data.jld2")
 
         g_0 = plotinfo.lines["g = 0, max(<n2>)"]
         zz_0 = plotinfo.lines["zz = 0 (min), max(<n2>)"]
         sg = create_group(g, "g_0")
         attrs(sg)["Description"] = "Data for g_eff = 0 tuning"
-        write(sg, "x", g_0.x)
+        write(sg, "x", g_0.x .- 4000)
         write(sg, "y", Vector{Float64}(g_0.y))
 
         sg = create_group(g, "zz_0")
         attrs(sg)["Description"] = "Data for zz = 0 tuning"
-        write(sg, "x", zz_0.x)
+        write(sg, "x", zz_0.x .- 4000)
         write(sg, "y", Vector{Float64}(zz_0.y))
 
         # Panel (h) ------------------------------------------------------
         g = create_group(file, "h")
         # attrs(g)["Description"] = "Data for panel (h) of Fig. 2, leakage propagation when the second transmon does not have equal anharmonicity U as the first one. Even though the anharmonicities are different, the second transmon is tuned so that the second excited states of the first and second transmon have equal energy. The x-axis shows the anharmonicity of the second transmon in megahertz. The y-axis shows the time in nanoseconds. The color of the plot indicates the population of the second transmon <n2 - I> where we have used n2 - I to normalize the data between 0 and 1, for which the values here are under the z-label."
-        attrs(g)["Description"] = "Data for panel (h) of Fig. 2, leakage propagation when the second transmon does not have equal anharmonicity U as the first one. Even though the anharmonicities are different, the second transmon is tuned so that the second excited states of the first and second transmon have equal energy. The x-axis shows the anharmonicity of the second transmon in megahertz. The y-axis shows the time in nanoseconds. The color of the plot indicates the population of the second transmon <n2>, for which the values here are under the z-label."
+        attrs(g)["Description"] = "Data for panel (h) of Fig. 2, leakage propagation when the second transmon does not have equal anharmonicity U as the first one. Even though the anharmonicities are different, the second transmon is tuned so that the second excited states of the first and second transmon have equal energy. The x-axis shows the anharmonicity difference between the first and the second transmon in megahertz. The y-axis shows the time in nanoseconds. The color of the plot indicates the population of the second transmon <n2>, for which the values here are under the z-label."
 
         @load joinpath(@__DIR__, "201_U_data.jld2") x y z p
 
-        write(g, "x", collect(x))
+        write(g, "x", collect(x) .- 300)
         write(g, "y", collect(y) .* 1e3)
         write(g, "z", collect(z))
     end

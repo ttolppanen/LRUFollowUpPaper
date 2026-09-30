@@ -21,8 +21,8 @@ function make_fig()
 
         # Panel (b) ------------------------------------------------------
         plot_b = plot(ylims = (-0.02, 2.02), xlabel = L"t~\textrm{(ns)}", ylabel = L"\left\langle \hat{n}_1 \right\rangle")
-        x_leak = read(file["a"], "x")
-        y_leak = read(file["a"], "y")
+        x_leak = read(file["b"], "x")
+        y_leak = read(file["b"], "y")
         plot!(plot_b, x_leak, y_leak, legend = :none)
 
         plot!(plot_b, leftmargin = 10mm)

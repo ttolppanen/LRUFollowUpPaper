@@ -48,23 +48,23 @@ function save_hdf5()
 
         # Panel (b) ------------------------------------------------------
         g = create_group(file, "b")
-        attrs(g)["Description"] = "Data for panel (b) of Fig. 3, leakage tunneling with different tunings related to the middle transmon for initial state 201. The x-axis shows the frequency of the first and third transmon in megahertz. The y-axis shows the time in microseconds. The color of the plot indicates the population of the third transmon <n3> for which the values here are under the z-label."
+        attrs(g)["Description"] = "Data for panel (b) of Fig. 3, leakage tunneling with different tunings related to the middle transmon for initial state 201. The x-axis shows the frequency detuning between the first/third transmons and the middle transmon in megahertz. The y-axis shows the time in microseconds. The color of the plot indicates the population of the third transmon <n3> for which the values here are under the z-label."
 
         @load joinpath(@__DIR__, "201_detuned_data.jld2") x y z p
 
-        write(g, "x", collect(x))
+        write(g, "x", collect(x) .- 4000)
         write(g, "y", collect(y))
-        write(g, "z", collect(z))
+        write(g, "z", reverse(collect(z), dims = 2))
 
         # Panel (c) ------------------------------------------------------
         g = create_group(file, "c")
-        attrs(g)["Description"] = "Data for panel (c) of Fig. 3, leakage tunneling with off-resonant initial (first) and target (third) sites for initial state 201. The x-axis shows the frequency of the first transmon in megahertz. The y-axis shows the detuning of the first and third transmons w3 - w1 in megahertz. The color of the plot indicates the maximal population of the third transmon <n3> over a period of 10 microseconds, for which the values here are under the z-label."
+        attrs(g)["Description"] = "Data for panel (c) of Fig. 3, leakage tunneling with off-resonant initial (first) and target (third) sites for initial state 201. The x-axis shows the frequency detuning between the second and first transmon in megahertz. The y-axis shows the detuning of the first and third transmons w3 - w1 in megahertz. The color of the plot indicates the maximal population of the third transmon <n3> over a period of 10 microseconds, for which the values here are under the z-label."
 
         @load joinpath(@__DIR__, "201_relative_freq_data.jld2") x y z
 
-        write(g, "x", collect(x))
+        write(g, "x", collect(x) .- 4000)
         write(g, "y", collect(y))
-        write(g, "z", collect(z))
+        write(g, "z", reverse(collect(z), dims = 2))
 
         # Panel (d) ------------------------------------------------------
         g = create_group(file, "d")
@@ -106,23 +106,23 @@ function save_hdf5()
 
         # Panel (e) ------------------------------------------------------
         g = create_group(file, "e")
-        attrs(g)["Description"] = "Data for panel (e) of Fig. 3, leakage tunneling with different tunings related to the middle transmon for initial state 211. The x-axis shows the frequency of the first and third transmon in megahertz. The y-axis shows the time in microseconds. The color of the plot indicates the population of the third transmon <n3> for which the values here are under the z-label."
+        attrs(g)["Description"] = "Data for panel (e) of Fig. 3, leakage tunneling with different tunings related to the middle transmon for initial state 211. The x-axis shows the frequency detuning between the first/third transmons and the middle transmon in megahertz. The y-axis shows the time in microseconds. The color of the plot indicates the population of the third transmon <n3> for which the values here are under the z-label."
 
         @load joinpath(@__DIR__, "211_detuned_data.jld2") x y z p
 
-        write(g, "x", collect(x))
+        write(g, "x", collect(x) .- 4000)
         write(g, "y", collect(y))
-        write(g, "z", collect(z))
+        write(g, "z", reverse(collect(z), dims = 2))
 
         # Panel (f) ------------------------------------------------------
         g = create_group(file, "f")
-        attrs(g)["Description"] = "Data for panel (f) of Fig. 3, leakage tunneling with off-resonant initial (first) and target (third) sites for initial state 211. The x-axis shows the frequency of the first transmon in megahertz. The y-axis shows the detuning of the first and third transmons w3 - w1 in megahertz. The color of the plot indicates the maximal population of the third transmon <n3> over a period of 10 microseconds, for which the values here are under the z-label."
+        attrs(g)["Description"] = "Data for panel (f) of Fig. 3, leakage tunneling with off-resonant initial (first) and target (third) sites for initial state 211. The x-axis shows the frequency detuning between the second and first transmon in megahertz. The y-axis shows the detuning of the first and third transmons w3 - w1 in megahertz. The color of the plot indicates the maximal population of the third transmon <n3> over a period of 10 microseconds, for which the values here are under the z-label."
 
         @load joinpath(@__DIR__, "211_relative_freq_data.jld2") x y z p
 
-        write(g, "x", collect(x))
+        write(g, "x", collect(x) .- 4000)
         write(g, "y", collect(y))
-        write(g, "z", collect(z))
+        write(g, "z", reverse(collect(z), dims = 2))
     end
     println("Data saved!")
 end

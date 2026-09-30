@@ -9,9 +9,9 @@ function save_hdf5()
         attrs(file)["DOI"] = "10.5281/zenodo.20733347"
         attrs(file)["Description"] = "Data for Fig. 5 of the paper Leakage Mobility and Passive Leakage Removal in Transmons with Tunable Couplers"
 
-        # Panel (a) ------------------------------------------------------
-        g = create_group(file, "a")
-        attrs(g)["Description"] = "Data for panel (a) of Fig. 5, leakage removal for the junction readout leakage removal scheme. The x-axis shows the time in nanoseconds. The y-axis shows the population of the transmon <n1>."
+        # Panel (b) ------------------------------------------------------
+        g = create_group(file, "b")
+        attrs(g)["Description"] = "Data for panel (b) of Fig. 5, leakage removal for the junction readout leakage removal scheme. The x-axis shows the time in nanoseconds. The y-axis shows the population of the transmon <n1>."
 
         plotinfo = loaddata(@__DIR__, "leakage_data.jld2")
 
