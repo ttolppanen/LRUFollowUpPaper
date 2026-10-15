@@ -86,7 +86,7 @@ function compare()
     line = plotdata.lines["n1"]
     x = line.x / (2 * π * 5)
     plot(x, line.y)
-    plot!(x, x -> 1.0 * exp(-x / 16.35), label = "exp(-t/16.7)")
+    plot!(x, x -> 0.992 * exp(-x / 16.4), label = "exp(-t/16.4)")
 end
 
 # @time f()
