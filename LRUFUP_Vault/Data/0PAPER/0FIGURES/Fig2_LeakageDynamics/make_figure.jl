@@ -12,12 +12,12 @@ function make_fig()
     h5open(filename, "r") do file
         # Panel (a) ------------------------------------------------------
         plot_a = plot(ylims = (0, 2.02), xlabel = L"t~" * "(μs)", ylabel = L"\left\langle \hat{n}_1 \right\rangle")
-        x_h100 = read(file["a"]["100"], "x")
-        y_h100 = read(file["a"]["100"], "y")
+        x_h100 = read(file["a"]["10"], "x")
+        y_h100 = read(file["a"]["10"], "y")
         plot!(plot_a, x_h100, y_h100, label = "|10>")
 
-        x_h200 = read(file["a"]["200"], "x")
-        y_h200 = read(file["a"]["200"], "y")
+        x_h200 = read(file["a"]["20"], "x")
+        y_h200 = read(file["a"]["20"], "y")
         plot!(plot_a, x_h200, y_h200, label = "|20>")
 
         plot!(plot_a, leftmargin = 10mm, topmargin = 10mm)
@@ -66,12 +66,12 @@ function make_fig()
 
         # Panel (e) ------------------------------------------------------
         plot_e = plot(ylims = (0, 2.02), xlabel = L"t~\textrm{(ns)}", ylabel = L"\left\langle \hat{n}_1 \right\rangle")
-        x_h100 = read(file["e"]["100"], "x")
-        y_h100 = read(file["e"]["100"], "y")
+        x_h100 = read(file["e"]["10"], "x")
+        y_h100 = read(file["e"]["10"], "y")
         plot!(plot_e, x_h100, y_h100, label = "|10>")
 
-        x_h201 = read(file["e"]["201"], "x")
-        y_h201 = read(file["e"]["201"], "y")
+        x_h201 = read(file["e"]["21"], "x")
+        y_h201 = read(file["e"]["21"], "y")
         plot!(plot_e, x_h201, y_h201, label = "|21>")
         plot!(plot_e, bottommargin = 8mm)
 
@@ -113,7 +113,7 @@ function make_fig()
         push!(plots, plot_h)
 
         # Colorbar
-        limits = collect(range(0, 1, length = 100))
+        limits = collect(range(1, 2, length = 100))
         colorbar = heatmap([1], limits, [limits;;], colorbar=false, xaxis=false, ymirror=true, ylabel = L"\left\langle \hat{n}_2 \right\rangle")
         plot!(colorbar, rightmargin = 12mm)
         push!(plots, colorbar)
